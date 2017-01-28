@@ -1,0 +1,40 @@
+<div class="docform" v-if="googleDocsForm" >
+
+    <div class="cpm-form-title">
+        {{text.link_google_doc}}
+
+        <a href="#" class="cpm-right"  @click="hideAllform()"> <span class=" dashicons  dashicons-no"></span> </a>
+    </div>
+
+    <form  autocomplete="off" @submit.prevent="sendGoogleDocForm" id="cpm-googledoc-form" >
+        <input type="hidden" name="action" value="{{formAction}}" />
+        <input type="hidden" name="project_id" value="{{current_project}}" />
+        <input type="hidden"   name="_wpnonce" value="{{wp_nonce}}" />
+        <input type="hidden" name="parent" value="{{currntfolder}}" />
+
+        <div class="cpm-col-10">
+            <label>{{text.title}}</label>
+            <input type="text" name="title" value="{{editeddoc.name}}" width="80%" />
+
+            <label>{{text.google_link}}</label>
+
+            <input type="text" name="doclink" value="{{editeddoc.doclink}}"  v-model="doclink"  width="80%" @blur="getDocIcon()" />
+        </div>
+        <div class="cpm-col-2 cpm-right docs-icon">
+
+            <img :src="currentIcon" height="128" v-align="center" />
+        </div>
+        <div class="clear"></div>
+        <div class="item message cpm-sm-col-12 ">
+             <label>{{text.note}}</label>
+            <input id="description" type="hidden" name="description" value="{{{editeddoc.name}}}">
+            <trix-editor input="description"></trix-editor>
+        </div>
+
+        <div class="cpm-privacy"> <label>  <input type="checkbox" name="privacy" value="yes" /> {{text.make_private}} </label> </div>
+
+        <input type="submit" name="submit" class="button-primary"  value="{{text.link_google_doc}}" />
+
+
+    </form>
+</div>

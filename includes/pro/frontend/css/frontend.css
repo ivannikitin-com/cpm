@@ -1,0 +1,176 @@
+.cpm .cpm-top-bar .cpm-priject-search-bar {
+  padding-top: 20px;
+}
+.cpm:after,
+.cpm:before {
+  clear: both;
+  content: "";
+  display: table;
+}
+.cpm .tablenav {
+  display: inline-block;
+  width: 100%;
+}
+.cpm .tablenav .tablenav-pages {
+  float: none !important;
+  margin-left: 0 !important;
+}
+.cpm .nav-tab {
+  padding: 4px 10px 6px;
+  border-color: #DFDFDF #DFDFDF #FFFFFF;
+  border-style: solid;
+  border-width: 1px 1px 0;
+  color: #aaa;
+  text-shadow: #fff 0 1px 0;
+  font-size: 12px;
+  line-height: 16px;
+  display: inline-block;
+  padding: 4px 14px 6px;
+  text-decoration: none;
+  margin: 0 6px -1px 0;
+  -webkit-border-top-left-radius: 3px;
+  -webkit-border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+.cpm .nav-tab.nav-tab-active {
+  border-width: 1px;
+  color: #464646;
+}
+.cpm h2.nav-tab-wrapper,
+.cpm h3.nav-tab-wrapper {
+  border-bottom: 1px solid #DFDFDF;
+  padding-bottom: 0;
+  margin: 10px 0 0 0;
+}
+.cpm h2 .nav-tab {
+  padding: 4px 10px 6px;
+  font-weight: 200;
+  font-size: 20px;
+  line-height: 24px;
+}
+.cpm .cpm-frontend-project-list .cpm-project {
+  height: auto;
+}
+.cpm .cpm-frontend-project-list .cpm-project .cpm-project-meta ul li {
+  float: none;
+  width: 100%;
+}
+.cpm .cpm-frontend-project-list .cpm-project .cpm-project-meta ul li a {
+  box-shadow: none;
+}
+.cpm .cpm-frontend-project-list .cpm-project .cpm-project-meta ul li :hover {
+  text-decoration: underline !important;
+}
+.cpm .cpm-frontend-project-list .cpm-project .cpm-project-people {
+  top: 85%;
+  bottom: 0;
+}
+.cpm .cpm-frontend-project-list .cpm-project .cpm-progress {
+  bottom: 15%;
+}
+.cpm h3.cpm-nav-title {
+  margin: 0 0 10px;
+}
+.cpm ul,
+.cpm li {
+  margin-left: 0;
+  list-style: none;
+}
+.cpm .cpm-activity {
+  margin-top: 15px;
+}
+.cpm .cpm-activity li {
+  margin-left: 0;
+}
+.cpm .cpm-comment-form textarea,
+.cpm .cpm-message-form textarea,
+.cpm .cpm-milestone-form textarea {
+  width: 95%;
+}
+.cpm table.cpm-messages-table {
+  border: none;
+}
+.cpm table.cpm-messages-table td {
+  border-top: none;
+}
+.cpm table.cpm-messages-table td.author {
+  vertical-align: middle;
+}
+.cpm .cpm-single {
+  margin-bottom: 15px;
+}
+.cpm .cpm-single .cpm-entry-title {
+  line-height: 150%;
+}
+.cpm .cpm-single .cpm-entry-meta {
+  margin: 5px 10px;
+}
+.cpm .cpm-single .cpm-message-form-wrap {
+  margin: 15px 0 15px 10px;
+}
+.cpm .cpm-comment-form-wrap {
+  margin: 15px 0 15px 65px;
+}
+.cpm .cpm-comment-edit-form .cpm-comment-form-wrap {
+  width: 95%;
+}
+.cpm ul.cpm-todolists {
+  padding: 0;
+}
+.cpm ul.cpm-todolists article.cpm-todolist > ul {
+  padding: 0 15px;
+  margin: 0;
+}
+.cpm ul.cpm-todolists article.cpm-todolist header h3 {
+  line-height: 150%;
+  margin: 0;
+}
+.cpm ul.cpm-todolists article.cpm-todolist header .cpm-list-actions {
+  left: -58px;
+  top: 6px;
+}
+.cpm ul.cpm-todolists article.cpm-todolist .cpm-todos li {
+  margin-left: 0;
+}
+.cpm ul.cpm-todolists article.cpm-todolist .cpm-todos li .cpm-todo-action {
+  left: -40px;
+}
+.cpm .cpm-new-todolist-form,
+.cpm .cpm-list-edit-form {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px dashed #dfdfdf;
+}
+.cpm .cpm-new-todolist-form textarea,
+.cpm .cpm-list-edit-form textarea {
+  width: 95%;
+}
+.cpm .cpm-single-task .cpm-todo-wrap .cpm-task-edit-form {
+  width: 85%;
+}
+.cpm .cpm-milestones h3.title {
+  margin-bottom: 0;
+}
+.cpm .cpm-milestones .cpm-milestone h3 {
+  line-height: 150%;
+}
+.cpm .cpm-milestones .cpm-milestone .cpm-milestone-edit-form .cpm-milestone-form-wrap {
+  width: 95%;
+  margin-bottom: 15px;
+}
+.cpm .cpm-milestones ul.cpm-links:after,
+.cpm .cpm-milestones ul.cpm-links:before {
+  clear: both;
+  content: "";
+  display: table;
+}
+.cpm .cpm-milestones ul.cpm-links li {
+  margin: 0;
+}
+.cpm .cpm-files {
+  margin-top: 15px;
+}
+.cpm .submit {
+  padding: 10px 0;
+}

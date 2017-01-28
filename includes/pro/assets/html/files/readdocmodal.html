@@ -1,0 +1,201 @@
+<div class="modal-mask half-modal cpm-doc-modal" v-show="show" transition="modal">
+    <div class="modal-wrapper" @click="closeDocRead" >
+        <div class="modal-container"  style="width:{{modalwide}}">
+            <span class="close-vue-modal"><a class=""  @click="closeDocRead"><span class="dashicons dashicons-no"></span></a></span>
+
+
+            <div class="modal-body " @click.stop=""  v-bind:class="{ 'cpm-doc-edit-mod': docEidted, 'cpm-doc-read-mod': !docEidted, 'cpm-doc-rev-mod' : revisionMode }" >
+                <div class="cpm-col-9 cpm-doc-content" v-bind:class="{'cpm-col-12' : viewDoc.type == 'attach' ||  viewDoc.type =='regular_doc_file'  }">
+
+                    <div v-if="!docEidted" v-bind:class="{ 'cpm-created-doc': viewDoc.type == 'doc' }">
+
+                        <div class="cpm-modal-conetnt">
+                            <div class="doc_contents"  >
+
+                                <h3>{{viewDoc.full_name}}
+                                    <span class="cpm-right" v-if="revisionMode">
+                                        <a class="show-orginal-doc button-primary"  @click="showOrgDoc">{{text.view_current_post}}</a>
+                                    </span>
+
+                                    <span class="cpm-right" v-if="viewDoc.permission && !revisionMode && viewDoc.type != 'attach'">
+                                        <a class="button"  @click="docEidted=true"><span class="dashicons dashicons-edit"></span> Edit</a>
+                                    </span>
+                                    <span v-if="viewDoc.type == 'attach' || viewDoc.type == 'regular_doc_file' " class="cpm-right">
+                                        <a href="{{viewDoc.file_url}}" target="new" ><span class="dashicons dashicons-download"></span></a>
+                                    </span>
+                                    <div class="sub-title" v-if="viewDoc.type != 'regular_doc_file'  && viewDoc.type != 'regular_doc_image' ">
+                                        by <strong>{{viewDoc.created_name}}</strong> at <small>{{viewDoc.created_at}}</small>
+                                    </div>
+
+                                </h3>
+
+                                <div class="document-details">
+                                    <div v-if="viewDoc.type=='google_doc'" class="online_doc_link">
+                                        <div class="cpm-box">
+                                            <a href="{{viewDoc.doclink}}" target="_new">
+                                                <img :src="checkDocIcon(viewDoc.doclink)" height="128" v-align="center" /> <br/>
+                                                
+                                            </a>
+                                        </div>
+                                        <a href="{{viewDoc.doclink}}" target="_blank" class="button-primary"><span class="dashicons dashicons-external"></span> {{text.view_on_google}} </a>
+                                        <div class="cpm-title"> {{text.note}} : </div>
+                                    </div>
+
+                                    <div > {{{viewDoc.content}}} </div>
+                                </div>
+
+
+                                <div v-if="viewDoc.type == 'attach' || viewDoc.type == 'regular_doc_file' || viewDoc.type == 'regular_doc_image' " class="cpm-doc-attch online_doc_link">
+                                    <div v-if="viewDoc.content_type == 'image' " >
+                                        <img :src="viewDoc.file_url" />
+                                        <div v-if="viewDoc.type == 'regular_doc_file' ||  viewDoc.type == 'regular_doc_image' ">
+                                            {{{viewDoc.attach_text}}}
+                                        </div>
+                                        <div >
+                                            <a href="{{viewDoc.file_url}}" class="button-primary"> <span class="dashicons dashicons-download"></span>  {{text.download}} </a>
+                                        </div>
+                                    </div>
+
+                                    <div v-else class="file-download">
+                                        <div class="cpm-box">
+                                            <img :src="viewDoc.thumb"  />
+                                        </div>
+                                        <div v-if="viewDoc.type == 'regular_doc_file' ||  viewDoc.type == 'regular_doc_image' ">
+                                            {{{viewDoc.attach_text}}}
+                                        </div>
+                                        <div >
+                                            <a href="{{viewDoc.file_url}}" class="button-primary"> <span class="dashicons dashicons-download"></span>  {{text.download}} </a>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+                            </div>
+
+                            <div class="doc_attach_comments">
+                                <h3 v-if="viewDoc.attachment.length != 0">{{text.attachment}}</h3>
+                                <div>
+                                    <ul>
+                                        <li v-for="attach in viewDoc.attachment" class="cpm-doc-attachment">
+                                            <img :src="attach.thumb" class="" />
+                                        </li>
+                                        <div class="clearfix"></div>
+                                    </ul>
+
+                                </div>
+                                <h3>{{text.comments}}</h3>
+                                <div class="comment-content">
+                                    <ul class="cpm-comment-wrap">
+                                        <li class="cpm-comment" v-for="comment in comments" >
+
+                                            <div class="cpm-avatar ">{{{comment.avatar}}}</div>
+                                            <div class="cpm-comment-container">
+                                                <div class="cpm-comment-meta">
+                                                    <span class="cpm-author">{{comment.comment_author}}</span>
+                                                    {{text.on}}
+                                                    <span class="cpm-date">{{comment.comment_date}}</span>
+
+                                                </div>
+                                                <div class="cpm-comment-content">
+                                                    {{{comment.comment_content}}}
+                                                </div>
+
+                                                <div v-if="comment.files.length">
+                                                    <ul class="cpm-attachments">
+                                                        <li v-for="cfile in comment.files">
+                                                        <prettyphoto :file="cfile" ></prettyphoto>
+
+                                                        </li>
+                                                    </ul>
+
+                                                </div>
+
+                                            </div>
+
+                                        </li>
+                                    </ul>
+
+                                </div>
+
+                                <div class='cpm-new-doc-comment-form'>
+                                    <form @submit.prevent="createDocComment" id="new_comment_form">
+                                        <input type="hidden" name="action" value="cpm_pro_create_comment" />
+                                        <input type="hidden" name="project_id" value="{{current_project}}" />
+                                        <input type="hidden" name="parent_id" value="{{viewDoc.post_id}}" />
+                                        <input type="hidden" name="_wpnonce" value="{{wp_nonce}}" />
+
+                                        <div class="cpm-trix-editor">
+                                            <input id="coment-content" type="hidden" name="description" value="" />
+                                            <trix-editor input="coment-content"></trix-editor>
+                                        </div>
+                                        <fileuploader :files="" :text="text"></fileuploader>
+                                        <input type="submit" name="submit" value="{{text.add_comment}}" class="button-primary" />
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="clearfix"></div>
+
+                        </div>
+                    </div>
+
+                    <div v-if="docEidted" >
+
+                        <form @submit.prevent="updateDoc" id="doc-update-form" >
+                            <input type="hidden" name="project_id" value="{{projectid}}" />
+                            <input type="hidden"   name="_wpnonce" value="{{wp_nonce}}" />
+                            <input type="hidden"   name="doc_id" value="{{viewDoc.post_id}}" />
+                            <input type="hidden" name="action" value="cpm_pro_doc_update" />
+
+                            <div class="cpm-modal-conetnt">
+                                <div class="doc_content">
+                                    <div class="top_part">
+                                    <input type="text" name="name" value="{{viewDoc.full_name}}" width="100%" />
+                                    <div v-if="viewDoc.type=='google_doc'">
+                                        <label>{{text.google_link}}</label>
+                                        <input type="text" name="doclink" value="{{viewDoc.doclink}}" width="100%" />
+                                        <div class="cpm-title"> {{text.note}} : </div>
+                                    </div>
+                                    </div>
+
+                                    <input id="doc-content" type="hidden" name="description" value="{{{viewDoc.content}}}" />
+                                    <div class="editor">
+                                    <trix-editor input="doc-content"></trix-editor>
+                                    </div>
+                                    <div class="bottom-part">
+                                    <div v-if="viewDoc.type=='doc'">
+                                        <fileuploader :files="viewDoc.attachment" :text="text" ></fileuploader>
+                                    </div>
+                                    <div class="cpm-privacy"> <label>  <input type="checkbox" name="private"  value="yes" v-bind:checked="{viewDoc.private == 'yes'}" /> {{text.make_private}}. </label> </div>
+                                    <input type="submit" name="submit" class="button-primary" value="{{text.update_doc}}" />
+                                    <input type="button" name="cancel" class="button-secondary" value="{{text.cancel_edit}}" @click="docEidted=false" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="clearfix" ></div>
+
+                </div>
+
+                <div class="cpm-col-3 cpm-revision" v-if="viewDoc.type != 'attach'">
+
+                    <div v-if="viewDoc.type != 'attach' || viewDoc.type !='regular_doc_file' ">
+                        <h3>{{text.revisions}}</h3>
+                        <ul>
+                            <li v-for="rev in docRevisions"><a href="#"  @click="showDocRev(rev)"># {{rev.created_at}}</a></li>
+                        </ul>
+                        <div v-if="docRevisions.length == 0 ">{{text.no_revision}}</div>
+                    </div>
+                </div>
+
+                <div class="clearfix" ></div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

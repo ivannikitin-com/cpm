@@ -1,0 +1,1025 @@
+/** My Task Page design **/
+/**Common CSS**/
+.cpm-line-bg {
+  border-top: #EDE5B5 solid 1px;
+  background: #fafef0 -webkit-linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background: -moz-linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background: -ms-linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background: -o-linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background: linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background-size: 100% 30px;
+  background-position: 0px 0px;
+  padding: 30px 18px;
+  line-height: 30px;
+  font-size: 16px;
+  min-height: 350px;
+}
+.cpm-line-bg ul,
+.cpm-line-bg ol {
+  padding: 0px;
+  margin: 0px;
+  margin-left: 40px;
+}
+.cpm-line-bg ul li,
+.cpm-line-bg ol li {
+  padding: 0px;
+  margin: 0px;
+}
+.cpm-line-bg ul {
+  list-style: disc;
+}
+.cpm-line-bg pre {
+  padding: 0px;
+  margin: 0px;
+  margin-left: 15px;
+  padding-left: 15px;
+}
+.cpm-project-head .cpm-edit-project {
+  margin-top: -50px;
+}
+#wpadminbar {
+  z-index: 9999;
+}
+.cpm-data-load-before {
+  background: #ddedf;
+  padding: 150px;
+  width: 100%;
+  text-align: center;
+}
+.cpm-my-tasks .avatar {
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  height: auto;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+.cpm-my-tasks a.cpm-my-taskoverview {
+  background-image: url('../images/activity.svg');
+  padding-left: 50px !important;
+  background-position: 20% 30% !important;
+}
+.cpm-my-tasks .active {
+  border-bottom: 2px solid #019dd6 !important;
+}
+.cpm-my-tasks .active .cpm-my-taskoverview,
+.cpm-my-tasks a.cpm-my-taskoverview:hover {
+  background-image: url('../images/activity_hover.svg');
+}
+.cpm-my-tasks a.cpm-my-taskactivity {
+  background-image: url('../images/activity.svg');
+}
+.cpm-my-tasks .active .cpm-my-taskactivity,
+.cpm-my-tasks a.cpm-my-taskactivity:hover {
+  background-image: url('../images/activity_hover.svg');
+}
+.cpm-my-tasks a.cpm-my-currenttask {
+  background-image: url('../images/activity.svg');
+}
+.cpm-my-tasks .active .cpm-my-currenttask,
+.cpm-my-tasks a.cpm-my-currenttask:hover {
+  background-image: url('../images/activity_hover.svg');
+}
+.cpm-my-tasks a.cpm-my-outstandigntask {
+  background-image: url('../images/overview.svg');
+}
+.cpm-my-tasks .active .cpm-my-outstandigntask,
+.cpm-my-tasks a.cpm-my-outstandigntask:hover {
+  background-image: url('../images/overview_hover.svg');
+}
+.cpm-my-tasks a.cpm-my-completetask {
+  background-image: url('../images/completed.svg');
+}
+.cpm-my-tasks .active .cpm-my-completetask,
+.cpm-my-tasks a.cpm-my-completetask:hover {
+  background-image: url('../images/completed_hover.svg');
+}
+.cpm-my-tasks .cpm-user-select select {
+  margin-top: 20px ;
+  width: 100%;
+}
+.cpm-my-tasks #cpm-mytask-page-content {
+  padding: 0px;
+}
+.cpm-my-tasks #cpm-mytask-page-content .cpm-mytask-overview-page .cpm-mytask-chart-overview {
+  height: auto;
+  background: #fff;
+  padding: 0px;
+  margin-right: 25px;
+  padding-bottom: 25px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+.cpm-my-tasks #cpm-mytask-page-content .cpm-mytask-overview-page .cpm-mytask-chart-overview .cpm-box-title {
+  margin-bottom: 15px;
+}
+.cpm-my-tasks #cpm-mytask-page-content .cpm-mytask-overview-page .cpm-mytask-chart-overview #cart-at-glance {
+  padding: 0px;
+  margin: 0px;
+  width: 100%;
+  height: auto;
+}
+.cpm-my-tasks #cpm-mytask-page-content .cpm-mytask-overview-page .cpm-mytask-chart-overview ul li {
+  margin: 10px;
+}
+.cpm-my-tasks #cpm-mytask-page-content .cpm-mytask-overview-page .cpm-mytask-chart-overview ul li .color-plate {
+  width: 10px;
+  padding: 0px 10px;
+  margin-right: 10px;
+}
+.cpm-my-tasks #cpm-mytask-page-content .cpm-mytask-overview-page .cpm-mytask-chart-overview ul li .task-count {
+  border: #eeeeee solid 1px;
+  padding: 1px 10px;
+  margin-right: 20px;
+  text-align: center;
+}
+.cpm-my-tasks #cpm-mytask-page-content .cpm-mytask-overview-page .cpm-mytask-chart-statistics {
+  background: #fff;
+  margin: 0px;
+  padding: 0px;
+  height: auto !important;
+  font-size: 12px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+.cpm-my-tasks #cpm-mytask-page-content .cpm-mytask-overview-page .cpm-mytask-chart-statistics .color-plate {
+  width: 10px;
+  padding: 0px 10px;
+  margin-right: 5px;
+  margin-left: 10px;
+}
+.cpm-my-tasks #cpm-mytask-page-content .cpm-mytask-overview-page .cpm-mytask-chart-statistics .cpm-right {
+  text-align: right;
+  margin-top: 10px;
+  padding-right: 20px;
+}
+.cpm-my-tasks #cpm-mytask-page-content .cpm-mytask-overview-page .cpm-mytask-chart-statistics canvas {
+  padding: 20px;
+}
+.cpm-my-tasks #cpm-mytask-page-content .cpm-mytask-overview-page .cpm-mytask-chart-statistics .cpm-error {
+  text-align: center;
+  padding: 50px 10px;
+  color: red;
+  padding-bottom: 0px !important;
+}
+.cpm-my-tasks .cpm-mycalender {
+  margin-top: 10px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+.cpm-my-tasks .cpm-mycalender .cpm-col-12 {
+  background: #fff;
+}
+.cpm-my-tasks .cpm-mycalender .cpm-calender-content {
+  padding: 20px;
+}
+#cpm-report,
+#cpm-advance-report {
+  margin-top: 15px;
+}
+#cpm-report [v-cloak],
+#cpm-advance-report [v-cloak] {
+  display: none;
+}
+#cpm-report .report-page-title,
+#cpm-advance-report .report-page-title {
+  padding-right: 0px;
+}
+#cpm-report .cpm-advance-search,
+#cpm-advance-report .cpm-advance-search {
+  background: #0073aa;
+  padding: 5px 25px;
+  color: #ffffff;
+  font-weight: normal;
+  font-size: 14px  ;
+  box-shadow: 1 2px 2px rgba(0, 0, 0, 0.01);
+  border-radius: 5px;
+}
+#cpm-report .postbox,
+#cpm-advance-report .postbox {
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+#cpm-report .postbox ul,
+#cpm-advance-report .postbox ul {
+  padding-left: 0px;
+  margin-left: 0px;
+}
+#cpm-report .postbox ul li,
+#cpm-advance-report .postbox ul li {
+  padding: 2% 1% 1%;
+  background: #fff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  border: solid 1px #ccc;
+  margin: 0% 1% 1%;
+  width: 19% ;
+  margin-left: 0;
+  text-align: center;
+  cursor: pointer;
+  min-height: 228px;
+  float: left ;
+}
+#cpm-report .postbox ul li a,
+#cpm-advance-report .postbox ul li a {
+  padding: 15px;
+}
+#cpm-report .postbox ul li strong,
+#cpm-advance-report .postbox ul li strong {
+  color: #000;
+}
+#cpm-report .postbox ul li:hover,
+#cpm-advance-report .postbox ul li:hover {
+  background: #f8f8f8;
+}
+#cpm-report .cpm-report-content .button,
+#cpm-advance-report .cpm-report-content .button {
+  margin-top: 1px;
+}
+#cpm-report .cpm-report-content .cpm-field,
+#cpm-advance-report .cpm-report-content .cpm-field,
+#cpm-report .cpm-report-content .cpm-report-more,
+#cpm-advance-report .cpm-report-content .cpm-report-more {
+  margin-left: 10px;
+}
+#cpm-report .cpm-form-title,
+#cpm-advance-report .cpm-form-title {
+  border-bottom: 1px solid #eee;
+  padding: 8px 12px;
+  margin-bottom: 14px;
+}
+#cpm-report .cpm-projects-dropdown,
+#cpm-advance-report .cpm-projects-dropdown {
+  margin-left: 10px;
+  margin-top: -4px;
+}
+#cpm-report .cpm-projects-from,
+#cpm-advance-report .cpm-projects-from,
+#cpm-report .cpm-projects-to,
+#cpm-advance-report .cpm-projects-to {
+  margin-left: 6px;
+}
+#cpm-report .cpm-report-more,
+#cpm-advance-report .cpm-report-more {
+  margin-left: 5px;
+}
+#cpm-report .cpm-action-parent,
+#cpm-advance-report .cpm-action-parent {
+  width: 100%;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+#cpm-report .cpm-report-action-wrap .cpm-report-lebel,
+#cpm-advance-report .cpm-report-action-wrap .cpm-report-lebel,
+#cpm-report .cpm-report-action-wrap .cpm-report-projects-wrap,
+#cpm-advance-report .cpm-report-action-wrap .cpm-report-projects-wrap,
+#cpm-report .cpm-report-action-wrap .cpm-report-co-worker-wrap,
+#cpm-advance-report .cpm-report-action-wrap .cpm-report-co-worker-wrap,
+#cpm-report .cpm-report-action-wrap .cpm-report-status-wrap,
+#cpm-advance-report .cpm-report-action-wrap .cpm-report-status-wrap,
+#cpm-report .cpm-report-action-wrap .cpm-report-time-wrap,
+#cpm-advance-report .cpm-report-action-wrap .cpm-report-time-wrap {
+  float: left;
+}
+#cpm-report .cpm-report-action-wrap input[type="text"],
+#cpm-advance-report .cpm-report-action-wrap input[type="text"],
+#cpm-report .cpm-report-action-wrap select,
+#cpm-advance-report .cpm-report-action-wrap select {
+  width: 160px;
+}
+#cpm-report .cpm-report-button-wrap,
+#cpm-advance-report .cpm-report-button-wrap {
+  margin-top: 10px;
+}
+#cpm-report select,
+#cpm-advance-report select {
+  width: 160px;
+}
+#cpm-report label strong,
+#cpm-advance-report label strong {
+  width: 100px;
+}
+#cpm-report .cpm-postbox-wrap,
+#cpm-advance-report .cpm-postbox-wrap {
+  padding: 0px 20px 20px 13px;
+}
+#cpm-report .cpm-postbox-wrap .cpm-label-title,
+#cpm-advance-report .cpm-postbox-wrap .cpm-label-title {
+  width: 100px;
+}
+#cpm-report .cpm-postbox-wrap .cpm-label-title,
+#cpm-advance-report .cpm-postbox-wrap .cpm-label-title,
+#cpm-report .cpm-postbox-wrap .cpm-field,
+#cpm-advance-report .cpm-postbox-wrap .cpm-field {
+  float: left;
+}
+#cpm-report .cpm-reoprt-individul-table-wrap,
+#cpm-advance-report .cpm-reoprt-individul-table-wrap {
+  margin-bottom: 30px;
+  padding: 20px !important;
+}
+#cpm-report .cpm-reoprt-individul-table-wrap th,
+#cpm-advance-report .cpm-reoprt-individul-table-wrap th,
+#cpm-report .cpm-reoprt-individul-table-wrap td,
+#cpm-advance-report .cpm-reoprt-individul-table-wrap td {
+  width: 20%;
+}
+#cpm-report .cpm-reoprt-individul-table-wrap .cpm-list-title,
+#cpm-advance-report .cpm-reoprt-individul-table-wrap .cpm-list-title {
+  margin: 20px 0;
+  width: 100%;
+  display: inline-block;
+}
+#cpm-report .cpm-reoprt-individul-table-wrap .cpm-project-title,
+#cpm-advance-report .cpm-reoprt-individul-table-wrap .cpm-project-title {
+  padding-left: 10px;
+  padding: 0 10px;
+}
+#cpm-report .cpm-reoprt-individul-table-wrap .cpm-project-title,
+#cpm-advance-report .cpm-reoprt-individul-table-wrap .cpm-project-title,
+#cpm-report .cpm-reoprt-individul-table-wrap .cpm-interval-title,
+#cpm-advance-report .cpm-reoprt-individul-table-wrap .cpm-interval-title {
+  margin-bottom: 10px;
+}
+#cpm-report .cpm-reoprt-individul-table-wrap .cpm-interval-title,
+#cpm-advance-report .cpm-reoprt-individul-table-wrap .cpm-interval-title {
+  padding-right: 10px;
+  border-right: 1px solid #939393;
+}
+#cpm-report .cpm-reoprt-individul-table-wrap .cpm-project-title,
+#cpm-advance-report .cpm-reoprt-individul-table-wrap .cpm-project-title,
+#cpm-report .cpm-reoprt-individul-table-wrap .cpm-interval-title,
+#cpm-advance-report .cpm-reoprt-individul-table-wrap .cpm-interval-title {
+  float: left;
+}
+#cpm-report .cpm-reoprt-individul-table-wrap .cpm-reoprt-table-header,
+#cpm-advance-report .cpm-reoprt-individul-table-wrap .cpm-reoprt-table-header {
+  margin-bottom: 20px;
+}
+#cpm-report .cpm-reoprt-individul-table-wrap .cpm-project-title-not-interval,
+#cpm-advance-report .cpm-reoprt-individul-table-wrap .cpm-project-title-not-interval {
+  margin-bottom: 4px;
+}
+#cpm-report form select,
+#cpm-advance-report form select {
+  margin-bottom: 5px;
+}
+#cpm-report form label,
+#cpm-advance-report form label {
+  padding: 0px;
+  margin: 0px;
+  margin-right: 15px;
+}
+#cpm-report form input[type="radio"],
+#cpm-advance-report form input[type="radio"] {
+  padding: 0px;
+  margin: 0px;
+}
+#cpm-report .modal-body input,
+#cpm-advance-report .modal-body input,
+#cpm-report .modal-body select,
+#cpm-advance-report .modal-body select {
+  width: 100%;
+}
+#cpm-report input[type="checkbox"],
+#cpm-advance-report input[type="checkbox"],
+#cpm-report input[type="radio"],
+#cpm-advance-report input[type="radio"] {
+  width: auto;
+}
+#cpm-report .cpm-report-page,
+#cpm-advance-report .cpm-report-page {
+  width: 100%;
+}
+#cpm-report .cpm-report-page .cpm-report-body,
+#cpm-advance-report .cpm-report-page .cpm-report-body {
+  margin-top: 20px;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-filter,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-filter,
+#cpm-report .cpm-report-page .cpm-report-body .cpl-data-head,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpl-data-head {
+  background: #fff;
+  border: #E5E5E5 solid 1px ;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-filter,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-filter {
+  border-bottom: none;
+  background: #F9F9F9;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-filter div,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-filter div {
+  margin-bottom: 0px;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-filter .report-title,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-filter .report-title {
+  font-size: 140%;
+  padding-top: 10px;
+  width: 60%;
+  float: left;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-filter .cpm-report-btn-group,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-filter .cpm-report-btn-group {
+  padding-top: 13px;
+  margin-bottom: 10px;
+  padding-right: 12px;
+  width: 32%;
+  float: right;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-filter .cpm-report-btn-group :before,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-filter .cpm-report-btn-group :before {
+  margin-top: 4px;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-filter .cpm-report-btn-pc,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-filter .cpm-report-btn-pc {
+  width: 8%;
+  float: right;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-filter .cpm-report-btn-pc .cpm-close,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-filter .cpm-report-btn-pc .cpm-close {
+  display: block;
+  width: 40%;
+  min-height: 27px;
+  padding: 15% 4%;
+  background: '';
+  border: none;
+  border-left: 1px solid #ddd;
+  color: #444;
+  text-align: center;
+  font-size: 175%;
+  cursor: pointer;
+  -webkit-transition: color 0.1s ease-in-out, background 0.1s ease-in-out;
+  transition: color 0.1s ease-in-out, background 0.1s ease-in-out;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-filter .cpm-report-btn-pc .cpm-close:hover,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-filter .cpm-report-btn-pc .cpm-close:hover {
+  background: #eee ;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-filter .dashicons-media-spreadsheet,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-filter .dashicons-media-spreadsheet {
+  margin-left: 15px;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-icon,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-icon {
+  padding-right: 10px;
+  margin-top: 5px;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpl-data-head,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpl-data-head {
+  border-bottom: 1px solid #e5e5e5;
+  padding: 10px;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpl-data-head .cpm-col-3,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpl-data-head .cpm-col-3 {
+  text-align: center;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpl-data-head .cpm-border-right,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpl-data-head .cpm-border-right {
+  border-right: 1px solid #e5e5e5;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-details .cpm-report-project,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-details .cpm-report-project {
+  background: #fff;
+  margin-top: 20px;
+  padding: 15px;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-details img,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-details img {
+  vertical-align: middle;
+  margin-top: -5px;
+  padding-right: 5px;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-details h2,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-details h2,
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-details h4,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-details h4,
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-details hr,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-details hr {
+  padding: 0px;
+  margin: 0px;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-details h2,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-details h2 {
+  padding: 0px 0px 10px ;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-details h4,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-details h4 {
+  padding: 0px;
+  margin: 0px;
+  padding: 5px 0px 5px ;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-details hr,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-details hr {
+  padding: 0px;
+  margin: 0px;
+  margin-bottom: 5px;
+}
+#cpm-report .cpm-report-page .cpm-report-body .cpm-report-details table,
+#cpm-advance-report .cpm-report-page .cpm-report-body .cpm-report-details table {
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+#cpm-report .complete_task,
+#cpm-advance-report .complete_task {
+  color: green ;
+}
+#cpm-report .incomplete_task,
+#cpm-advance-report .incomplete_task {
+  color: red ;
+}
+.cpm-pro-file-container {
+  display: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.cpm-pro-file-container .cpm-uplaod-btn-list a {
+  margin-left: 10px;
+  line-height: 36px;
+  height: 40px;
+}
+.cpm-pro-file-container .cpm-uplaod-btn-list a .dashicons {
+  margin-top: 8px;
+  margin-right: 5px;
+}
+.cpm-pro-file-container .cpm-previous-back {
+  /* background: #f6f6f6;*/
+}
+.cpm-pro-file-container .cpm-previous-back ul {
+  padding: 0px;
+  margin: 0px;
+  list-style: none;
+}
+.cpm-pro-file-container .cpm-previous-back ul li {
+  padding: 5px 5px 0px;
+  float: left;
+  margin-right: 5px;
+}
+.cpm-pro-file-container .cpm-previous-back .dashicons-arrow-left-alt {
+  margin-top: 3px;
+}
+.cpm-pro-file-container .cpm-previous-back .cpm-right {
+  margin-top: -4px;
+}
+.cpm-pro-file-container .cpm-form-title {
+  border: solid 1px #EAEAEA ;
+  background: #F9F9F9;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 120%;
+  clear: right;
+}
+.cpm-pro-file-container .cpm-form-title .button {
+  float: right;
+  margin-top: -3px;
+}
+.cpm-pro-file-container .form-uploader {
+  background: #fff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  margin-top: 25px;
+}
+.cpm-pro-file-container .cpm-upload-filelist .cpm-uploaded-item {
+  padding: 0px;
+  float: left;
+  text-align: center;
+  margin-right: 25px;
+  margin-bottom: 25px;
+  padding: 15px;
+}
+.cpm-pro-file-container .cpm-upload-filelist .cpm-uploaded-item a {
+  display: block;
+}
+.cpm-pro-file-container .cpm-upload-filelist .cpm-uploaded-item a img {
+  margin: 0px;
+}
+.cpm-pro-file-container .cpm-upload-filelist .cpm-uploaded-item .cpm-delete-file {
+  margin-top: 10px;
+  display: inline-block;
+}
+.cpm-pro-file-container .cpm-upload-filelist .cpm-uploaded-item:last-child {
+  margin-right: 0px;
+}
+.cpm-pro-file-container .cpm-privacy {
+  margin: 15px auto;
+}
+.cpm-pro-file-container .form-uploader form,
+.cpm-pro-file-container .docform form {
+  padding: 25px;
+}
+.cpm-pro-file-container .docform {
+  background: #fff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  margin-top: 35px;
+}
+.cpm-pro-file-container .docform label {
+  display: block;
+  width: 100%;
+}
+.cpm-pro-file-container .docform input[type='text'] {
+  display: block;
+  width: 100%;
+}
+.cpm-pro-file-container .docform .submit {
+  width: 80px;
+}
+.cpm-pro-file-container .docform .docs-icon {
+  text-align: center;
+}
+.cpm-pro-file-container .cpm-folders-list {
+  padding: 0;
+  margin: 20px -15px 0;
+  list-style: none;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  -webkit-flex-flow: row wrap;
+  justify-content: flex-start;
+}
+.cpm-pro-file-container .cpm-folders-list li {
+  margin: 0 0 30px;
+  padding: 0px 15px;
+  background: none;
+  width: 20%;
+  float: left;
+  min-width: 272px;
+  height: 248px;
+}
+.cpm-pro-file-container .cpm-folders-list li .ff-content {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  border: #E2E6E7 solid 1px;
+  background: #fff;
+}
+.cpm-pro-file-container .cpm-folders-list li .ff-content:last-child {
+  margin-right: 0px !important;
+}
+.cpm-pro-file-container .cpm-folders-list li .image-content {
+  padding: 20px 20px 0px;
+  text-align: center;
+  height: 205px;
+}
+.cpm-pro-file-container .cpm-folders-list li .image-content img {
+  max-height: 140px;
+  vertical-align: middle;
+  margin-bottom: 10px;
+}
+.cpm-pro-file-container .cpm-folders-list li .image-content .item-title {
+  font-weight: bold;
+}
+.cpm-pro-file-container .cpm-folders-list li .image-content .edit {
+  display: none;
+}
+.cpm-pro-file-container .cpm-folders-list li .editing .view {
+  display: none;
+}
+.cpm-pro-file-container .cpm-folders-list li .editing .edit {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+.cpm-pro-file-container .cpm-folders-list li .editing .edit input {
+  width: 70%;
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+.cpm-pro-file-container .cpm-folders-list li .editing .edit .button {
+  padding: 1px 2px;
+}
+.cpm-pro-file-container .cpm-folders-list li .editing .edit .dashicons,
+.cpm-pro-file-container .cpm-folders-list li .editing .edit .dashicons-before:before {
+  line-height: inherit;
+}
+.cpm-pro-file-container .cpm-folders-list li .editing .edit .save {
+  color: green;
+}
+.cpm-pro-file-container .cpm-folders-list li .editing .edit .cancel {
+  color: red;
+}
+.cpm-pro-file-container .cpm-folders-list li .footer-section {
+  padding: 10px 15px;
+  background: #FCFCFC;
+  border-top: #F2F2F2 solid 1px;
+  width: 100%;
+  text-align: center;
+  height: 42px;
+}
+.cpm-pro-file-container .cpm-folders-list li .footer-section a {
+  color: #ccc;
+  padding: 2px 12px;
+}
+.cpm-pro-file-container .cpm-folders-list li .footer-section a:hover {
+  color: #0073aa;
+}
+.cpm-pro-file-container .cpm-folders-list li .footer-section .cpm-comments-count {
+  background: url('../images/discussion.svg') no-repeat center center;
+  padding: 15px;
+  background-size: 20px;
+}
+.cpm-pro-file-container .cpm-folders-list li .footer-section .cpm-comments-count span {
+  padding: 0px 6px;
+  margin-top: -12px;
+  border-radius: 10px;
+  position: absolute;
+  margin-left: 5px;
+}
+.cpm-pro-file-container .cpm-folders-list .folder img {
+  padding: 35px 25px 33px;
+}
+.cpm-pro-file-container .cpm-folders-list .file .image-content img {
+  border: #fdfdfd solid 1px;
+}
+.cpm-pro-file-container .cpm-folders-list .file .doc-content {
+  padding: 20px 20px 0px;
+  text-align: center;
+  font-weight: normal;
+  height: 205px;
+  background: #FAFEF0;
+  text-align: left;
+  cursor: pointer ;
+  overflow: hidden;
+}
+.cpm-pro-file-container .cpm-folders-list .file .doc-content .item-title {
+  font-weight: bold;
+}
+.cpm-pro-file-container .cpm-folders-list .file .online-docx-image-content {
+  position: absolute;
+  width: 18% ;
+  height: 200px;
+  background-repeat: no-repeat;
+  background-position: 50% 30% ;
+  -ms-background-size: cover;
+  -o-background-size: cover;
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  background-size: 150px;
+}
+.cpm-pro-file-container .cpm-folders-list .file .footer-section {
+  text-align: center;
+}
+.cpm-pro-file-container .cpm-folders-list:last-child {
+  margin-right: 0px;
+}
+.cpm-pro-file-container .cpm-doc-attachment {
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border: #ccc solid 1px;
+  background: #fff;
+  padding: 5px;
+}
+.cpm-pro-file-container .cpm-doc-attachment:last-child {
+  margin-right: 0px;
+}
+.cpm-pro-file-container .cpm-attachment-area {
+  border: #ccc dashed 1px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+.cpm-pro-file-container .cpm-trix-editor {
+  border: #ccc solid 1px ;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body {
+  display: flex;
+  background: #fff;
+  padding: 0px;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .doc_contents {
+  background: #F9F9F9;
+  border: #E6E9EB solid 1px;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .doc_contents h3 {
+  border-bottom: #E6E9EB solid 1px;
+  margin: 0px;
+  padding: 18px;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .doc_contents h3 .sub-title {
+  font-size: small;
+  color: #b0b0b0;
+  font-weight: normal;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .doc_contents .document-details {
+  padding: 18px;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .doc_contents .online_doc_link .cpm-box {
+  border: #E6EAEB solid 1px;
+  background: #fff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  max-width: 350px;
+  text-align: center;
+  padding: 18px;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .doc_contents .online_doc_link .cpm-title {
+  font-weight: bold;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .doc_contents .online_doc_link .button-primary {
+  margin: 18px 0px;
+  padding: 10px;
+  height: 40px;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .cpm-created-doc .doc_contents {
+  background: #FAFEF0 ;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .cpm-created-doc .doc_contents .document-details {
+  border-top: #EDE5B5 solid 1px;
+  background: #fafef0 -webkit-linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background: -moz-linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background: -ms-linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background: -o-linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background: linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background-size: 100% 30px;
+  background-position: 0px 0px;
+  padding: 30px 18px;
+  line-height: 30px;
+  font-size: 16px;
+  min-height: 350px;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .cpm-created-doc .doc_contents .document-details ul,
+.cpm-pro-file-container .cpm-doc-modal .modal-body .cpm-created-doc .doc_contents .document-details ol {
+  padding: 0px;
+  margin: 0px;
+  margin-left: 40px;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .cpm-created-doc .doc_contents .document-details ul li,
+.cpm-pro-file-container .cpm-doc-modal .modal-body .cpm-created-doc .doc_contents .document-details ol li {
+  padding: 0px;
+  margin: 0px;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .cpm-created-doc .doc_contents .document-details ul {
+  list-style: disc;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .cpm-created-doc .doc_contents .document-details pre {
+  padding: 0px;
+  margin: 0px;
+  margin-left: 15px;
+  padding-left: 15px;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .cpm-doc-attch {
+  text-align: center;
+  margin-left: 25px;
+  overflow: hidden;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .cpm-doc-attch img {
+  max-width: 100%;
+}
+.cpm-pro-file-container .cpm-doc-modal .modal-body .cpm-doc-attch .file-download {
+  text-align: left;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod {
+  background: #fff;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .cpm-col-9 {
+  overflow-x: auto;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .top_part {
+  padding: 0 25px;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .cpm-doc-content {
+  padding: 0px;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .editor {
+  border-top: #EDE5B5 solid 1px;
+  background: #fafef0 -webkit-linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background: -moz-linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background: -ms-linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background: -o-linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background: linear-gradient(top, transparent 0px, transparent 29px, #ede5b5 29px, #ede5b5 30px);
+  background-size: 100% 30px;
+  background-position: 0px 0px;
+  padding: 30px 18px;
+  line-height: 30px;
+  font-size: 16px;
+  min-height: 350px;
+  padding: 0px 18px;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .editor ul,
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .editor ol {
+  padding: 0px;
+  margin: 0px;
+  margin-left: 40px;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .editor ul li,
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .editor ol li {
+  padding: 0px;
+  margin: 0px;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .editor ul {
+  list-style: disc;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .editor pre {
+  padding: 0px;
+  margin: 0px;
+  margin-left: 15px;
+  padding-left: 15px;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .editor trix-toolbar {
+  background: none;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .editor trix-toolbar button {
+  background: none;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .editor trix-editor {
+  padding-top: 12px;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .bottom-part {
+  padding: 25px;
+}
+.cpm-pro-file-container .cpm-doc-modal .doc_attach_comments {
+  padding: 25px;
+}
+.cpm-pro-file-container .cpm-doc-modal .comment-content .cpm-avatar img {
+  height: 48px;
+}
+.cpm-pro-file-container .cpm-doc-modal .comment-content .cpm-comment {
+  background: none;
+}
+.cpm-pro-file-container .cpm-doc-modal #new_comment_form {
+  margin-bottom: 50px;
+}
+.cpm-pro-file-container .cpm-doc-modal #new_comment_form trix-toolbar .button_group button,
+.cpm-pro-file-container .cpm-doc-modal #new_comment_form trix-toolbar .button_group input[type=button] {
+  background: rgba(255, 255, 255, 0);
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-revision {
+  background: #F9F9F9;
+  padding: 25px 10px  0px 25px;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-revision ul {
+  margin-left: -10px;
+}
+.cpm-pro-file-container .cpm-doc-modal .cpm-revision ul li {
+  border-bottom: #E5E5E5 solid 1px;
+  padding: 10px;
+  margin-bottom: 5px;
+}
+.cpm-pro-file-container #doc-update-form {
+  margin-top: 20px;
+}
+.cpm-pro-file-container #doc-update-form input[type='text'] {
+  width: 100%;
+  padding: 15px;
+  font-size: 100%;
+}
+.cpm-pro-file-container .cpm-rdoc-view .image-content img {
+  max-height: 120px !important;
+}
+.cpm-pro-file-container .doc-content a {
+  color: #848484 !important;
+}
+.cpm-pro-file-container .cpm-files-load .loadmoreanimation {
+  display: block;
+}
+.cpm-pro-file-container .cpm-center {
+  text-align: center;
+}
+.cpm-data-load-before .loadmoreanimation {
+  display: block;
+}
+.cpm-front-end a {
+  text-decoration: none !important;
+}
+.cpm-front-end .project-overview .overview-menu ul {
+  display: flex;
+}
+.cpm-front-end .project-overview .cpm-col-10 {
+  width: 81.45795196225%;
+}
+@media only screen and (max-width: 640px) {
+  .postbox ul li {
+    min-width: 48%;
+  }
+}
+@media only print {
+  #cpm-report,
+  #cpm-advance-report {
+    background: #fff;
+  }
+  #cpm-report #adminmenumain,
+  #cpm-advance-report #adminmenumain,
+  #cpm-report #wpfooter,
+  #cpm-advance-report #wpfooter {
+    display: none;
+  }
+  #cpm-report #wpbody,
+  #cpm-advance-report #wpbody {
+    margin-left: 0px;
+  }
+  #cpm-report #wpcontent,
+  #cpm-advance-report #wpcontent {
+    margin-left: auto;
+  }
+  #cpm-report tr,
+  #cpm-advance-report tr {
+    border: #504949 solid 1px ;
+  }
+}
