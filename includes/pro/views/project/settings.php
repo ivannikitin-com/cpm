@@ -56,8 +56,12 @@ cpm_get_header( __( 'Settings', 'cpm' ), $project_id );
             }
         }
         ?>
-
         </tbody>
+		<tbody style="background-color:inherit">
+			<tr><td colspan="2">
+				<?php do_action('cpm_project_settings') ?>
+			</td></tr>	
+		</tbody>
         <tfoot>
             <tr>
                 <td colspan="2" class="submit">

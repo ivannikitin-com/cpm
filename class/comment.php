@@ -227,6 +227,7 @@ class CPM_Comment {
             } else {
                 $response['thumb'] = wp_mime_type_icon( $file->post_mime_type );
                 $response['type']  = 'file';
+				$response['mime']  = $file->post_mime_type;
             }
 
             return $response;

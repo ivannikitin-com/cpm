@@ -131,8 +131,12 @@ class CPM_Notification {
         }
     }
 
-    function filter_email( $user_id ) {
-        $user_email_notification = get_user_meta( $user_id, '_cpm_email_notification', true );
+    function filter_email( $user_id ) 
+	{
+        // Пока так... Надо разобраться почему сбрасывается настройка...
+		return TRUE;
+		
+		$user_email_notification = get_user_meta( $user_id, '_cpm_email_notification', true );
 
         if ( $user_email_notification == 'off' ) {
             return false;

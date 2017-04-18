@@ -412,7 +412,24 @@ function cpm_get_content( $content ) {
  */
 function cpm_get_header( $active_menu, $project_id = 0 ) {
     $cpm_active_menu = $active_menu;
-    require_once CPM_PATH . '/views/project/header.php';
+
+	// PATCHED: Find header template at theme folder	
+	$folder_plugin = CPM_PATH . '/views';			// Template foolder in plugin
+	$folder_theme = '/cpm';							// Template fodler in theme
+	$header_template = '/project/header.php';		// Template file
+	
+	if ( file_exists( get_stylesheet_directory() . $folder_theme . $header_template ) )		// Find in child theme
+	{
+		require_once get_stylesheet_directory() . $folder_theme . $header_template;
+	}
+	elseif ( file_exists( get_template_directory() . $folder_theme . $header_template ) )	// Find in parent theme
+	{
+		require_once get_template_directory() . $folder_theme . $header_template;
+	}
+	else																					// Use the plugin template
+	{
+		require_once $folder_plugin . $header_template;
+	}
 }
 
 /**

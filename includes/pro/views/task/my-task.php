@@ -82,8 +82,8 @@ $ctab  = apply_filters( 'cpm_my_task_tab', $ctab );
                 <?php
                 if ( isset( $_GET['page'] ) && $_GET['page'] === 'cpm_task' ) {
 					// PATCHED: I have added new capability 'cpm_can_view_users_tasks' for department heads
-                    /* OLD_CODE: if ( cpm_can_manage_projects() ) { */
-                    if ( current_user_can( 'cpm_can_view_users_tasks' ) ) {
+                    /* OLD_CODE: if ( current_user_can( 'cpm_can_view_users_tasks' ) ) { */
+                    if ( cpm_can_manage_projects() ) {
 						
 						// PATCHED: Filter users only by following roles
 						$users_with_role = implode(",", get_users ( array ( 
