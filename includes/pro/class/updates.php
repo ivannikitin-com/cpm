@@ -27,9 +27,10 @@ class CPM_Pro_Updates {
             add_action( 'admin_notices', array($this, 'license_check_notice') );
         }
 
-        add_filter( 'pre_set_site_transient_update_plugins', array($this, 'check_update') );
-        add_filter( 'pre_set_transient_update_plugins', array($this, 'check_update') );
-        add_filter( 'plugins_api', array(&$this, 'check_info'), 10, 3 );
+		// PATCH: Turn off auto updates
+        //add_filter( 'pre_set_site_transient_update_plugins', array($this, 'check_update') );
+        //add_filter( 'pre_set_transient_update_plugins', array($this, 'check_update') );
+        //add_filter( 'plugins_api', array(&$this, 'check_info'), 10, 3 );
     }
 
     /**
@@ -47,7 +48,9 @@ class CPM_Pro_Updates {
      * @return boolean
      */
     private function is_local_server() {
-        return in_array( $_SERVER['REMOTE_ADDR'], array( '127.0.0.1', '::1' ) );
+        // PATCH: Turn on the local server: no updates; no license;
+		//return in_array( $_SERVER['REMOTE_ADDR'], array( '127.0.0.1', '::1' ) );
+		return true;
     }
 
     /**

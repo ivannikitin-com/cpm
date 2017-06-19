@@ -234,7 +234,7 @@ class CPM_Pro_Files {
                 }
                 $comments = '';
 
-				// PATCHED! Multibyte strings!!!!
+				// PATCHED! FILES Multibyte strings!!!!
                 //$sname    = (strlen( $title ) > $this->_files_name_show) ? substr( $title, 0, $this->_files_name_show ) . "..." : $title;
                 $sname    = (mb_strlen( $title ) > $this->_files_name_show) ? mb_substr( $title, 0, $this->_files_name_show ) . "..." : $title;
 

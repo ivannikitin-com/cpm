@@ -1,6 +1,6 @@
 <?php
 $project_obj        = CPM_Project::getInstance();
-// PATCHED! Order projects by title
+// PATCH! Order projects by title
 //$projects           = $project_obj->get_projects();
 $projects           = $project_obj->get_projects( -1, array( 'title', 'ASC') );
 $total_projects     = $projects['total_projects'];
