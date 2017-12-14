@@ -103,6 +103,7 @@
                         <h5><?php  echo cpm_excerpt( get_the_title( $project->ID ), 60 ); ?></h5>
 
                         <div class="cpm-project-detail"><?php echo cpm_excerpt( $project->post_content, 55 ); ?></div>
+						<?php do_action( 'cpm_project_after_description', $project ); ?>
                     </div>
                     <div class="cpm-project-meta">
                         <ul>

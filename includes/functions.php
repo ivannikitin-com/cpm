@@ -166,6 +166,18 @@ function cpm_user_checkboxes( $project_id ) {
         $sort[$key] = strtolower( $user['name'] );
     }
 
+	// PATCHED: Добавим проверку текущей задачи и сразу отметим отвествнных за нее
+	$checkedUsers = array(); // Массив пользователей, которых надо отметить
+	
+	// Есди задача определена
+	if ( isset( $_GET['task_id'] ) && !empty( $_GET['task_id'] ) ) 
+	{
+		// Читаем текущую задачу
+		$task = CPM_Task::getInstance()->get_task( $_GET['task_id'] );
+		$checkedUsers = $task->assigned_to;
+	}
+	
+	
     if ( $users ) {
         ?>
 
@@ -178,7 +190,8 @@ function cpm_user_checkboxes( $project_id ) {
             array_multisort( $sort, SORT_ASC, $users );
 
             foreach ( $users as $user ) {
-                $check = sprintf( '<input type="checkbox" name="notify_user[]" id="cpm_notify_%1$s" value="%1$s" />', $user['id'] );
+				$checked = ( in_array( $user['id'], $checkedUsers ) ) ? 'checked' : '';
+                $check = sprintf( '<input type="checkbox" name="notify_user[]" id="cpm_notify_%1$s" value="%1$s" %2$s />', $user['id'], $checked );
                 printf( '<li><label for="cpm_notify_%d">%s %s</label></li>', $user['id'], $check, ucwords( strtolower( $user['name'] ) ) );
             }
             ?>
@@ -889,7 +902,7 @@ function cpm_can_manage_projects( $user_id = 0 ) {
     }
 
     $loggedin_user_role  = array_flip( $user->roles );
-    $opt                 = cpm_get_option( 'project_manage_role', 'cpm_general', array( 'administrator' => 'administrator', 'editor' => 'editor', 'author' => 'author' ) );
+    $opt                 = cpm_get_option( 'project_manage_role', 'cpm_general', array( 'administrator' => 'administrator', 'head_of_department' => 'head_of_department', 'editor' => 'editor', 'author' => 'author' ) );
 	$manage_cap_option  = $opt;
     $manage_capability  = array_intersect_key( $manage_cap_option, $loggedin_user_role  );
 

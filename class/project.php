@@ -274,6 +274,10 @@ class CPM_Project {
                 'operator' => 'IN',
             );
         }
+        
+        // PATCHED: Если status есть в GET-параметрах и он пустой, понимаем его как активные проекты. Чтобы не выводить закрытые...
+        if ( isset( $_GET['status'] ) && empty( $_GET['status'] ) )
+            $_GET['status'] = 'active';
 
         if ( isset( $_GET['page'] ) && $_GET['page'] == 'cpm_projects' && isset( $_GET['status'] ) ) {
             if ( $_GET['status'] == 'archive' ) {

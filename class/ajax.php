@@ -105,6 +105,11 @@ class CPM_Ajax {
      * @return void
      */
     function search_client() {
+		
+		// PATCHED: Выключаем relevanssi
+		remove_filter('posts_request', 'relevanssi_prevent_default_request'); 
+		remove_filter('the_posts', 'relevanssi_query', 99);
+		
         $user = intval( $_POST['user'] );
 
         $args = array(
@@ -125,7 +130,7 @@ class CPM_Ajax {
 
         if ( ! count( $projects_id ) ) {
             $items[] = array(
-                'label' => '<div class="cpm-all-search-item"><strong>' . __( 'No project found !', 'cpm' ) . '</strong></div>',
+                'label' => '<div class="cpm-all-search-item"><strong>' . __( 'No project found !', 'cpm' ) .  '</strong></div>',
             );
 
             $search_details = json_encode( $items );
@@ -164,6 +169,12 @@ class CPM_Ajax {
     }
 
     function all_search() {
+		
+		// PATCHED: Выключаем relevanssi
+		remove_filter('posts_request', 'relevanssi_prevent_default_request'); 
+		remove_filter('the_posts', 'relevanssi_query', 99);
+		
+		
         $project_id = isset( $_POST['project_id'] ) ? sanitize_text_field( $_POST['project_id'] ) : false;
         $item       = trim( $_POST['item'] );
 
