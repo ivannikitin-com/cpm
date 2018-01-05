@@ -468,29 +468,40 @@ class CPM_Notification {
         $bcc_status   = cpm_get_option( 'email_bcc_enable', 'cpm_mails' );
         $blogname     = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
         $reply        = 'no-reply@' . preg_replace( '#^www\.#', '', strtolower( $_SERVER['SERVER_NAME'] ) );
+        $no_reply     = 'no-reply@' . preg_replace( '#^www\.#', '', strtolower( $_SERVER['SERVER_NAME'] ) );
         $content_type = 'Content-Type: text/html';
         $charset      = 'Charset: UTF-8';
         $from_email   = cpm_get_option( 'email_from', 'cpm_mails' );
+		
+		// PATCHED: Формируем заголовок Reply-To
+		$current_user = wp_get_current_user();
+		if ( $current_user instanceof WP_User )
+		{
+			$reply = $current_user->user_email;			
+		}
+		
 		// PATCHED: Add filter
         $from         = apply_filters( 'cpm_from_email', "From: $blogname <$from_email>") ;
-        $reply        = apply_filters( 'cpm_reply_to', $to, $comment_post_id );
         $reply_to     = "Reply-To: $reply";
+        $return_path     = "Return-Path: $reply";
 
         if ( $bcc_status == 'on' ) {
             $bcc     = 'Bcc: ' . $to;
             $headers = array(
                 $bcc,
                 $reply_to,
+                $return_path,
                 $content_type,
                 $charset,
-                $from
+                $from,
             );
 
-            wp_mail( $reply, $subject, $message, $headers );
+            wp_mail( $no_reply, $subject, $message, $headers );
         } else {
 
             $headers = array(
                 $reply_to,
+				$return_path,
                 $content_type,
                 $charset,
                 $from,
