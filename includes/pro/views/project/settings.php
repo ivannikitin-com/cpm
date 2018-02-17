@@ -1,4 +1,8 @@
 <?php
+
+if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
+	do_action('cpm_project_settings_update');
+
 $updated = false;
 if ( isset( $_POST['sub_seettings'] ) ) {
     unset( $_POST['sub_seettings'] );

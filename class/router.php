@@ -53,6 +53,15 @@ class CPM_Router {
         include_once CPM_PATH . '/includes/shortcodes.php';
         include_once CPM_PATH . '/includes/lib/class-wedevs-insights.php';
         include_once CPM_PATH . '/includes/integrations/erp/cpm-erp.php';
+        
+        // Отчеты Data Studio
+        include_once CPM_PATH . '/includes/reports/datastudio.php';
+        
+        // REST
+        foreach( glob( CPM_PATH . '/includes/rest-api/*.php' ) as $file ) 
+        {
+          include_once $file;
+        }        
     }
 
     /**

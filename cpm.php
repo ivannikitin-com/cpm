@@ -88,6 +88,18 @@ class WeDevs_CPM {
      * @var CPM_Notification $notification
      */
     public $notification;
+    
+    /**
+     * @var CPM_DataStudio $dataStudio
+     */
+    public $dataStudio;
+    
+    /**
+     * @var CPM_REST_Settings $restSettings
+     */
+    public $restSettings;
+    
+    
 
     /**
      * @var CPM_Api $api
@@ -241,6 +253,11 @@ class WeDevs_CPM {
         $this->ajax            = CPM_Ajax::getInstance();
         $this->notification    = CPM_Notification::getInstance();
         $this->managetransient = CPM_Managetransient::getInstance();
+        
+        // Отчеты Google Data Studio
+        $this->dataStudio = CPM_DataStudio::getInstance();
+        
+        
 
         if ( function_exists( 'json_api_init' ) ) {
             $this->api = CPM_API::instance();
@@ -252,9 +269,15 @@ class WeDevs_CPM {
             $this->upgrade = new CPM_Upgrade();
         }
 
-        new CPM_Tracker();
+        new CPM_Tracker();        
 
         do_action( 'cpm_instantiate', $this );
+        
+        
+        // REST API
+        $this->restSettings   = CPM_REST_Settings::getInstance();
+        
+        
     }
 
     /**
