@@ -94,10 +94,7 @@ class WeDevs_CPM {
      */
     public $dataStudio;
     
-    /**
-     * @var CPM_REST_Settings $restSettings
-     */
-    public $restSettings;
+
     
     
 
@@ -117,6 +114,9 @@ class WeDevs_CPM {
         add_action( 'wp_enqueue_scripts', array( $this, 'admin_scripts' ) );
         add_filter( 'plugin_action_links', array( $this, 'plugin_action_links' ), 10, 2 );
         register_activation_hook( __FILE__, array( $this, 'install' ) );
+        
+        // REST API
+        add_action( 'rest_api_init', array( $this, 'init_rest' ) );
     }
 
     /**
@@ -191,6 +191,23 @@ class WeDevs_CPM {
         $this->includes();
         $this->instantiate();
     }
+    
+    
+    public $rest_task_controller;
+    
+    
+    
+    /**
+     * Init REST API
+     */
+    public function init_rest() 
+    {
+        $this->rest_task_controller = new CPM_Task_REST_Controller( 'cpm_task' );
+        $this->rest_task_controller->register_routes();
+    }   
+    
+    
+    
 
     /**
      * Autoload class files on demand
@@ -272,12 +289,6 @@ class WeDevs_CPM {
         new CPM_Tracker();        
 
         do_action( 'cpm_instantiate', $this );
-        
-        
-        // REST API
-        $this->restSettings   = CPM_REST_Settings::getInstance();
-        
-        
     }
 
     /**

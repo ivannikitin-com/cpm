@@ -592,7 +592,6 @@ class CPM_Task {
     function get_task( $task_id ) {
         $task = get_post( $task_id );
         $this->set_task_meta( $task );
-
         return $task;
     }
 
