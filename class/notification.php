@@ -208,8 +208,12 @@ class CPM_Notification {
         }
     }
 
-    function complete_task( $list_id, $task_id, $data, $project_id ) {
-        $project_users = CPM_Project::getInstance()->get_users( $project_id );
+    function complete_task( $list_id, $task_id, $data, $project_id ) 
+	{
+        // Ничего не делаем! В будущем отправлять только тем, кто был в задаче
+		return;
+		
+		$project_users = CPM_Project::getInstance()->get_users( $project_id );
         $users         = array();
 
         if ( is_array( $project_users ) && count( $project_users ) ) {
@@ -234,7 +238,7 @@ class CPM_Notification {
         // cutoff at 78th character
         if ( cpm_strlen( $subject ) > 78 ) {
 			// PATCH: Using mb_substr to safety cutting UTF...			
-            $subject = substr( $subject, 0, 78 ) . '...';
+            $subject = mb_substr( $subject, 0, 78 ) . '...';
         }
 		
 			// PATCH: Call filter to customising subject
@@ -432,7 +436,9 @@ class CPM_Notification {
 		//		$subject 	- The subject text
 		//		$project 	- The project title
 		//		$list 		- The list title
-		$subject = apply_filters('cpm_email_new_task_subject', $subject, get_post_field( 'post_title', $project_id ), get_post_field( 'post_title', $list_id ) );
+		$subject = apply_filters('cpm_email_new_task_subject', $subject, 
+								 get_post_field( 'post_title', $project_id ), 
+								 get_post_field( 'post_title', $list_id ) . ': ' .  get_post_field( 'post_title', $task_id )  );
 		
 		
 		
