@@ -57,6 +57,11 @@ class CPM_Router {
         // Отчеты Data Studio
         include_once CPM_PATH . '/includes/reports/datastudio.php';
         
+        // дополнительные свойства проектов CPM
+        include_once CPM_PATH . '/includes/project-properties/projectproperties.php';
+        
+        
+        
         // REST
         foreach( glob( CPM_PATH . '/includes/rest-api/*.php' ) as $file ) 
         {

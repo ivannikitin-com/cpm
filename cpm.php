@@ -94,7 +94,10 @@ class WeDevs_CPM {
      */
     public $dataStudio;
     
-
+    /**
+     * @var ProjectProperties $projectProperties
+     */
+    public $projectProperties;
     
     
 
@@ -273,6 +276,9 @@ class WeDevs_CPM {
         
         // Отчеты Google Data Studio
         $this->dataStudio = CPM_DataStudio::getInstance();
+        
+        // Дополнительные данные проектов
+        $this->projectProperties = CPM_ProjectProperties::getInstance();
         
         
 

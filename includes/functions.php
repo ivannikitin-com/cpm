@@ -608,6 +608,7 @@ function cpm_serve_file() {
 
     //get file path
     $file_path = get_attached_file( $file_id );
+	
     if ( ! file_exists( $file_path ) ) {
         header( "Status: 404 Not Found" );
         die( __( 'file not found', 'cpm' ) );
@@ -647,8 +648,11 @@ function cpm_serve_file() {
         default:
             $mime = 'application/force-download';
     }
+	
 
-    // serve the file with right header
+	
+	
+	// serve the file with right header
     if ( is_readable( $file_path ) ) {
         header( 'Content-Type: ' . $mime );
         header( 'Content-Transfer-Encoding: binary' );

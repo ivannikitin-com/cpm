@@ -422,7 +422,10 @@ class CPM_Notification {
             $project_id = intval( $_POST['project_id'] );
         }
 
-        $subject = sprintf( __( '[%s][%s] New Task Assigned: %s', 'cpm' ), $this->get_site_name(), get_post_field( 'post_title', $project_id ), get_post_field( 'post_title', $list_id ) );
+        $subject = sprintf( __( '[%s][%s] New Task Assigned: %s', 'cpm' ),  // Текст
+                           $this->get_site_name(),                          // Название сайта
+                           get_post_field( 'post_title', $project_id ),     // Проект
+                           get_post_field( 'post_title', $list_id ) );      // Лист
 
         // cutoff at 78th character
         if ( cpm_strlen( $subject ) > 78 ) {
@@ -436,9 +439,9 @@ class CPM_Notification {
 		//		$subject 	- The subject text
 		//		$project 	- The project title
 		//		$list 		- The list title
-		$subject = apply_filters('cpm_email_new_task_subject', $subject, 
-								 get_post_field( 'post_title', $project_id ), 
-								 get_post_field( 'post_title', $list_id ) . ': ' .  get_post_field( 'post_title', $task_id )  );
+		$subject = apply_filters('cpm_email_new_task_subject', $subject,                                                  // Тема
+								 get_post_field( 'post_title', $project_id ),                                                         // Проект
+								 get_post_field( 'post_title', $list_id ) . ': ' .  get_post_field( 'post_title', $task_id )  );      // Список  задача
 		
 		
 		
