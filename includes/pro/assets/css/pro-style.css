@@ -931,6 +931,11 @@
 .cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .editor trix-editor {
   padding-top: 12px;
 }
+trix-editor
+{
+	min-height: 15em !important;
+}
+
 .cpm-pro-file-container .cpm-doc-modal .cpm-doc-edit-mod .bottom-part {
   padding: 25px;
 }

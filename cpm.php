@@ -353,8 +353,14 @@ class WeDevs_CPM {
         wp_enqueue_script( 'jquery-prettyPhoto', plugins_url( 'assets/js/jquery.prettyPhoto.js', __FILE__ ), array( 'jquery' ), false, true );
         wp_enqueue_script( 'jquery-chosen', plugins_url( 'assets/js/chosen.jquery.min.js', __FILE__ ), array( 'jquery' ), false, true );
         wp_enqueue_script( 'cpm_chart', plugins_url( 'assets/js/chart.js', __FILE__ ), array( 'jquery' ), false, true );
-        wp_enqueue_script( 'trix_editor', plugins_url( 'assets/js/trix.js', __FILE__ ), array( 'jquery' ), false, true );
-        wp_enqueue_script( 'validate', plugins_url( 'assets/js/jquery.validate.min.js', __FILE__ ), array( 'jquery' ), false, true );
+		
+		
+		// PATCHED: Обновлен TRIX
+        //wp_enqueue_script( 'trix_editor', plugins_url( 'assets/js/trix.js', __FILE__ ), array( 'jquery' ), false, true );
+        wp_enqueue_script( 'trix_editor', plugins_url( 'assets/trix/dist/trix.js', __FILE__ ), array( 'jquery' ), '0.11.3', true );
+        
+		
+		wp_enqueue_script( 'validate', plugins_url( 'assets/js/jquery.validate.min.js', __FILE__ ), array( 'jquery' ), false, true );
         wp_enqueue_script( 'plupload-handlers' );
 
         wp_enqueue_script( 'cpm_admin', plugins_url( 'assets/js/admin.js', __FILE__ ), array( 'jquery', 'jquery-prettyPhoto', 'cpm_uploader' ), false, true );
@@ -385,8 +391,12 @@ class WeDevs_CPM {
         wp_enqueue_style( 'cpm_prettyPhoto', plugins_url( 'assets/css/prettyPhoto.css', __FILE__ ) );
         wp_enqueue_style( 'jquery-ui', plugins_url( 'assets/css/jquery-ui-1.9.1.custom.css', __FILE__ ) );
         wp_enqueue_style( 'jquery-chosen', plugins_url( 'assets/css/chosen.css', __FILE__ ) );
-        wp_enqueue_style( 'trix_editor_style', plugins_url( 'assets/css/trix.css', __FILE__ ) );
-        wp_enqueue_style( 'cpm_admin', plugins_url( 'assets/css/admin.css', __FILE__ ) );
+		
+		// PATCHED: Обновлен TRIX
+        //wp_enqueue_style( 'trix_editor_style', plugins_url( 'assets/css/trix.css', __FILE__ ) );
+        wp_enqueue_style( 'trix_editor_style', plugins_url( 'assets/trix/dist/trix.css', __FILE__ ) );
+        
+		wp_enqueue_style( 'cpm_admin', plugins_url( 'assets/css/admin.css', __FILE__ ) );
         wp_enqueue_style( 'dashicons' );
         do_action( 'cpm_admin_scripts' );
     }

@@ -1,0 +1,3 @@
+[submodule "assets/trix"]
+	path = assets/trix
+	url = https://github.com/basecamp/trix.git
