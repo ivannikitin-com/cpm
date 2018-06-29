@@ -96,8 +96,12 @@ class CPM_ProjectProperties
 
 	
 	/* -------------------------- Координатор -------------------------- */
-	const META_COORDINATOR = '_cpm_coordinator';		// Мета-свойство сохранения координатора 
+	const META_COORDINATOR = '_cpm_coordinator';		// Мета-свойство сохранения координатора
 	
+    /**
+     * @var mixed Массив кэша координаторов
+     */
+    private static $coordinatorsCache;
 	
 	/**
 	 * Возвращает координатора проекта
@@ -109,11 +113,32 @@ class CPM_ProjectProperties
 		if ( ! $project )
 			return null;
 		
-		// Читаем свойство проекта
+		// Читаем кэш
+		if ( empty( $this->coordinatorsCache ) )
+		{
+			$this->coordinatorsCache = get_transient( self::META_COORDINATOR );
+			if ( $this->coordinatorsCache === false )
+				$this->coordinatorsCache = array();
+		}
+			 
+		// Проверяем наличие проекта в кеше
+		if ( array_key_exists( $project->ID, $this->coordinatorsCache ) )
+		{
+			// Проект есть в кэше, Возвращаем пользователя по ID из кэша
+			return new WP_User( $this->coordinatorsCache[$project->ID] );
+		}
+			
+		
+		// Пользователя в кэше нет, Читаем свойство проекта и сохраняем в кэш
 		$userId = (int) get_post_meta( $project->ID, self::META_COORDINATOR, true );
-		if ( empty ( $userId ) )	// Координатор не назначен
+		$this->coordinatorsCache[$project->ID] = $userId;
+		set_transient( self::META_COORDINATOR, $this->coordinatorsCache );
+			
+		// Координатор не назначен
+		if ( empty ( $userId ) )	
 			return null;
 		
+		// Возвращаем координатора
 		return new WP_User( $userId );
 	}
 	
@@ -127,12 +152,19 @@ class CPM_ProjectProperties
 	{	
 		if ( ! $project )
 			return false;
+
+		// Читаем кэш
+		if ( empty( $this->coordinatorsCache ) )
+		{
+			$this->coordinatorsCache = get_transient( self::META_COORDINATOR );
+			if ( $this->coordinatorsCache === false )
+				$this->coordinatorsCache = array();
+		}		
+		// Сохраняем в кэш
+		$this->coordinatorsCache[$project->ID] = $userId;
+		set_transient( self::META_COORDINATOR, $this->coordinatorsCache );
 		
 		return update_post_meta( $project->ID, self::META_COORDINATOR, $userId );
 	}	
-	
-	
-	
-	
 	
 }
