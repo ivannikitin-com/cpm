@@ -63,6 +63,14 @@ if ( $attachments ) {
             $thumb_url = sprintf( '%s&file_id=%d&project_id=%d&type=thumb', $base_image_url, $file['id'], $project_id );
             $class     = 'cpm-colorbox-img';
         } else {
+			// Формируем иконки для файлов
+			if ( false !== strpos( $file['mime'], 'sheet' ) )
+				$file['thumb'] = str_replace( 'default.png', 'spreadsheet.png', $file['thumb'] );
+			elseif ( false !== strpos( $file['mime'], 'document' ) )
+				$file['thumb'] = str_replace( 'default.png', 'document.png', $file['thumb'] );
+			elseif ( false !== strpos( $file['mime'], 'pdf' ) )
+				$file['thumb'] = str_replace( 'default.png', 'pdf.png', $file['thumb'] );	
+			
             $thumb_url = $file['thumb'];
             $class     = '';
         }

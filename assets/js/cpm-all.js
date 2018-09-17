@@ -842,7 +842,7 @@
         weDevs_CPM.init();
         showderror();
 
-        $( '.cpm-colorbox-img' ).prettyPhoto();
+        //$( '.cpm-colorbox-img' ;
         $( ".chosen-select" ).chosen( {
             width: '300px'
         } );

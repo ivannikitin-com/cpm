@@ -91,9 +91,10 @@ class CPM_Pro_Task {
             $query1 = "AND n.meta_key = '_completed' AND n.meta_value = '1'";
             $query2 = '';
 
-        } else {
+        } else { // PATCHED: Выводятся все задачи и просроченные и текущие на вкладке Текущие задачи
             $query1 = "AND n.meta_key = '_completed' AND n.meta_value = '0'";
-            $query2 = "AND ( due.meta_value = '' OR STR_TO_DATE( due.meta_value, '%Y-%m-%d') >= STR_TO_DATE( NOW(), '%Y-%m-%d') ) ";
+            //$query2 = "AND ( due.meta_value = '' OR STR_TO_DATE( due.meta_value, '%Y-%m-%d') >= STR_TO_DATE( NOW(), '%Y-%m-%d') ) ";
+            $query2 = "AND ( due.meta_value = '' OR TRUE ) ";
         }
         $que     = "SELECT t.post_title as task, t.comment_count as comment_count, t.ID as task_id, t.post_type as post_type ,
                     tl.post_title as list, tl.ID as task_list_id,

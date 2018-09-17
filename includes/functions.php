@@ -602,6 +602,7 @@ function cpm_serve_file() {
     //check permission
     $pro_obj = CPM_Project::getInstance();
     $project = $pro_obj->get( $project_id );
+
     if ( ! $pro_obj->has_permission( $project ) ) {
         die( __( 'file access denied', 'cpm' ) );
     }
@@ -674,7 +675,7 @@ function cpm_serve_file_denied() {
     die( 'file access denied' );
 }
 
-add_action( 'wp_ajax_nopriv_cpm_file_get', 'cpm_serve_file_denied' );
+add_action( 'wp_ajax_nopriv_cpm_file_get', 'cpm_serve_file' );
 
 /**
  * Remove comments from listing publicly

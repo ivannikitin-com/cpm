@@ -577,20 +577,75 @@ function cpm_show_attachments( $object, $project_id ) {
         <ul class="cpm-attachments">
             <?php
             foreach ( $object->files as $file ) {
+                /** var_dump($file);
+				 * array(6) { 
+				 	["id"]=> string(5) "11945" 
+					["name"]=> string(30) "по трафику_ЦОРПУ" 
+					["url"]=> string(80) "https://ivannikitin.com/wp-content/uploads/2017/04/Otchet-po-trafiku_TSORPU.xlsx" 
+					["thumb"]=> string(110) "https://ivannikitin.com/wp-content/plugins/wedevs-project-manager-pro/class/../assets/images/icons/default.png" 
+					["type"]=> string(4) "file" 
+					["mime"]=> string(65) "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }
+					
+				array(6) { 
+					["id"]=> string(5) "23530" 
+					["name"]=> string(30) "шкафы в прихожую" 
+					["url"]=> string(87) "https://ivannikitin.com/wp-content/uploads/2018/02/kosmosmebel-shkafy-v-prihozhuyu.docx" 
+					["thumb"]=> string(110) "https://ivannikitin.com/wp-content/plugins/wedevs-project-manager-pro/class/../assets/images/icons/default.png" 
+					["type"]=> string(4) "file" 
+					["mime"]=> string(71) "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }
+					
+					
+				array(6) { 
+					["id"]=> string(5) "29493" 
+					["name"]=> string(29) "ivannikitin.com_ Задачи" 
+					["url"]=> string(86) "https://ivannikitin.com/wp-content/uploads/2018/08/Proekt-ivannikitin.com_-Zadachi.pdf" 
+					["thumb"]=> string(110) "https://ivannikitin.com/wp-content/plugins/wedevs-project-manager-pro/class/../assets/images/icons/default.png" 
+					["type"]=> string(4) "file" 
+					["mime"]=> string(15) "application/pdf" }	
+				 */
+				// var_dump($file);
                 if ( $file['type'] == 'image' ) {
                     $thumb_url = sprintf( '%s&file_id=%d&project_id=%d&type=thumb', $base_url, $file['id'], $project_id );
                     $class     = 'cpm-colorbox-img';
                 } else {
+					// Используем Google Doc Viewer
+					$use_google_viwer = false;
+					
+					// Формируем иконки для файлов
+					if ( false !== strpos( $file['mime'], 'sheet' ) ) {
+						$file['thumb'] = str_replace( 'default.png', 'spreadsheet.png', $file['thumb'] );
+						$use_google_viwer = true;
+					}	
+					elseif ( false !== strpos( $file['mime'], 'document' ) ) {
+						$file['thumb'] = str_replace( 'default.png', 'document.png', $file['thumb'] );
+						$use_google_viwer = true;
+					}
+					elseif ( false !== strpos( $file['mime'], 'pdf' ) ) {
+						$file['thumb'] = str_replace( 'default.png', 'pdf.png', $file['thumb'] );
+						$use_google_viwer = true;
+					}
+					
                     $thumb_url = $file['thumb'];
-                    $class     = '';
+                    $class     = '';					
                 }
 
                 $file_url  = sprintf( '%s&file_id=%d&project_id=%d', $base_url, $file['id'], $project_id );
-                $thumb_url = apply_filters( 'cpm_attachment_url_thum', $thumb_url, $project_id, $file['id'] );
+				$thumb_url = apply_filters( 'cpm_attachment_url_thum', $thumb_url, $project_id, $file['id'] );
                 $file_url  = apply_filters( 'cpm_attachment_url', $file_url, $project_id, $file['id'] );
-
                 $class = apply_filters( 'cpm_attachment_popup_class', $class );
-                printf( '<li><a class="%s" href="%s" title="%s" target="_blank"><img src="%s" /></a></li>', $class, $file_url, $file['name'], $thumb_url );
+				
+                if ( $use_google_viwer ) {
+					$nonce = wp_create_nonce(  'google_viewer');
+					$viewer_file_url = $file_url . '&' . 'viewer=' . $nonce;
+					
+					
+					printf( '<li><a class="%s" href="%s" title="%s" target="_blank"><img src="%s" /></a></li>', 
+						   $class, $viewer_file_url, $file['name'], $thumb_url );						
+				} else {
+					printf( '<li><a class="%s" href="%s" title="%s" target="_blank"><img src="%s" /></a></li>', 
+						   $class, $file_url, $file['name'], $thumb_url );				
+				}
+					
             }
             ?>
         </ul>
