@@ -32,7 +32,14 @@ class CPM_Comment {
      * @return int
      */
     function create( $commentdata, $files = array() ) {
+		// DEBUG
+		$debugMode = false; // WP_DEBUG;
+		$time = (float) microtime( true );
+		$debugMode && error_log( 'CPM_Comment->CPM_Comment start at '. date('d.m.Y H:i:s') );
+		
+		
         $user = apply_filters( 'cpm_comment_user', wp_get_current_user() );
+		$debugMode && error_log( 'apply_filters( cpm_comment_user ) '. ( (float) microtime( true ) - $time ) . ' sec.' );
 
         $commentdata['comment_author_IP']    = preg_replace( '/[^0-9a-fA-F:., ]/', '', $_SERVER['REMOTE_ADDR'] );
         $commentdata['comment_agent']        = substr( $_SERVER['HTTP_USER_AGENT'], 0, 254 );
@@ -40,6 +47,7 @@ class CPM_Comment {
         $commentdata['comment_author_email'] = $user->user_email;
 
         $comment_id = wp_insert_comment( $commentdata );
+		$debugMode && error_log( 'wp_insert_comment '. ( (float) microtime( true ) - $time ) . ' sec.' );
 
         if ( $comment_id ) {
             add_comment_meta( $comment_id, '_files', $files );
@@ -47,6 +55,14 @@ class CPM_Comment {
         }
 
         do_action( 'cpm_comment_new', $comment_id, $_POST['project_id'], $commentdata );
+		$debugMode && error_log( 'do_action( cpm_comment_new ) '. ( (float) microtime( true ) - $time ) . ' sec.' );
+		
+		/**
+[05-Oct-2018 16:48:59 UTC] CPM_Comment->CPM_Comment start at 05.10.2018 16:48:59
+[05-Oct-2018 16:48:59 UTC] apply_filters( cpm_comment_user ) 0.00029087066650391 sec.
+[05-Oct-2018 16:48:59 UTC] wp_insert_comment 0.060632944107056 sec.
+[05-Oct-2018 16:48:59 UTC] do_action( cpm_comment_new ) 0.69281983375549 sec.
+	*/	
 
         return $comment_id;
     }
