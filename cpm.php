@@ -93,6 +93,11 @@ class WeDevs_CPM {
      * @var CPM_DataStudio $dataStudio
      */
     public $dataStudio;
+	
+    /**
+     * @var CPM\Extensions\Manager
+     */
+    public $extensionManager;	
     
     /**
      * @var ProjectProperties $projectProperties
@@ -120,6 +125,12 @@ class WeDevs_CPM {
         
         // REST API
         add_action( 'rest_api_init', array( $this, 'init_rest' ) );
+		
+		// Extension API
+		require_once( dirname( __FILE__ ) . '/extensions/api/Manager.php' );
+		$extensionManager = new \CPM\Extensions\Manager();
+		
+		
     }
 
     /**
