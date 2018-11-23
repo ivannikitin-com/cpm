@@ -471,7 +471,9 @@ class CPM_Project {
     function get_info( $project_id ) {
         global $wpdb;
 
-        $ret = wp_cache_get( 'cpm_project_info_' . $project_id );
+		
+		// PATCHED v2.0.2 Заменим wp_cache_get на Transients API
+        $ret = get_transient( 'cpm_project_info_' . $project_id );
 
         if ( false === $ret ) {
             //get discussions
@@ -514,7 +516,8 @@ class CPM_Project {
             $ret->total_attach_doc     = $ret->files;
             $ret->files                = apply_filters( 'cpm_project_total_files', $ret->files, $project_id );
 
-            wp_cache_set( 'cpm_project_info_' . $project_id, $ret );
+			// PATCHED v2.0.2 Заменим wp_cache_set на Transients API	
+            set_transient( 'cpm_project_info_' . $project_id, $ret, 12 * HOUR_IN_SECONDS );
         }
 
         return $ret;
@@ -530,7 +533,8 @@ class CPM_Project {
      * @param int $project_id
      */
     function flush_cache( $project_id ) {
-        wp_cache_delete( 'cpm_project_info_' . $project_id );
+		// PATCHED v2.0.2 Заменим wp_cache_delete на Transients API
+        delete_transient( 'cpm_project_info_' . $project_id );
     }
 
     /**

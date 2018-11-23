@@ -101,7 +101,7 @@ class CPM_ProjectProperties
     /**
      * @var mixed Массив кэша координаторов
      */
-    private static $coordinatorsCache;
+    private $coordinatorsCache;
 	
 	/**
 	 * Возвращает координатора проекта
