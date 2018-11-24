@@ -57,12 +57,28 @@ class CPM_Comment {
         do_action( 'cpm_comment_new', $comment_id, $_POST['project_id'], $commentdata );
 		$debugMode && error_log( 'do_action( cpm_comment_new ) '. ( (float) microtime( true ) - $time ) . ' sec.' );
 		
-		/**
-[05-Oct-2018 16:48:59 UTC] CPM_Comment->CPM_Comment start at 05.10.2018 16:48:59
-[05-Oct-2018 16:48:59 UTC] apply_filters( cpm_comment_user ) 0.00029087066650391 sec.
-[05-Oct-2018 16:48:59 UTC] wp_insert_comment 0.060632944107056 sec.
-[05-Oct-2018 16:48:59 UTC] do_action( cpm_comment_new ) 0.69281983375549 sec.
-	*/	
+/** DEBUG DATA:
+
+[24-Nov-2018 08:01:19 UTC] CPM_Ajax->new_comment start at 24.11.2018 08:01:19
+[24-Nov-2018 08:01:19 UTC] prepare AJAX data 0.00030207633972168 sec.
+[24-Nov-2018 08:01:19 UTC] CPM_Comment->CPM_Comment start at 24.11.2018 08:01:19
+[24-Nov-2018 08:01:19 UTC] apply_filters( cpm_comment_user ) 8.8214874267578E-5 sec.
+[24-Nov-2018 08:01:19 UTC] wp_insert_comment 0.059675216674805 sec.
+[24-Nov-2018 08:01:19 UTC] do_action( cpm_comment_new ) 0.646409034729 sec.
+[24-Nov-2018 08:01:19 UTC] Added comment by CPM_Comment 0.64751005172729 sec.
+[24-Nov-2018 08:01:19 UTC] All finished 0.65156388282776 sec.
+
+
+Без do_action( 'cpm_comment_new'
+
+[24-Nov-2018 08:03:22 UTC] CPM_Comment->CPM_Comment start at 24.11.2018 08:03:22
+[24-Nov-2018 08:03:22 UTC] apply_filters( cpm_comment_user ) 0.00025320053100586 sec.
+[24-Nov-2018 08:03:22 UTC] wp_insert_comment 0.034982204437256 sec.
+[24-Nov-2018 08:03:22 UTC] do_action( cpm_comment_new ) 0.036588191986084 sec.
+
+При этом ожидание первого байта ajax около 4 - 5 секунд
+
+*/	
 
         return $comment_id;
     }

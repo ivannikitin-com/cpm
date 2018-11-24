@@ -146,6 +146,10 @@ class CPM_Project {
     function insert_project_user_role( $posted, $project_id ) {
 
         global $wpdb;
+		
+		// PATCHED v2.0.2 Сбрасываем кэш пользователей
+		delete_transient( 'cpm_project_users_' . $project_id );
+		
         $table          = $wpdb->prefix . 'cpm_user_role';
         $wpdb->delete( $table, array( 'project_id' => $project_id ), array( '%d' ) );
         $project_author = get_post_field( 'post_author', $project_id );
@@ -164,6 +168,10 @@ class CPM_Project {
 
     function update_user_role( $project_id, $user_id, $role ) {
         global $wpdb;
+		
+		// PATCHED v2.0.2 Сбрасываем кэш пользователей
+		delete_transient( 'cpm_project_users_' . $project_id );		
+		
         $table = $wpdb->prefix . 'cpm_user_role';
         $data  = array( 'role' => $role );
         $where = array( 'project_id' => $project_id, 'user_id' => $user_id );
@@ -173,6 +181,10 @@ class CPM_Project {
 
     function insert_user( $project_id, $user_id, $role ) {
         global $wpdb;
+		
+		// PATCHED v2.0.2 Сбрасываем кэш пользователей
+		delete_transient( 'cpm_project_users_' . $project_id );		
+		
         $table  = $wpdb->prefix . 'cpm_user_role';
         $data   = array(
             'project_id' => $project_id,
@@ -552,7 +564,14 @@ class CPM_Project {
         } else {
             $project_id = $project;
         }
-
+		
+		/**
+		 * PATCHED: v2.0.2 Оптимизация производительности за счет кешей
+		 */
+		$user_list = get_transient( 'cpm_project_users_' . $project_id );
+		if ( $user_list !== false )
+			return $user_list;
+		
         $user_list = array();
         $table     = $wpdb->prefix . 'cpm_user_role';
         $query     = "SELECT user_id, role FROM {$table} WHERE project_id = %d AND component = ''";
@@ -578,8 +597,14 @@ class CPM_Project {
             }
         }
 
+		// Кэшируем ответ
+		set_transient( 'cpm_project_users_' . $project_id, $user_list, 12 * HOUR_IN_SECONDS );
+		
         return $user_list;
     }
+	
+	
+	
 
     /**
      * Generates navigational menu for a project

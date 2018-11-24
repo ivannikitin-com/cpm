@@ -20,8 +20,14 @@ class CPM_Ajax {
     }
 
     public function __construct() {
+		// DEBUG
+		$debugMode = false; // WP_DEBUG;
+		$time = (float) microtime( true );
+		$debugMode && error_log( 'CPM_Ajax->__construct start at '. date('d.m.Y H:i:s') );		
+		
         $this->_task_obj      = CPM_Task::getInstance();
         $this->_milestone_obj = CPM_Milestone::getInstance();
+		$debugMode && error_log( 'Create CPM_Task, CPM_Milestone '. ( (float) microtime( true ) - $time ) . ' sec.' );
 
         add_action( 'wp_ajax_cpm_user_create', array( $this, 'create_user' ) );
 
@@ -85,6 +91,28 @@ class CPM_Ajax {
 
         // Set Project View
         add_action( 'wp_ajax_cpm_project_view', array( $this, 'set_project_view' ) );
+		
+		$debugMode && error_log( 'All hooks added '. ( (float) microtime( true ) - $time ) . ' sec.' );
+		
+/**
+ * DEBUG DATA
+ 
+ [24-Nov-2018 08:13:11 UTC] CPM_Ajax->__construct start at 24.11.2018 08:13:11
+[24-Nov-2018 08:13:11 UTC] Create CPM_Task, CPM_Milestone 0.00028896331787109 sec.
+[24-Nov-2018 08:13:11 UTC] All hooks added 0.00045108795166016 sec.
+[24-Nov-2018 08:13:14 UTC] CPM_Ajax->__construct start at 24.11.2018 08:13:14
+[24-Nov-2018 08:13:14 UTC] Create CPM_Task, CPM_Milestone 0.00027704238891602 sec.
+[24-Nov-2018 08:13:14 UTC] All hooks added 0.00043296813964844 sec.
+[24-Nov-2018 08:13:15 UTC] CPM_Comment->CPM_Comment start at 24.11.2018 08:13:15
+[24-Nov-2018 08:13:15 UTC] apply_filters( cpm_comment_user ) 0.00025582313537598 sec.
+[24-Nov-2018 08:13:15 UTC] wp_insert_comment 0.04289984703064 sec.
+[24-Nov-2018 08:13:15 UTC] do_action( cpm_comment_new ) 0.83455801010132 sec.
+[24-Nov-2018 08:13:24 UTC] CPM_Ajax->__construct start at 24.11.2018 08:13:24
+[24-Nov-2018 08:13:24 UTC] Create CPM_Task, CPM_Milestone 0.00026392936706543 sec.
+[24-Nov-2018 08:13:24 UTC] All hooks added 0.00044798851013184 sec.
+
+*/
+
     }
 
     /**
@@ -1000,6 +1028,21 @@ class CPM_Ajax {
     }
 
     function new_comment() {
+	/**
+	 Такой ответ 2 секунды!
+            echo json_encode( array(
+                'success'     => true,
+                'placeholder' => __( 'Add a comment...', 'cpm' ),
+                'content'     => 'TEST'
+            ) );		
+		exit;
+	*/
+	
+		// DEBUG
+		$debugMode = false; // WP_DEBUG;
+		$time = (float) microtime( true );
+		$debugMode && error_log( 'CPM_Ajax->new_comment start at '. date('d.m.Y H:i:s') );		
+		
         check_ajax_referer( 'cpm_new_message' );
 
         $posted = $_POST;
@@ -1018,9 +1061,14 @@ class CPM_Ajax {
             'comment_content' => $text,
             'user_id'         => get_current_user_id()
         );
-
+		$debugMode && error_log( 'prepare AJAX data '. ( (float) microtime( true ) - $time ) . ' sec.' );
+		
+		
+		
         $comment_obj = CPM_Comment::getInstance();
         $comment_id  = $comment_obj->create( $data, $files );
+		$debugMode && error_log( 'Added comment by CPM_Comment '. ( (float) microtime( true ) - $time ) . ' sec.' );
+		
 
         if ( $comment_id ) {
 
@@ -1032,7 +1080,17 @@ class CPM_Ajax {
                 'content'     => cpm_show_comment( $comment, $project_id )
             ) );
         }
-
+		$debugMode && error_log( 'All finished '. ( (float) microtime( true ) - $time ) . ' sec.' );
+		
+/**
+ * DEBUG DATA: 
+ 
+[24-Nov-2018 07:59:22 UTC] CPM_Ajax->new_comment start at 24.11.2018 07:59:22
+[24-Nov-2018 07:59:22 UTC] prepare AJAX data 0.0003359317779541 sec.
+[24-Nov-2018 07:59:22 UTC] Added comment by CPM_Comment 0.85220694541931 sec.
+[24-Nov-2018 07:59:22 UTC] All finished 0.85631704330444 sec.
+ 
+ */
         exit;
     }
 
