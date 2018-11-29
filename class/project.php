@@ -485,7 +485,7 @@ class CPM_Project {
 
 		
 		// PATCHED v2.0.3 Будем онко использовать wp_cache_get
-        $ret = wp_cache_get( 'cpm_project_info_' . $project_id, __CLASS__ );
+        $ret = wp_cache_get( 'cpm_project_info_' . $project_id, 'CPM' );
 
         if ( false === $ret ) {
             //get discussions
@@ -529,7 +529,7 @@ class CPM_Project {
             $ret->files                = apply_filters( 'cpm_project_total_files', $ret->files, $project_id );
 
 			// PATCHED v2.0.3 Будем тонко использовать wp_cache_set	
-            wp_cache_set( 'cpm_project_info_' . $project_id, $ret, __CLASS__, 12 * HOUR_IN_SECONDS );
+            wp_cache_set( 'cpm_project_info_' . $project_id, $ret, 'CPM' );
         }
 
         return $ret;
@@ -546,7 +546,7 @@ class CPM_Project {
      */
     function flush_cache( $project_id ) {
 		// PATCHED v2.0.3 Используем wp_cache_delete
-        wp_cache_delete( 'cpm_project_info_' . $project_id, __CLASS__ );
+        wp_cache_delete( 'cpm_project_info_' . $project_id, 'CPM' );
     }
 
     /**
@@ -568,7 +568,7 @@ class CPM_Project {
 		/**
 		 * PATCHED: v2.0.3 Оптимизация производительности за счет кешей
 		 */
-		$user_list = wp_cache_get( 'cpm_project_users_' . $project_id, __CLASS__ );
+		$user_list = wp_cache_get( 'cpm_project_users_' . $project_id, 'CPM' );
 		if ( $user_list !== false )
 			return $user_list;
 		
@@ -598,7 +598,7 @@ class CPM_Project {
         }
 
 		// Кэшируем ответ
-		wp_cache_set( 'cpm_project_users_' . $project_id, $user_list, __CLASS__, 12 * HOUR_IN_SECONDS );
+		wp_cache_set( 'cpm_project_users_' . $project_id, $user_list, 'CPM' );
 		
         return $user_list;
     }
@@ -607,7 +607,7 @@ class CPM_Project {
      * Сбрасываем кэш cpm_project_users_
      */
     function get_users_flush_cache( $project_id ) {
-		wp_cache_delete( 'cpm_project_users_' . $project_id, __CLASS__);
+		wp_cache_delete( 'cpm_project_users_' . $project_id, 'CPM');
 	}
 	
 
@@ -918,7 +918,7 @@ class CPM_Project {
         global $wpdb;
 
 		// PATCH: v2.0.3 Ускоряем кэшем
-        $chart_date      = wp_cache_get( 'cpm_chart_data_' . $project_id, __CLASS__ );
+        $chart_date      = wp_cache_get( 'cpm_chart_data_' . $project_id, 'CPM' );
 
         if ( false === $chart_date ) {
             $where          = $wpdb->prepare( "WHERE comment_post_ID = '%d' AND DATE(comment_date) >= '%s' AND DATE(comment_date) <= '%s'", $project_id, $start_date, $end_date );
@@ -953,9 +953,7 @@ class CPM_Project {
                     $response['todos'][$tdate] += 1;
                 }
             }
-
-            $data_transient = $response;
-            wp_cache_set( 'cpm_chart_data_' . $project_id, $data_transient, __CLASS__, DAY_IN_SECONDS );
+            wp_cache_set( 'cpm_chart_data_' . $project_id, $response, 'CPM', DAY_IN_SECONDS );
         } else {
             $response = $chart_date;
         }
@@ -968,7 +966,7 @@ class CPM_Project {
      */
     function get_chart_data_flush_cache( $project_id)
 	{
-		wp_cache_delete( 'cpm_chart_data_' . $project_id, __CLASS__ );
+		wp_cache_delete( 'cpm_chart_data_' . $project_id, 'CPM' );
 	}
 
 }
