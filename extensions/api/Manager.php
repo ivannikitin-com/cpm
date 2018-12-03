@@ -23,6 +23,8 @@ class Manager
 		
 		// Инициализация расширений
 		add_action( 'plugins_loaded', array( $this, 'init' ) );
+		// Загрузим статусную страницу
+		add_action( 'admin_menu', array( $this, 'addStatusPage' ) );		
 	}
 	
 	// ------------------------------- Загрузчик расширений -------------------------------
@@ -102,6 +104,30 @@ class Manager
 				$extension->init();
 			}
 		}
+	}
+	
+	// ------------------------------- Статус расширений -------------------------------		
+	/**
+	 * Добавляет статусную страницу
+	 */
+	public function addStatusPage()
+	{
+		add_submenu_page(
+			'cpm_projects',						// parent_slug
+			__( 'Статус CPM', 'cpm' ),			// page_title
+			__( 'Статус CPM', 'cpm' ),			// menu_title
+			'manage_options',					// capability
+			'cpm-status',						// menu_slug
+			array( $this, 'showStatusPage' )	// function
+		);		
+	}
+	
+	/**
+	 * Выводит статусную страницу
+	 */
+	public function showStatusPage()
+	{
+		include( dirname( __FILE__ ) . '/view/manager-status-page.php' );
 	}
 }
 
