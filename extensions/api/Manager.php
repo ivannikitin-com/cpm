@@ -45,11 +45,19 @@ class Manager
 		$extensionList = $this->getExtensionList();		
 		foreach ( $extensionList as $extension )
 		{
+			// Имя файла без расширения
+			$fileName = basename( $extension, '.php' );
+			
+			// Если имя файла начинается на "-" ничего не делаем
+			if ( '-' == substr( $fileName, 0, 1 ) )
+				continue;
+			
+			// Подключаем этот файл и проверяем класс
 			try
 			{
 				require_once( $extension );
 				// Имя класса и реализуемые им интерфейсы
-				$class = __NAMESPACE__ . '\\' .  basename( $extension, '.php' );
+				$class = __NAMESPACE__ . '\\' . $fileName;
 				$interfaces = class_implements( $class );
 				
 				// Если реализуется интерфейс IExtension -- это наше расширение!
