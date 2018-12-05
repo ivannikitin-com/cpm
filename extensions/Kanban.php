@@ -10,6 +10,16 @@ namespace CPM\Extensions;
 class Kanban extends ExtensionBase implements IExtension  
 {
 	/**
+	 * Custom Post Type
+	 */
+	const CPT = 'kbc_canboard';
+	
+	/**
+	 * Название группы кэшей
+	 */
+	const CACHE_GROUP = 'cpm_kanban';
+	
+	/**
 	 * Объект меток задач
 	 */
 	private $taskLabel;

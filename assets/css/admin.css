@@ -1582,6 +1582,21 @@ ul.cpm-todolists .cpm-new-task-spinner {
 .cpm-list-edit-form .submit {
   padding: 3px 0 10px 0;
 }
+
+
+/* Метки задач из Канбан */
+.cpm-kanban-task-label {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+	border: 1px solid #ccc;
+	background: #ffe;
+    margin-right: 5px;
+	padding: 3px;
+}
+
+
+
 /*--------------------------------------------------
 :: Milestone
 -------------------------------------------------- */
