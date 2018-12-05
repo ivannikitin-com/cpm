@@ -21,7 +21,7 @@ class Kanban extends ExtensionBase implements IExtension
 	{
 		// Создаем экземпляр меток задач
 		require_once( dirname( __FILE__ ) . '/kanban/TaskLabel.php' );
-		$this->taskLabel = new Kanban\TaskLabel();
+		$this->taskLabel = new Kanban\TaskLabel( $this );
 	}	
 	
 	

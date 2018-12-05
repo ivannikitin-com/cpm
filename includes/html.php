@@ -46,6 +46,7 @@ function cpm_task_html( $task, $project_id, $list_id, $single = false ) {
         <div class="cpm-todo-content" >
             <div>
                 <div class="cpm-col-7">
+					<?php do_action( 'cpm_todo_content_before', $project_id, $list_id, $task->ID, $single ) ?>
                     <span class="cpm-spinner"></span>
                     <input class="<?php echo $status_class; ?>" type="checkbox" <?php cpm_data_attr( array( 'single' => $single, 'list' => $list_id, 'project' => $project_id, 'is_admin' => $is_admin ) ); ?> value="<?php echo $task->ID; ?>" name="" <?php checked( $task->completed, '1' ); ?> <?php echo $disabled; ?>>
 
@@ -109,6 +110,7 @@ function cpm_task_html( $task, $project_id, $list_id, $single = false ) {
                         }
                     }
                     ?>
+					<?php do_action( 'cpm_todo_content_after', $project_id, $list_id, $task->ID, $single ) ?>
                 </div>
 
                 <div class="cpm-col-4">

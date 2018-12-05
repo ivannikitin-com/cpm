@@ -9,12 +9,19 @@ namespace CPM\Extensions\Kanban;
 
 class TaskLabel 
 {
+	/**
+	 * \CPM\Extensions\Kanban $kanban	Ссылка на родительский объект, например, для доступа к настройкам
+	 */
+	private $kanban;
+	
     /**
 	 * Конструктор класса
+	 * 
+	 * @param Kanban $kanbanExtension	Ссылка на родительский объект, например, для доступа к настройкам
 	 */
-	public function __construct()
+	public function __construct( \CPM\Extensions\Kanban $kanbanExtension )
 	{
-
+		$this->kanban = $kanbanExtension;
 	}	
 	
     /**
@@ -22,6 +29,12 @@ class TaskLabel
 	 */
 	public function init()
 	{
-
+		add_action( 'cpm_todo_content_after', array( $this, 'test' ), 10, 4 );
+	}
+	
+	public function test()
+	{
+		echo 'TEST';
+		
 	}
 }
