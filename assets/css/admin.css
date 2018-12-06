@@ -1595,7 +1595,20 @@ ul.cpm-todolists .cpm-new-task-spinner {
 	padding: 3px;
 }
 
+.cpm-bg-green
+{
+	background: #efe;
+}
 
+.cpm-bg-red
+{
+	background: #fee;
+}
+
+.cpm-bg-blue
+{
+	background: #eef;
+}
 
 /*--------------------------------------------------
 :: Milestone
