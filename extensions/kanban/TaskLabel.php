@@ -35,7 +35,8 @@ class TaskLabel
 		add_action( 'cpm_todo_content_after', array( $this, 'showLabel' ), 10, 4 );
 		// Хуки для сброса кэшей
         add_action( 'wp_ajax_update_section_item', array( $this, 'update_section_item' ) );
-        add_action( 'wp_ajax_delete_section', array( $this, 'update_section_item' ) );		
+        add_action( 'wp_ajax_delete_section', array( $this, 'update_section_item' ) );
+		add_action( 'save_post', array( $this, 'save_post' ), 10, 3 );
 	}
 	
     /**
@@ -55,6 +56,10 @@ class TaskLabel
 		// Находим азвание секции
 		$sectionName = apply_filters( 'cpm_kanban_tasklabel_section_name', $this->getSectionName( $project_id, $sectionId ), 
 									$project_id, $list_id, $task_id, $single, $sectionId );
+		
+		// Если имя пустое, ничего не выводим
+		if ( empty( $sectionName) )
+			return;
 		
 		// Формируем HTML
 		$sectionLabel = apply_filters( 'cpm_kanban_tasklabel_label', 
@@ -120,10 +125,10 @@ class TaskLabel
 		
 		// ID в кэше нет, построим массив всех ID секций проекта
 		$query = new WP_Query( array(
-			'post_type'		=> array( 'kbc_canboard' ),
+			'post_type'		=> array( Kanban::CPT ),
 			'post_status'	=> array( 'publish' ),
 			'fields'		=> 'ids',
-			'post_parent'	=> 25
+			'post_parent'	=> $project_id
 		));
 		$sections = $query->posts;
 		
@@ -156,9 +161,8 @@ class TaskLabel
 		wp_cache_delete( self::CACHE_SECTION_IDS . $project_id, Kanban::CACHE_GROUP );
 	}
 	
-	// 
     /**
-	 * Хуки для сброса кэшей
+	 * Хуки для сброса кэшей при AJAX запросах плагина Канбан
 	 * Читает номер секции и сбрасывает кэши проекта
 	 */
 	public function update_section_item()
@@ -167,10 +171,40 @@ class TaskLabel
 		if ( empty( $section_id ) )
 			return;
 		
+		// Проект, в котором эта Канбан секция
 		$project_id = wp_get_post_parent_id( $section_id );
+		
+		// Если удалось определить проект
 		if ( $project_id )
+		{
+			// Сбрасываем кэш
 			$this->flushCaches( $project_id );
-	}	
+		}
+			
+	}
 	
-	
+    /**
+	 * Хук при обновлении любого поста
+	 * https://codex.wordpress.org/Plugin_API/Action_Reference/save_post
+	 * 
+	 * @param int	$post_id 	The post ID.
+	 * @param post	$post 		The post object.
+	 * @param bool	$update 	Whether this is an existing post being updated or not.	 
+	 */
+	public function save_post( $post_id, $post, $update )
+	{
+		// Если это Канбан секции, находим проект и сбрасываем кэш
+		if ( get_post_type( $post_id ) == Kanban::CPT )
+		{
+			// Проект, в котором эта Канбан секция
+			$project_id = wp_get_post_parent_id( $post_id );
+
+			// Если удалось определить проект
+			if ( $project_id )
+			{
+				// Сбрасываем кэш
+				$this->flushCaches( $project_id );
+			}		
+		}
+	}
 }
