@@ -116,6 +116,7 @@ class TaskLabel
 	{
 		// Массив ID задачи => ID секции
 		$sectionIds = wp_cache_get( self::CACHE_SECTION_IDS . $project_id, Kanban::CACHE_GROUP );
+							  
 		if ( empty( $sectionIds ) )
 			$sectionIds = array();
 		
@@ -136,7 +137,8 @@ class TaskLabel
 		foreach ( $sections as $sectionId )
 		{
 			$tasks = get_post_meta( $sectionId, '_tasks_id', true );
-			
+			if ( empty( $tasks ) )
+				continue;
 			// Заполним массив ID задач и секций
 			foreach ( $tasks as $taskId )
 			{
