@@ -88,9 +88,13 @@ class CPM_ProjectProperties
 			return;
 		
 		$coordinator = $this->getCoordinator($project);		
-		echo '<div class="cpm_projectproperties cpm_coordinator">Координатор: ',
-			$coordinator->display_name,
-			'</div>';
+		if ( $coordinator )
+		{
+			echo '<div class="cpm_projectproperties cpm_coordinator">Координатор: ',
+				$coordinator->display_name,
+				'</div>';			
+		}
+
 
 	}	
 

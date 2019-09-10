@@ -439,9 +439,10 @@ class CPM_Notification {
 		//		$subject 	- The subject text
 		//		$project 	- The project title
 		//		$list 		- The list title
-		$subject = apply_filters('cpm_email_new_task_subject', $subject,                                                  // Тема
-								 get_post_field( 'post_title', $project_id ),                                                         // Проект
-								 get_post_field( 'post_title', $list_id ) . ': ' .  get_post_field( 'post_title', $task_id )  );      // Список  задача
+		$subject = apply_filters('cpm_email_new_task_subject', $subject,         // Тема
+								 get_post_field( 'post_title', $project_id ),    // Проект
+								 get_post_field( 'post_title', $task_id ),       // Задача
+								 get_post_field( 'post_title', $list_id ) );    // Список
 		
 		
 		
