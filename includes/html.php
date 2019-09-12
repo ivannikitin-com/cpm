@@ -605,7 +605,10 @@ function cpm_show_attachments( $object, $project_id ) {
 					["type"]=> string(4) "file" 
 					["mime"]=> string(15) "application/pdf" }	
 				 */
-				// var_dump($file);
+                // var_dump($file);
+                
+                $use_google_viwer = false;
+                
                 if ( $file['type'] == 'image' ) {
                     $thumb_url = sprintf( '%s&file_id=%d&project_id=%d&type=thumb', $base_url, $file['id'], $project_id );
                     $class     = 'cpm-colorbox-img';
