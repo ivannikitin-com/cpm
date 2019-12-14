@@ -208,9 +208,11 @@ class CPM_Ajax {
 
         if ( ! $project_id ) {
             $args  = array(
-                'post_type'      => array( 'cpm_project', 'cpm_task_list', 'cpm_task', 'cpm_message', 'cpm_milestone' ),
+                'post_type'      => array( 'cpm_project', 'cpm_message', 'cpm_milestone', 'cpm_task_list', 'cpm_task' ),
                 'post_status'    => 'publish',
                 'posts_per_page' => '-1',
+                'orderby'        => 'type',
+                'order'          => 'asc',
                 's'              => $item,
             );
             $args  = apply_filters( 'cpm_all_project_search_query_arg', $args, $item );
@@ -220,14 +222,16 @@ class CPM_Ajax {
 
         if ( $project_id ) {
             $args  = array(
-                'post_type'      => array( 'cpm_task_list', 'cpm_message', 'cpm_milestone' ),
+                'post_type'      => array('cpm_message', 'cpm_milestone', 'cpm_task_list' ),
                 'post_status'    => 'publish',
                 'post_parent'    => $project_id,
                 'posts_per_page' => '-1',
+                'orderby'        => 'type',
+                'order'          => 'asc',                
                 's'              => $item,
             );
             $query = new WP_Query( $args );
-
+            
             global $wpdb;
             $sql = "SELECT * FROM $wpdb->posts AS p
                 LEFT JOIN $wpdb->posts AS tl ON p.ID=tl.post_parent
