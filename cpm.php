@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Plugin Name: WP Project Manager PRO
- * Plugin URI: https://wedevs.com/products/plugins/wp-project-manager-pro/
- * Description: WordPress Project Management plugin. Manage your projects and tasks, get things done.
- * Author: Tareq Hasan
- * Author URI: https://tareq.co
- * Version: 1.5.1
+ * Plugin Name: CPM
+ * Plugin URI: https://github.com/ivannikitin-com/wedevs-project-manager-pro
+ * Description: Управление задачами и проектами
+ * Author: Ivan Nikitin & Co
+ * Author URI: https://ivannikitin.com
+ * Version: 2.0
  * License: GPL2
  */
 /**
@@ -146,8 +146,6 @@ class WeDevs_CPM {
 
         if ( $file == plugin_basename( __FILE__ ) ) {
             $new_links = array(
-                sprintf( '<a href="%s">%s</a>', 'http://wedevs.com/plugin/wp-project-manager/', __( 'Pro Version', 'cpm' ) ),
-                sprintf( '<a href="%s">%s</a>', 'http://wedevs.com/wp-project-manager-add-ons/', __( 'Add-ons', 'cpm' ) ),
                 sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=cpm_settings' ), __( 'Settings', 'cpm' ) )
             );
 
@@ -303,7 +301,7 @@ class WeDevs_CPM {
             $this->upgrade = new CPM_Upgrade();
         }
 
-        new CPM_Tracker();        
+        // new CPM_Tracker();        
 
         do_action( 'cpm_instantiate', $this );
     }
