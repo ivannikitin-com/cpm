@@ -35,7 +35,6 @@ function cpm_tasks_filter( $tasks ) {
 
 function cpm_project_filters() {
     ?>
-    <input type="text" id="cpm-search-client" name="searchitem" placeholder="<?php _e( 'Search by Client...', 'cpm' ); ?>" value="" />
     <input type="text" id="cpm-all-search" name="searchitem" placeholder="<?php _e( 'Search All...', 'cpm' ); ?>" value="" />
     <?php
 }
