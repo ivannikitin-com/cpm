@@ -96,6 +96,7 @@ class CPM_Pro_Task {
             //$query2 = "AND ( due.meta_value = '' OR STR_TO_DATE( due.meta_value, '%Y-%m-%d') >= STR_TO_DATE( NOW(), '%Y-%m-%d') ) ";
             $query2 = "AND ( due.meta_value = '' OR TRUE ) ";
         }
+        // TODO: Проверить, почему выводятся задачи из архивных проектов! 
         $que     = "SELECT t.post_title as task, t.comment_count as comment_count, t.ID as task_id, t.post_type as post_type ,
                     tl.post_title as list, tl.ID as task_list_id,
                     p.post_title as project_title, p.ID as project_id,
