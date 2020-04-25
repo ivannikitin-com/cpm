@@ -302,7 +302,6 @@ class WeDevs_CPM {
         }
 
         // new CPM_Tracker();        
-
         do_action( 'cpm_instantiate', $this );
     }
 
