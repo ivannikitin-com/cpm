@@ -532,7 +532,12 @@ function cpm_show_comment( $comment, $project_id, $class = '' ) {
                 <span class="cpm-date"><?php echo cpm_get_date( $comment->comment_date, true ); ?></span>
 
                 <?php
-                if ( $comment->user_id == get_current_user_id() && $comment->comment_type == '' ) {
+                /** FIX
+                 * не показываются кнопки редактирования комментария. 
+                 * Не понятно, зачем авторая проверка ( $comment->user_id == get_current_user_id() && $comment->comment_type == '' )
+                 * удаляем ее
+                 */
+                if ( $comment->user_id == get_current_user_id() ) {
                     ?>
                     <div class="cpm-comment-action">
                         <span class="cpm-edit-link">
