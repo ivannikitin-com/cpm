@@ -73,10 +73,17 @@
   margin: 0 0 10px;
 }
 .cpm ul,
-.cpm li {
+.cpm li,
+.cpm-comment-form .cpm-user-list li {
   margin-left: 0;
   list-style: none;
 }
+/** FIX 
+ * Списки в комментариях
+ */
+.cpm-comment-container ul>li, .cpm-comment-form ul>li { list-style: disc outside; }
+.cpm-comment-container ol>li, .cpm-comment-form ol>li { list-style: decimal outside; }
+
 .cpm .cpm-activity {
   margin-top: 15px;
 }
