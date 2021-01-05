@@ -1,5 +1,7 @@
-# Customer Project Manager CPM
-## Версия 2.0 / 11-2018
+Customer Project Manager CPM
+============================
+
+## Версия 2020-1 / 2021-01-05
 C этой версии начинаются кардинальные изменения в коде WeDevs.
 Изменения записываются в файла [changelog.md](changelog.md).
 
