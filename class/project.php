@@ -654,11 +654,11 @@ class CPM_Project {
             )
         );
 
+        $links = apply_filters( 'cpm_project_nav_links', $links, $project_id );
+
         if ( cpm_user_can_access( $project_id ) ) {
             $links[__( 'Settings', 'cpm' )] = array( 'url' => cpm_url_settings_index( $project_id ), 'count' => '', 'class' => 'settings cpm-sm-col-12' );
         }
-
-        $links = apply_filters( 'cpm_project_nav_links', $links, $project_id );
 
         return $links;
     }

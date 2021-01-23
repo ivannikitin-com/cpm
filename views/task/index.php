@@ -28,10 +28,8 @@ cpm_get_header( __( 'To-do Lists', 'cpm' ), $project_id );
 cpm_blank_template('todolist', $project_id) ;
 
 echo "<div class='cpm-todo-formcontent'>";
-if ( cpm_user_can_access( $project_id, 'create_todolist' ) ) {
-    ?>
-    <a id="cpm-add-tasklist" href="#" class="cpm-btn cpm-btn-blue cpm-plus-white cpm-margin-bottom add-tasklist"><?php _e( 'Add New To-do List', 'cpm' ) ?></a>
-<?php } ?>
+?>
+
 
 
 <div class="cpm-new-todolist-form">
@@ -85,3 +83,9 @@ if ( cpm_user_can_access( $project_id, 'create_todolist' ) ) {
             cpm_pagination( $project_details->todolist_without_pin, cpm_get_option( 'show_todo', 'cpm_general' ), $pagenum );
         }
      ?>
+
+
+<?php if ( cpm_user_can_access( $project_id, 'create_todolist' ) ) {
+    ?>
+    <a id="cpm-add-tasklist" href="#" class="cpm-btn cpm-btn-blue cpm-plus-white cpm-margin-bottom add-tasklist"><?php _e( 'Add New To-do List', 'cpm' ) ?></a>
+<?php } ?>
