@@ -931,8 +931,8 @@ class CPM_Project {
                     AND post_parent IN (SELECT ID FROM {$wpdb->posts} WHERE post_parent = '{$project_id}' ) ";
             $todos = $wpdb->get_results( $csql );
 
-            $response['date_list'] = '';
-            $response['todos']     = '';
+            $response['date_list'] = array();
+            $response['todos']     = array();
             foreach ( $total_activity as $activity ) {
                 $date = date( 'M d', strtotime( $activity->comment_date ) );
 
