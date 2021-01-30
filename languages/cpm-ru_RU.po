@@ -83,11 +83,11 @@ msgstr "Задача \"%s\" удалена из списка %s пользова
 
 #: class/activity.php:277
 msgid "%s commented on a %s"
-msgstr "%s оставил(а) комментарий в теме %s"
+msgstr "%s оставил(а) комментарий в %s"
 
 #: class/activity.php:283
 msgid "%s updated comment on a %s"
-msgstr "%s обновил(а) комментарий в теме %s"
+msgstr "%s обновил(а) комментарий в %s"
 
 #: class/activity.php:291
 msgid "%s deleted a comment"
