@@ -369,8 +369,8 @@ function cpm_task_list_html( $list, $project_id, $singlePage = false ) {
             <?php
             if ( cpm_user_can_access( $project_id, 'create_todo' ) ) {
                 ?>
-                <li class="cpm-new-btn" >
-                    <a href="#" class="cpm-btn add-task"><?php _e( 'Add a task', 'cpm' ); ?></a>
+                <li class="fix-cpm-new-btn" >
+                    <a href="#" class="fix-add-task"><?php _e( 'Add a task', 'cpm' ); ?></a>
                 </li>
                 <li class="cpm-todo-form cpm-hide">
                     <?php cpm_task_new_form( $list->ID, $project_id ); ?>
