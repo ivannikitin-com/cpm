@@ -42,6 +42,14 @@ class CPM_Activity {
         add_action( 'cpm_milestone_delete', array( $this, 'milestone_delete' ) );
         add_action( 'cpm_milestone_complete', array( $this, 'milestone_done' ) );
         add_action( 'cpm_milestone_open', array( $this, 'milestone_open' ) );
+
+        // Вспомогательные фильтры, для отображения списка задач (названия и ссылки) в Activities (Действии)
+        add_filter( 'cpm_task_comment_to_list_id', array( $this, 'task_comment_to_list_id' ), 10, 1 );
+        add_filter( 'cpm_task_list_title', array( $this, 'task_list_title' ), 10, 1 );
+        add_filter( 'cpm_task_get_task_id', array( $this, 'task_get_task_id' ), 10, 1 );
+        add_filter( 'cpm_task_get_task_title', array( $this, 'task_get_task_title' ), 10, 1 );
+        add_filter( 'cpm_task_check_id', array( $this, 'task_check_list_or_task' ), 10, 1 );    
+
     }
 
     public static function getInstance() {
@@ -274,7 +282,18 @@ class CPM_Activity {
     }
 
     function comment_new( $comment_id, $project_id ) {
-        $message = sprintf( __( '%s commented on a %s', 'cpm' ), $this->user_url(), "[cpm_comment_url id='$comment_id' project='$project_id']" );
+        
+        $list_id = apply_filters('cpm_task_comment_to_list_id', $comment_id );
+        $list_title = apply_filters('cpm_task_list_title', $list_id );
+        $name_list = $this->list_url( $list_id , $project_id, $list_title); 
+        
+        $check = apply_filters('cpm_task_check_id', $list_id );
+       
+        if ($check) {
+            $message = sprintf( __('%s commented on a %s : %s', 'cpm' ), $this->user_url(), $name_list, "[cpm_comment_url id='$comment_id' project='$project_id']" );
+        } else {
+            $message = sprintf( __( '%s commented on a %s', 'cpm' ), $this->user_url(), $name_list, "[cpm_comment_url id='$comment_id' project='$project_id']" ); 
+        }       
 
         $this->log( $project_id, $message );
     }
@@ -396,5 +415,124 @@ class CPM_Activity {
         }
         return $comment_count;
     }
+
+    /**
+     * Функция получения id списка задач 
+     *
+     * @param int $comment_id
+     * @return void
+     */
+    public function task_comment_to_list_id($comment_id){
+     
+        $args = array(            
+            'comment__in'         => $comment_id,           
+            'no_found_rows'       => true,            
+            'order'               => 'DESC',           
+            'post_id'             => 0,          
+            'status'              => 'all',           
+            'count'               => false,            
+            'date_query'          => null, 
+            'hierarchical'        => false,
+            'update_comment_meta_cache'  => true,
+            'update_comment_post_cache'  => false,
+        );           
+    
+        if( $comments = get_comments( $args ) ){                           
+            $list_id =  $comments[0]->comment_post_ID;                                     
+        }       
+        return $list_id;
+    }
+
+    /**
+     * Функция получения загловка списка задач по id
+     *
+     * @param int $list_id
+     * @return string $list_title
+     */
+    public function task_list_title( $list_id ) {
+        global $wpdb;
+        $table_name = 'wp_cpm_project_items';
+			$item_type = $wpdb->get_results( "SELECT * FROM {$table_name} WHERE object_id = {$list_id}", ARRAY_A );
+            
+			if ( $item_type != null ) {
+				foreach ( $item_type as $value ) {
+					$check_str = $value['item_type'];
+                    $parent = $value['parent'];
+                }					
+			} 
+            if ('cpm_task_list'==$check_str) {
+                $post_id = get_post( $list_id );
+                $list_title = $post_id->post_title;
+            };
+            
+            if ('cpm_task'==$check_str){
+                $post_id = get_post( $parent );
+                $list_title = $post_id->post_title;
+            };
+		return $list_title;
+    } 
+
+    /**
+     * Функция получения id задачи по id комментария
+     *
+     * @param int $id
+     * @return int $task_id
+     */
+    public function task_get_task_id($id_comment){
+        $args = array(            
+            'comment__in'         => $id_comment,           
+            'no_found_rows'       => true,            
+            'order'               => 'DESC',           
+            'post_id'             => 0,          
+            'status'              => 'all',           
+            'count'               => false,            
+            'date_query'          => null, 
+            'hierarchical'        => false,
+            'update_comment_meta_cache'  => true,
+            'update_comment_post_cache'  => false,
+        );           
+    
+        if( $comments = get_comments( $args ) ){                           
+            $task_id =  $comments[0]->comment_post_ID;                                     
+        }              
+        return $task_id;
+    }
+
+    /**
+     * Функция получения загловка задачи по id задачи
+     *
+     * @param int $task_id
+     * @return string $task_title
+     */
+    public function task_get_task_title( $task_id ) {
+        $post_id = get_post( $task_id );
+        $task_title = $post_id->post_title;
+        return $task_title;
+    }
+
+    /**
+     * Функция определения (список задач или задача)
+     *
+     * @param int $list_id or $task_id
+     * @return bool $check
+     */
+    public function task_check_list_or_task ($list_id /* or $task_id*/ ){
+        global $wpdb;
+        $table_name = 'wp_cpm_project_items';
+			$item_type = $wpdb->get_results( "SELECT * FROM {$table_name} WHERE object_id = {$list_id}", ARRAY_A );
+            if ( $item_type != null ) {
+				foreach ( $item_type as $value ) {
+					$check_str = $value['item_type'];                  
+                }					
+			} 
+        if ('cpm_task_list'==$check_str) {
+           $check = false;
+        } elseif('cpm_task'==$check_str) {
+            $check = true;        
+        }    
+        return $check;
+    }
+
+
 
 }
