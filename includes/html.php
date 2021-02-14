@@ -1148,14 +1148,14 @@ function cpm_project_form( $project = null ) {
 
         <?php do_action( 'cpm_project_form', $project ); ?>
 
-        <div class="submit">
+        <div class="submit" id="fix_style_submit">
 
             <?php if ( $project ) { ?>
                 <input type="hidden" name="project_id" value="<?php echo $project->ID; ?>">
             <?php } ?>
 
             <input type="hidden" name="action" value="<?php echo $action; ?>">
-            <span class="cpm-pro-update-spinner"></span>
+            <span class="cpm-pro-update-spinner" id="fix-cpm-pro-update-spinner"></span>
             <input type="submit" name="add_project" id="add_project" class="button-primary" value="<?php echo esc_attr( $submit ) ?>">
             <a class="button project-cancel" href="#"><?php _e( 'Cancel', 'cpm' ); ?></a>
         </div>
