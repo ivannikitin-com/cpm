@@ -122,6 +122,7 @@ class CPM_Task {
         if ( $list_id ) {
             update_post_meta( $list_id, '_milestone', $postdata['tasklist_milestone'] );
 
+            update_post_meta( $list_id, '_tasklist_category', $postdata['tasklist_category_term_id'] );
             update_post_meta( $list_id, '_tasklist_privacy', $tasklist_privacy );
 
             if ( $is_update ) {

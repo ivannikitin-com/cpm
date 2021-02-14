@@ -269,7 +269,7 @@ function cpm_tasklist_form( $project_id, $list = null ) {
 
     ob_start();
     ?>
-    <form action="" method="post">
+    <form action="" method="post" id="form_task_list_add">
         <input type="hidden" name="project_id" value="<?php echo $project_id; ?>">
         <input type="hidden" name="action" value="<?php echo $action; ?>">
         <?php wp_nonce_field( $action ); ?>
@@ -285,7 +285,21 @@ function cpm_tasklist_form( $project_id, $list = null ) {
         <div class="item content">
             <textarea name="tasklist_detail" id="" cols="40" rows="2" placeholder="<?php esc_attr_e( 'To-do list detail', 'cpm' ); ?>"><?php echo esc_textarea( $list_detail ); ?></textarea>
         </div>
-
+        <?php 
+        $inner_str = 'cpm_project_category'; // 
+        $task_list_category = apply_filters('cpm_get_task_list_category',$inner_str);        
+        ?>
+        <div class="item milestone">
+            <select name="tasklist_category_term_id" id="tasklist_category_term_id">
+                <option selected="selected" value="-1"><?php _e( '-- tasklist-category --', 'cpm' ); ?></option>
+                <?php foreach($task_list_category as $term_id => $description):?>
+                    <option value="<?php echo $term_id;?>"><?php echo $description;?></option>
+                <?php endforeach;?>
+            </select>
+        </div>     
+        <!-- 
+        <div id="show_request"></div>   
+        -->
         <div class="item milestone">
             <select name="tasklist_milestone" id="tasklist_milestone">
                 <option selected="selected" value="-1"><?php _e( '-- milestone --', 'cpm' ); ?></option>

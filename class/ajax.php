@@ -91,6 +91,9 @@ class CPM_Ajax {
 
         // Set Project View
         add_action( 'wp_ajax_cpm_project_view', array( $this, 'set_project_view' ) );
+
+        // Получение выбранного пользователем категории для списка задач
+        add_action('wp_ajax_cpm_put_task_list_trem_id', 'put_task_list_trem_id');         
 		
 		$debugMode && error_log( 'All hooks added '. ( (float) microtime( true ) - $time ) . ' sec.' );
 		
@@ -782,6 +785,25 @@ class CPM_Ajax {
         echo json_encode( $response );
         exit;
     }
+
+    /**
+     * Функция проверки ID категории 
+     * в таблице wp_term_relationships
+     *   ==РАЗРАБОТКА==
+     * @return void
+     */
+    /*
+    public function put_task_list_trem_id(){
+        check_ajax_referer( 'cpm_add_list' );
+
+        if(isset($_POST['termid']) && $_POST['termid'] != ''){
+            $term_id = $_POST['termid'];		
+      } 
+    // РАЗРАБОТКА 
+     
+        die();
+    }
+    */
 
     function update_tasklist() {
         check_ajax_referer( 'cpm_update_list' );
