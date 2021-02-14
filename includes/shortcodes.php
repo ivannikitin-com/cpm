@@ -99,12 +99,15 @@ function cpm_sc_comment_url( $atts ) {
                     ), $atts ) );
 
     $url = cpm_url_comment( $id, $project );
+    $task_id = apply_filters('cpm_task_get_task_id', $id );
+    $task_title = apply_filters('cpm_task_get_task_title', $task_id );
+    
 
     if ( ! $url ) {
         return '<span class="cpm-strikethrough">' . __( 'thread', 'cpm' ) . '</span>';
     }
 
-    return sprintf( '<a href="%s">%s</a>', $url, __( 'thread', 'cpm' ) );
+    return sprintf( '<a href="%s">%s</a>', $url, $task_title );
 }
 
 add_shortcode( 'cpm_comment_url', 'cpm_sc_comment_url' );
