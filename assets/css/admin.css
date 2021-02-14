@@ -599,6 +599,12 @@ ul.cpm-nav li a {
   position: absolute;
   width: 16px;
 }
+
+#fix-cpm-pro-update-spinner {
+  left: 15px;
+  margin-top: 9px;
+}
+
 .cpm-project-head .detail {
   font-size: 13px;
   width: 80%;

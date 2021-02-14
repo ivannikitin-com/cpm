@@ -17,7 +17,7 @@
 }
 .cpm .nav-tab {
   padding: 4px 10px 6px;
-  border-color: #DFDFDF #DFDFDF #FFFFFF;
+  border-color: #dfdfdf #dfdfdf #ffffff;
   border-style: solid;
   border-width: 1px 1px 0;
   color: #aaa;
@@ -39,7 +39,7 @@
 }
 .cpm h2.nav-tab-wrapper,
 .cpm h3.nav-tab-wrapper {
-  border-bottom: 1px solid #DFDFDF;
+  border-bottom: 1px solid #dfdfdf;
   padding-bottom: 0;
   margin: 10px 0 0 0;
 }
@@ -81,8 +81,14 @@
 /** FIX 
  * Списки в комментариях
  */
-.cpm-comment-container ul>li, .cpm-comment-form ul>li { list-style: disc outside; }
-.cpm-comment-container ol>li, .cpm-comment-form ol>li { list-style: decimal outside; }
+.cpm-comment-container ul > li,
+.cpm-comment-form ul > li {
+  list-style: disc outside;
+}
+.cpm-comment-container ol > li,
+.cpm-comment-form ol > li {
+  list-style: decimal outside;
+}
 
 .cpm .cpm-activity {
   margin-top: 15px;
@@ -162,7 +168,11 @@
 .cpm .cpm-milestones .cpm-milestone h3 {
   line-height: 150%;
 }
-.cpm .cpm-milestones .cpm-milestone .cpm-milestone-edit-form .cpm-milestone-form-wrap {
+.cpm
+  .cpm-milestones
+  .cpm-milestone
+  .cpm-milestone-edit-form
+  .cpm-milestone-form-wrap {
   width: 95%;
   margin-bottom: 15px;
 }
@@ -180,4 +190,8 @@
 }
 .cpm .submit {
   padding: 10px 0;
+}
+
+#fix_style_submit {
+  padding-left: 30px;
 }
