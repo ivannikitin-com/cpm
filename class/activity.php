@@ -287,14 +287,10 @@ class CPM_Activity {
         $list_title = apply_filters('cpm_task_list_title', $list_id );
         $name_list = $this->list_url( $list_id , $project_id, $list_title); 
         
-        $check = apply_filters('cpm_task_check_id', $list_id );
-       
-        if ($check) {
-            $message = sprintf( __('%s commented on a %s : %s', 'cpm' ), $this->user_url(), $name_list, "[cpm_comment_url id='$comment_id' project='$project_id']" );
-        } else {
-            $message = sprintf( __( '%s commented on a %s', 'cpm' ), $this->user_url(), $name_list, "[cpm_comment_url id='$comment_id' project='$project_id']" ); 
-        }       
-
+        //$check = apply_filters('cpm_task_check_id', $list_id );
+           
+        $message = sprintf( __('%s commented on a %s : %s', 'cpm' ), $this->user_url(), $name_list, "[cpm_comment_url id='$comment_id' project='$project_id']" );
+    
         $this->log( $project_id, $message );
     }
 
@@ -512,6 +508,7 @@ class CPM_Activity {
 
     /**
      * Функция определения (список задач или задача)
+     * =отключено= РАЗРАБОТКА
      *
      * @param int $list_id or $task_id
      * @return bool $check
