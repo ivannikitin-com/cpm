@@ -2705,3 +2705,8 @@ msgstr "Категории проектов"
 msgctxt "taxonomy singular name"
 msgid "Location"
 msgstr "Расположение"
+
+#: include/function.php:67
+msgctxt "taxonomy singular todo list"
+msgid "Project Category"
+msgstr "Категории проектов"
