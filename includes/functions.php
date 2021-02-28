@@ -64,7 +64,7 @@ function cpm_dropdown_category( $current_category_id = -1, $show_count = false, 
         'selected'         => $current_category_id,
         'show_count'       => $show_count,
         'show_option_all'  => $show_all ? __( '- All Categories -', 'cpm' ) : '',
-        'show_option_none' => ! $show_all ? __( '- Project Category -', 'cpm' ) : '',
+        'show_option_none' => ! $show_all ? __( 'Project Category', 'cpm' ) : '',
         'tab_index'        => 0,
         'taxonomy'         => 'cpm_project_category',
     );
