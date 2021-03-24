@@ -13,6 +13,12 @@ if ( isset( $_POST['sub_seettings'] ) ) {
 }
 
 $settings = get_post_meta( $project_id, '_settings', true );
+
+/**
+ *  Отключение возможности создавать списки задач
+ */
+$settings['client']['create_todolist'] = 'no';
+
 $labels   = cpm_settings_label();
 cpm_get_header( __( 'Settings', 'cpm' ), $project_id );
 ?>
