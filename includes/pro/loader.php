@@ -533,7 +533,7 @@ class CPM_Pro_Loader {
      */
     public function get_task_list_category($cpm_task_list_category) {
         global $wpdb;
-        $table_name = 'wp_term_taxonomy';
+        $table_name = $wpdb->get_blog_prefix() .'term_taxonomy';
         $item = $wpdb->get_results( "SELECT * FROM {$table_name}", ARRAY_A );
         $task_list_category= array();
 			if ( $item != null ) {
