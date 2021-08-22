@@ -20,7 +20,7 @@ cpm_get_header( __( 'To-do Lists', 'cpm' ), $project_id );
     <?php } ?>
 </ul>
 
-<h3 class="cpm-comment-title"><?php _e( 'Discuss this to-do list', 'cpm' ); ?></h3>
+
 
 <ul class="cpm-comment-wrap">
     <?php
@@ -38,8 +38,6 @@ cpm_get_header( __( 'To-do Lists', 'cpm' ), $project_id );
     }
     ?>
 </ul>
-<div class="single-todo-comments">
-<?php echo cpm_comment_form( $project_id, $tasklist_id ); ?>
-</div>
+
 
  
