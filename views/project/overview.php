@@ -53,9 +53,17 @@ $str_todo     = implode( $str_todo, ',' );
 		<h3 class="cpm-border-bottom"> <?php _e('Users', 'cpm') ; ?> </h3>
 		<ul class="user_list">
 			<?php
+				// Роли пользователей проекта
+				$project_roles = array(
+					'manager'	=>	'Сотрудник',
+					'co_worker'	=>	'Исполнитель',
+					'client'	=>	'Заказчик',
+				);
+
 	         	if ( count( $project->users ) ) {
 	              	foreach ($project->users as $id => $user_meta) {
-	              		printf( '<li>%s %s<span>%s</span></li>', get_avatar( $id, 34, '', $user_meta['name'] ), cpm_url_user( $id ), ucfirst( str_replace( '_', '-', $user_meta['role'] ) ) );
+						$user_role = ( array_key_exists( $user_meta['role'], $project_roles ) )	? $project_roles[ $user_meta['role'] ] : '???';
+	              		printf( '<li>%s %s<span>%s</span></li>', get_avatar( $id, 34, '', $user_meta['name'] ), cpm_url_user( $id ), ucfirst( str_replace( '_', '-', $user_role ) ) );
 	           		}
 	           }
 	        ?>
