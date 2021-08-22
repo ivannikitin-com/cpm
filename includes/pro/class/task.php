@@ -355,7 +355,7 @@ class CPM_Pro_Task {
         }
 
         if ( empty( $str_date ) ) {
-            echo '<h2 class="cpm-error">' . __( 'No Data Found!', 'cpm' ) . '</h2>';
+            echo '<p class="cpm-error">' . __( 'No Data Found!', 'cpm' ) . '</p>';
         } else {
             $str_date     = implode( $str_date, ',' );
             $str_activity = implode( $str_activity, ',' );
@@ -369,7 +369,7 @@ class CPM_Pro_Task {
         global $current_user;
 
         if ( empty( $project ) ) {
-            printf( '<h2>%s</h2>', __( 'No Data Found!', 'cpm' ) );
+            printf( '<p>%s</p>', __( 'No Data Found!', 'cpm' ) );
         } else {
             include CPM_PATH . '/includes/pro/views/task/taskhtml.php';
         }
