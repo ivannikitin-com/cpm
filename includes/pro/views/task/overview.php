@@ -4,7 +4,7 @@ $color  = array( '#0090D9', '#F29B27', '#85BE33');
 
 <div class="cpm-mytask-overview-page">
     <div class="cpm-col-3 cpm-sm-col-12 cpm-mytask-chart-overview">
-        <h3 class="cpm-box-title"><?php _e( 'At a glance', 'CPM' )?></h3>
+        <h3 class="cpm-box-title"><?php _e( 'At a glance', 'cpm' )?></h3>
 
         <canvas id="cart-at-glance"></canvas>
 
@@ -62,15 +62,6 @@ $color  = array( '#0090D9', '#F29B27', '#85BE33');
 
     </div>
     <div class="clearfix"></div>
-</div>
-<div class="cpm-mycalender">
-    <div class="cpm-col-12 ">
-            <h3 class="cpm-box-title"><?php _e( 'My Calender', 'cpm' ); ?></h3>
-            <div class="cpm-calender-content">
-               <?php $task->mytask_calender($user_id) ; ?>
-            </div>
-    </div>
-
 </div>
 
 <script>

@@ -19,7 +19,7 @@ cpm_get_header( __( 'To-do List', 'cpm' ), $project_id );
     <?php echo cpm_task_html( $task, $project_id, $list->ID, true ); ?>
 </div>
 
-<h3 class="cpm-comment-title"><?php _e( 'Discuss this task', 'cpm' ); ?></h3>
+
 <ul class="cpm-comment-wrap">
     <?php
     $comments = $task_obj->get_task_comments( $task_id );
@@ -35,4 +35,3 @@ cpm_get_header( __( 'To-do List', 'cpm' ), $project_id );
     }
     ?>
 </ul>
-<?php echo cpm_comment_form( $project_id, $task_id ); ?>

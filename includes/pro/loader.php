@@ -60,6 +60,9 @@ class CPM_Pro_Loader {
         add_action( 'cpm_filter_project', array( $this, 'filter_project' ) );
         add_action( 'cpm_inside_project_filter', array( $this, 'inside_project_filter' ) );
 
+        // Получение списка категории для списка задач
+        add_filter( 'cpm_get_task_list_category', array( $this, 'get_task_list_category' ),10,1 );        
+
         register_activation_hook( CPM_PATH . '/cpm.php', array( $this, 'createpages' ) );
     }
 
@@ -522,7 +525,27 @@ class CPM_Pro_Loader {
 
         update_option( 'cpm_page', $cpm_pages );
     }
-
+    /**
+     * Функция получения списка категорий для списка задач
+     *
+     * @param string $cpm_task_list_category
+     * @return array $task_list_category
+     */
+    public function get_task_list_category($cpm_task_list_category) {
+        global $wpdb;
+        $table_name = 'wp_term_taxonomy';
+        $item = $wpdb->get_results( "SELECT * FROM {$table_name}", ARRAY_A );
+        $task_list_category= array();
+			if ( $item != null ) {
+				foreach ( $item as $value ) {
+                    if ('cpm_project_category'==$value['taxonomy']){
+                        $term_id = $value['term_id'];
+                        $task_list_category[$term_id] = $value['description'];
+                    }                    
+                }	
+            }    	      
+        return $task_list_category;
+    }
 }
 
 /**

@@ -46,7 +46,7 @@ class CPM_ProjectProperties
 ?>
 	<h3>Свойства проекта</h3>	
 	<div>
-		<label>Координатор</label>:
+		<label>Координатор</label>
 		 <?php wp_dropdown_users( array(
 									'name'				=> self::META_COORDINATOR,					
 									'selected' 			=> ( !empty( $coordinator ) ) ? $coordinator->ID : false,

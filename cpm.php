@@ -376,6 +376,9 @@ class WeDevs_CPM {
         wp_enqueue_script( 'cpm-vuejs', plugins_url( 'assets/js/vue.min.js', __FILE__ ), '', time(), FALSE );
         wp_enqueue_script( 'cpm_uploader', plugins_url( 'assets/js/upload.js', __FILE__ ), array( 'jquery', 'plupload-handlers' ), false, true );
 
+        // Обработка выбора категории при добавлении списка задач ==РАЗРАБОТКА==
+        // wp_enqueue_script( 'cpm_task_category', plugins_url( 'assets/js/category.js', __FILE__ ), array( 'jquery' ), false, true );
+
         wp_localize_script( 'cpm_admin', 'CPM_Vars', array(
             'ajaxurl'       => admin_url( 'admin-ajax.php' ),
             'nonce'         => wp_create_nonce( 'cpm_nonce' ),
