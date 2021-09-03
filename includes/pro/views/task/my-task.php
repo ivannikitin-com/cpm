@@ -62,7 +62,7 @@ $ctab  = apply_filters( 'cpm_my_task_tab', $ctab );
             <ul class="cpm-col-10 cpm-my-task-menu">
 
                 <li  class="<?php if ( $ctab == 'overview' ) echo 'active' ?>">
-                    <a href="<?php echo cpm_url_my_task() ?>" class="cpm-my-taskoverview" data-item="overview" data-user="<?php echo $user_id ?>">
+                    <a href="<?php echo cpm_url_user_overview() ?>" class="cpm-my-taskoverview" data-item="overview" data-user="<?php echo $user_id ?>">
                         <?php _e( 'Task Overview', 'cpm' ); ?><div></div>
                     </a>
                 </li>
