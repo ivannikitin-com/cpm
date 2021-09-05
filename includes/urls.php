@@ -27,6 +27,11 @@ function cpm_url_my_task() {
     return apply_filters( 'cpm_url_my_task', $url );
 }
 
+function cpm_url_user_overview() {
+    $url = add_query_arg( array( 'tab' => 'overview' ), cpm_url_my_task() );
+    return apply_filters( 'cpm_url_user_activity', $url );
+}
+
 function cpm_url_user_activity() {
     $url = add_query_arg( array( 'tab' => 'useractivity' ), cpm_url_my_task() );
     return apply_filters( 'cpm_url_user_activity', $url );
