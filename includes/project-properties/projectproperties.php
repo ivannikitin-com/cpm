@@ -109,7 +109,7 @@ class CPM_ProjectProperties
 	
 	/**
 	 * Возвращает координатора проекта
-	 * @param CPM_Project | null	$project	Объект проекта или NULL если новый проект
+	 * @param CPM_Project | int | null	$project	Объект проекта, ID проекта или NULL если новый проект
 	 * @return WP_User	Объект координатора проекта
 	 */
 	public function getCoordinator( $project )
@@ -117,6 +117,9 @@ class CPM_ProjectProperties
 		if ( ! $project )
 			return null;
 		
+		// ID проекта
+		$project_id = ( is_numeric( $project ) ) ? $project : $project->ID;
+
 		// Читаем кэш
 		if ( empty( $this->coordinatorsCache ) )
 		{
@@ -126,16 +129,16 @@ class CPM_ProjectProperties
 		}
 			 
 		// Проверяем наличие проекта в кеше
-		if ( array_key_exists( $project->ID, $this->coordinatorsCache ) )
+		if ( array_key_exists( $project_id, $this->coordinatorsCache ) )
 		{
 			// Проект есть в кэше, Возвращаем пользователя по ID из кэша
-			return new WP_User( $this->coordinatorsCache[$project->ID] );
+			return new WP_User( $this->coordinatorsCache[ $project_id ] );
 		}
 			
 		
 		// Пользователя в кэше нет, Читаем свойство проекта и сохраняем в кэш
-		$userId = (int) get_post_meta( $project->ID, self::META_COORDINATOR, true );
-		$this->coordinatorsCache[$project->ID] = $userId;
+		$userId = (int) get_post_meta( $project_id, self::META_COORDINATOR, true );
+		$this->coordinatorsCache[ $project_id ] = $userId;
 		set_transient( self::META_COORDINATOR, $this->coordinatorsCache );
 			
 		// Координатор не назначен

@@ -205,7 +205,17 @@ function cpm_task_new_form( $list_id, $project_id, $task = null, $single = false
     else {
         // Новая задача
         $task_start = apply_filters( 'cpm_task_form_date_start', date( 'Y-m-d' ), null );
-        $task_due = apply_filters( 'cpm_task_form_date_due', date( 'Y-m-d', time() + 60*60*24*7 ), null);
+        $task_due = apply_filters( 'cpm_task_form_date_due', date( 'Y-m-d', time() + 60*60*24*7 ), null );
+
+        // Узнаем координатора проекта
+        $project_properties = CPM_ProjectProperties::getInstance();
+        $coordinator = $project_properties->getCoordinator( $project_id );
+
+        // Ответственные по умолчанию
+        $assigned_to = apply_filters( 'cpm_task_new_form_assigned_to', array(
+            get_current_user_id(),                                          // Текущий пользователь
+            ( $coordinator instanceof WP_User ) ? $coordinator->ID : null   // Координатор проекта, если назначен
+        ) );
     }
     ?>
 
@@ -245,7 +255,6 @@ function cpm_task_new_form( $list_id, $project_id, $task = null, $single = false
         <div class="item user">
             <?php cpm_task_assign_dropdown( $project_id, $assigned_to ); ?>
         </div>
-
 
         <?php do_action( 'cpm_task_new_form', $list_id, $project_id, $task ); ?>
 
