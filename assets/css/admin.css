@@ -4451,3 +4451,11 @@ ul.cpm-files li .cpm-file-action .comment-number {
     padding: 1px;
   }
 }
+
+
+/** ССылка на страницу проекта в личном кабинере */
+.cpm-frontend-link {
+  padding-top: 2em;
+}
+
+
