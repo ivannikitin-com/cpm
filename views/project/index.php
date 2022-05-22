@@ -96,6 +96,15 @@ unset( $projects['total_projects'] );
 <div class="cpm-projects<?php echo $class; ?> cpm-row cpm-project-<?php echo $project_view ; ?> cpm-no-padding cpm-no-margin"  >
 
     <?php if ( $projects ) {
+
+        /**
+         * Так как вычисление URL На фронтэнде происходит хуком, приходится здесь вычислять фронтенд URL руками заново
+         * см. includes\pro\frontend\urls.php 
+         */
+
+        $page_id = cpm_get_option('project', 'cpm_page');
+        $page_permalink = get_permalink( $page_id );
+
         $slp = 1 ;
         foreach ($projects as $project) {
             $last_cal = ( $slp %3 == 0 ) ? ' cpm-last-col' : '';
@@ -109,6 +118,20 @@ unset( $projects['total_projects'] );
                 <a title="<?php echo get_the_title( $project->ID ); ?>" href="<?php echo cpm_url_project_overview( $project->ID ); ?>">
                     <div class="project_head">
                         <h5><?php  echo cpm_excerpt( get_the_title( $project->ID ), 60 ); ?></h5>
+
+                        <?php 
+                        /* ссылка на front-end интерфейс в личном кабинете */ 
+                        $frontend_url = add_query_arg( array(
+                            'project_id' => $project->ID,
+                            'tab' => 'project',
+                            'action' => 'index'
+                        ), $page_permalink );
+                        
+                        ?>
+                        <div class="cpm-frontend-link">
+                            <a href="<?php echo $frontend_url ?>" title="<?php esc_attr_e( 'This project on frontend', 'cpm' ); ?>"><span class="dashicons dashicons-admin-site"></span></a>
+
+                        </div>
 
                         <div class="cpm-project-detail"><?php echo cpm_excerpt( $project->post_content, 55 ); ?></div>
                     </div>

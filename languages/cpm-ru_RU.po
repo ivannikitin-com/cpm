@@ -5,17 +5,17 @@ msgstr ""
 "Project-Id-Version: WP Project Manager 1.5.1\n"
 "Report-Msgid-Bugs-To: http://wedevs.com/support/forum/plugin-support/wp-"
 "project-manager/\n"
-"POT-Creation-Date: 2021-09-01 18:14+0300\n"
-"PO-Revision-Date: 2021-09-01 18:25+0300\n"
+"POT-Creation-Date: 2022-05-22 16:50+0300\n"
+"PO-Revision-Date: 2022-05-22 16:52+0300\n"
 "Last-Translator: Иван Никитин <info@ivannikitin.com>\n"
 "Language-Team: EMAIL@ADDRESS\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: class/activity.php:80
 #, php-format
@@ -97,7 +97,7 @@ msgstr "Задача \"%s\" удалена из списка %s пользова
 
 #: class/activity.php:292
 #, php-format
-msgid "%s commented on a %s : %s"
+msgid "%s commented on a %s"
 msgstr "%s оставил(а) комментарий в %s"
 
 #: class/activity.php:298
@@ -724,22 +724,22 @@ msgstr "Завершённая задача"
 #: class/tracker.php:12
 #, php-format
 msgid ""
-"Want to help make <strong>WP Project Manager</strong> even more awesome? "
-"Allow weDevs to collect non-sensitive diagnostic data and usage information. "
-"Enjoy <strong>15% discount</strong> on upgrades and add-on purchase."
+"Want to help make WP Project Manager even more awesome? Allow weDevs to "
+"collect non-sensitive diagnostic data and usage information. Enjoy 15 "
+"% discount on upgrades and add-on purchase."
 msgstr ""
-"Хотите сделать наш замечательный <strong>WP Project Manager</strong> ещё "
-"лучше? Тогда позвольте weDevs собирать не являющиеся секретными сведения о "
-"работе и использовании продукта. Участникам предоставляется <strong>скидка "
-"15%</strong> на все обновления и дополнения."
+"Хотите сделать наш замечательный WP Project Manager ещё лучше? Тогда "
+"позвольте weDevs собирать не являющиеся секретными сведения о работе и "
+"использовании продукта. Участникам предоставляется скидка 15 % d на все "
+"обновления и дополнения."
 
 #: class/upgrade.php:47
 msgid ""
-"<strong>WP Project Manager Data Update Required</strong> &#8211; Please "
-"click the button below to update to the latest version."
+"WP Project Manager Data Update Required! Please click the button below to "
+"update to the latest version."
 msgstr ""
-"<strong>Требуется обновление WP Project Manager</strong> &#8211; Пожалуйста, "
-"нажмите на кнопку ниже, чтобы обновить продукт до последней версии."
+"Требуется обновление WP Project Manager! Пожалуйста, нажмите на кнопку ниже, "
+"чтобы обновить продукт до последней версии."
 
 #: class/upgrade.php:51
 msgid "Run the Update"
@@ -1220,7 +1220,7 @@ msgstr "Вы действительно хотите удалить этот п�
 #: includes/pro/views/report/table.php:168
 #: includes/pro/views/report/table.php:250
 #: includes/pro/views/task/my-task.php:88
-#: includes/pro/views/task/overview.php:36 views/project/index.php:106
+#: includes/pro/views/task/overview.php:36 views/project/index.php:115
 msgid "Completed"
 msgstr "Выполнено"
 
@@ -2209,16 +2209,16 @@ msgstr "Активно <span class=\"count\">%d</span>"
 msgid "Completed <span class=\"count\">%d</span>"
 msgstr "Завершено <span class=\"count\">%d</span>"
 
-#: includes/pro/views/project/project_list.php:150 views/project/index.php:157
+#: includes/pro/views/project/project_list.php:150 views/project/index.php:180
 msgid "No projects found!"
 msgstr "Проекты не найдены!"
 
-#: includes/pro/views/project/project_list.php:158 views/project/index.php:165
+#: includes/pro/views/project/project_list.php:158 views/project/index.php:188
 msgid "Start a new project"
 msgstr "Начать новый проект"
 
-#: includes/pro/views/project/project_list.php:162 views/project/header.php:52
-#: views/project/index.php:169
+#: includes/pro/views/project/project_list.php:162 views/project/header.php:76
+#: views/project/index.php:192
 msgid "Create a new user"
 msgstr "Создать нового пользователя"
 
@@ -2712,7 +2712,7 @@ msgstr "Ошибка: Сообщение не найдено"
 #, php-format
 msgid "One Comment"
 msgid_plural "%s Comments"
-msgstr[0] "1 комментарий"
+msgstr[0] "%s комментарий"
 msgstr[1] "%s комментария"
 msgstr[2] "%s комментариев"
 
@@ -2739,6 +2739,10 @@ msgstr "Ошибка: Проект не найден"
 #: views/project/header.php:12
 msgid "Error: Permission denied"
 msgstr "Ошибка: Отказано в доступе"
+
+#: views/project/header.php:52 views/project/index.php:132
+msgid "This project on frontend"
+msgstr "Ссылка на страницу в ЛК"
 
 #: views/project/overview.php:39
 msgid "Last 30 days"
@@ -2767,6 +2771,10 @@ msgstr "Иван Никитин и партнеры"
 #. Author URI of the plugin/theme
 msgid "https://ivannikitin.com"
 msgstr "https://ivannikitin.com"
+
+#~ msgctxt "cpm"
+#~ msgid "Milestone"
+#~ msgstr "Веха"
 
 #~ msgid "Pro Version"
 #~ msgstr "Версия Pro"

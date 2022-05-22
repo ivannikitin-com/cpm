@@ -29,6 +29,30 @@ if ( ! $pro_obj->has_permission( $project ) ) {
                 <?php echo cpm_get_content( $project->post_content ); ?>
                 <?php do_action( 'cpm_project_after_description', $project ); ?>
             </div>
+
+            <?php
+            /* ссылка на front-end интерфейс в личном кабинете */ 
+            if ( is_admin() ):
+                /**
+                 * Так как вычисление URL На фронтэнде происходит хуком, приходится здесь вычислять фронтенд URL руками заново
+                 * см. includes\pro\frontend\urls.php 
+                 */
+
+                $page_id = cpm_get_option('project', 'cpm_page');
+                $page_permalink = get_permalink( $page_id );
+
+                $frontend_url = add_query_arg( array(
+                    'project_id' => project_id,
+                    'tab' => 'project',
+                    'action' => 'index'
+                ), $page_permalink );
+                
+                ?>
+                <div class="cpm-frontend-link">
+                    <a href="<?php echo $frontend_url ?>" title="<?php esc_attr_e( 'This project on frontend', 'cpm' ); ?>"><span class="dashicons dashicons-admin-site"></span></a>
+
+                </div>
+            <?php endif ?>
         </div>
 
         <div class="cpm-col-6 cpm-last-col cpm-top-right-btn cpm-text-right show_desktop_only">
