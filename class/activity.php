@@ -289,7 +289,7 @@ class CPM_Activity {
         
         //$check = apply_filters('cpm_task_check_id', $list_id );
            
-        $message = sprintf( __('%s commented on a %s : %s', 'cpm' ), $this->user_url(), $name_list, "[cpm_comment_url id='$comment_id' project='$project_id']" );
+        $message = sprintf( __('%s commented on a %s', 'cpm' ), $this->user_url(), $name_list, "[cpm_comment_url id='$comment_id' project='$project_id']" );
     
         $this->log( $project_id, $message );
     }
