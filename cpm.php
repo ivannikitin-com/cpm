@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name: CPM
- * Plugin URI: https://github.com/ivannikitin-com/wedevs-project-manager-pro
+ * Plugin URI: https://github.com/ivannikitin-com/cpm
  * Description: Управление задачами и проектами
  * Author: Ivan Nikitin & Co
  * Author URI: https://ivannikitin.com
