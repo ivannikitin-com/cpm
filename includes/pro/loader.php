@@ -532,23 +532,17 @@ class CPM_Pro_Loader {
      * @return array $task_list_category
      */
     public function get_task_list_category($cpm_task_list_category) {
-        // TODO: Исправить код получения списка категорий!!!
+        // TODO: Изменить и переделать назначение категорий на списки!!!
+        $terms = get_terms( [
+            'taxonomy' => 'cpm_project_category',
+            'hide_empty' => false,
+        ] );
 
-        global $wpdb;
-        // HOTFIX: Некорректное имя таблицы!!!
-        // $table_name = 'wp_term_taxonomy';
-        $table_name = $wpdb->prefix . 'term_taxonomy';
-        $item = $wpdb->get_results( "SELECT * FROM {$table_name}", ARRAY_A );
-        $task_list_category= array();
-			if ( $item != null ) {
-				foreach ( $item as $value ) {
-                    if ('cpm_project_category'==$value['taxonomy']){
-                        $term_id = $value['term_id'];
-                        $task_list_category[$term_id] = $value['description'];
-                    }                    
-                }	
-            }    	      
-        return $task_list_category;
+        $result = array();
+        foreach ($terms as $term){
+            $result[$term->term_id] = $term->name;
+        }
+        return $result;
     }
 }
 
