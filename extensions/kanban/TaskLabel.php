@@ -52,6 +52,9 @@ class TaskLabel
 		// Находим ID секции
 		$sectionId = apply_filters( 'cpm_kanban_tasklabel_section_id', $this->getSectionId( $project_id, $task_id ), 
 									$project_id, $list_id, $task_id, $single );
+
+		// Проверка, показывалась ли эта метка уже ранее для этого проекта
+		// Необходимо, так как часто в CPM секция пишется дважды.
 		
 		// Находим азвание секции
 		$sectionName = apply_filters( 'cpm_kanban_tasklabel_section_name', $this->getSectionName( $project_id, $sectionId ), 
