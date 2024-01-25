@@ -446,6 +446,9 @@ class CPM_Activity {
      * @return string $list_title
      */
     public function task_list_title( $list_id ) {
+        return '';
+        // TODO: Исправить код task_list_title
+        /**
         global $wpdb;
         $table_name = 'wp_cpm_project_items';
 			$item_type = $wpdb->get_results( "SELECT * FROM {$table_name} WHERE object_id = {$list_id}", ARRAY_A );
@@ -466,6 +469,7 @@ class CPM_Activity {
                 $list_title = $post_id->post_title;
             };
 		return $list_title;
+        */
     } 
 
     /**
@@ -514,6 +518,9 @@ class CPM_Activity {
      * @return bool $check
      */
     public function task_check_list_or_task ($list_id /* or $task_id*/ ){
+        return '';
+        // TODO: Исправить код task_check_list_or_task
+        /**
         global $wpdb;
         $table_name = 'wp_cpm_project_items';
 			$item_type = $wpdb->get_results( "SELECT * FROM {$table_name} WHERE object_id = {$list_id}", ARRAY_A );
@@ -528,6 +535,7 @@ class CPM_Activity {
             $check = true;        
         }    
         return $check;
+        */
     }
 
 
