@@ -391,8 +391,8 @@ class CPM_Task {
             'post_type'      => 'cpm_task_list',
             'posts_per_page' => cpm_get_option( 'show_todo', 'cpm_general' ),
             'offset'         => $offset,
-            'order'          => 'DESC',
-            'orderby'        => 'ID',
+            'order'          => 'ASC',
+            'orderby'        => 'menu_order ',
             'post_parent'    => $project_id
         );
         if ( false === $with_pin ) {
