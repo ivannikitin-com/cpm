@@ -37,6 +37,10 @@ class Plugin
      */
     public function init()
     {
-        // Хуки и инициализация
+        // Инициализируем таксономии
+        Category::init();
+        
+        // Инициализируем сущности
+        Project::init();
     }
 }   

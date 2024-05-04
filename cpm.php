@@ -30,13 +30,20 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * **********************************************************************
  */
-if (!defined('ABSPATH')) exit;
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+/**
+ * Глобальные определения
+ */
+define ( 'CPM', 'CPM' );
 
 /**
  * Файлы плагина
  */
 require_once __DIR__ . '/core/plugin.php';
 require_once __DIR__ . '/core/entity.php';
+require_once __DIR__ . '/core/project.php';
+require_once __DIR__ . '/core/category.php';
 
 // Запуск CPM
 \CPM\Core\Plugin::getInstance();
