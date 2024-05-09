@@ -40,12 +40,13 @@ define ( 'CPM', 'CPM' );
 /**
  * Файлы плагина
  */
-require_once __DIR__ . '/core/plugin.php';
+require_once __DIR__ . '/plugin.php';
 require_once __DIR__ . '/core/member.php';
 require_once __DIR__ . '/core/team.php';
 require_once __DIR__ . '/core/entity.php';
 require_once __DIR__ . '/core/project.php';
 require_once __DIR__ . '/core/category.php';
+require_once __DIR__ . '/view/front.php';
 
 // Запуск CPM
-\CPM\Core\Plugin::getInstance();
+\CPM\Plugin::getInstance();

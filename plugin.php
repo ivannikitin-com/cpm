@@ -6,7 +6,7 @@
  * @package CPM
  * @subpackage plugin
  */
-namespace CPM\Core;
+namespace CPM;
 
 class Plugin
 {
@@ -38,9 +38,12 @@ class Plugin
     public function init()
     {
         // Инициализируем таксономии
-        Category::init();
+        \CPM\Core\Category::init();
         
         // Инициализируем сущности
-        Project::init();
+        \CPM\Core\Project::init();
+
+        // Базово инициализируем интерфейс
+        \CPM\View\Front::init();
     }
 }   
