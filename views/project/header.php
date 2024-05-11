@@ -42,7 +42,7 @@ if ( ! $pro_obj->has_permission( $project ) ) {
                 $page_permalink = get_permalink( $page_id );
 
                 $frontend_url = add_query_arg( array(
-                    'project_id' => project_id,
+                    'project_id' => $project_id,
                     'tab' => 'project',
                     'action' => 'index'
                 ), $page_permalink );
