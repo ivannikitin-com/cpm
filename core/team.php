@@ -42,4 +42,12 @@ class Team
             unset($this->members[$key]);
         }
     }
+
+    /**
+     * Проверяет, пустая ли команда
+     * @return bool
+     */
+    public function is_empty() {
+        return empty($this->members);
+    }
 }

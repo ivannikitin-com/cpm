@@ -13,20 +13,21 @@ class Member
     public $ID;
 
     /**
-     * Имя участника
-     * @var string
-     */
-    public $name;
-
-    /**
-     * Электронный адрес участника
-     * @var string
-     */
-    public $email;
-
-    /**
      * Роль участника
      * @var string
      */
     public $role;
+
+    /**
+     * Конструктор
+     * @param int $ID Идентификатор участника
+     * @param string $role Роль участника
+     * @return void
+     */
+    public function __construct($ID, $role)
+    {
+        $this->ID = $ID;
+        $this->role = $role;
+    }
+
 }

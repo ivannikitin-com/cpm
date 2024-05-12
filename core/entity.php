@@ -96,57 +96,57 @@ class Entity
      */
     public function __construct( $args = array() )
     {
+        // Инициализация команды
+        $this->team = new Team();
+
         // Инициализация полей объекта
         foreach ($args as $field => $value) {
             switch ($field) {
                 case 'id':
                 case 'ID':
                     $this->ID = $value;
-                    continue;
+                    continue 2;
 
                 case 'title':
                 case 'post_title':
                     $this->title = $value;
-                    continue;
+                    continue 2;
 
                 case 'content':
                 case 'post_content':
                     $this->content = $value;
-                    continue;
+                    continue 2;
 
                 case 'slug':
                 case 'post_name':
                     $this->slug = $value;
-                    continue;
+                    continue 2;
 
                 case 'author':
                 case 'post_author':
                     $this->author = $value;
-                    continue;
+                    continue 2;
 
                 case 'parent':
                 case 'post_parent':
                     $this->parent = $value;
-                    continue;
+                    continue 2;
                     
                 case 'created':
                 case 'post_date':
                     $this->created = $value;
-                    continue;
+                    continue 2;
                     
                 case 'order':
                 case 'menu_order':
                     $this->order = $value;
-                    continue;
+                    continue 2;
 
                 case 'team_serialized':
                     if ( !empty( $value ) ) {
                         $this->team = unserialize( $value );
                     }
-                    else {
-                        $this->team = new Team();
-                    }
-                    continue;
+                    continue 2;
 
                 default:
                     // Через магические свойства пишем мета-поля
@@ -178,7 +178,7 @@ class Entity
     {
         return array(
             'team_serialized' => '_team'
-        )
+        );
     }
 
     /**
@@ -267,7 +267,7 @@ class Entity
 
         // Сохранение объектных свойств в мета-полях
         $this->meta['_team_serialized'] = serialize( $this->team );
-        return self::updateEntity( $this );
+        return self::updateObject( $this );
     }
 
     /**
@@ -275,7 +275,7 @@ class Entity
      */
     public function delete()
     {
-        return self::deleteEntity( $this );
+        return self::deleteObject( $this );
     }
 
     /* --------------------- Работа с БД ------------------ */
@@ -289,27 +289,27 @@ class Entity
     {
         global $wpdb;
         $cpt = static::CPT;
-        return <<<SQL 
-SELECT
-        ID,
-        post_author,
-        post_date,
-        post_content,
-        post_title,
-        post_name,
-        post_parent,
-        menu_order,
-        MAX(CASE WHEN pm.meta_key = 'team' THEN pm.meta_value ELSE NULL END) AS _team
-    FROM
-        {$wpdb->posts} p
-            INNER JOIN {$wpdb->postsmeta} pm
-                ON p.ID = pm.post_id
-    WHERE
-        post_type = '{$cpt}'
-        -- EXTRA_WHERE --
-    GROUP BY
-        ID
-SQL;
+        return <<<END_SQL
+            SELECT
+                    ID,
+                    post_author,
+                    post_date,
+                    post_content,
+                    post_title,
+                    post_name,
+                    post_parent,
+                    menu_order,
+                    MAX(CASE WHEN pm.meta_key = 'team' THEN pm.meta_value ELSE NULL END) AS _team
+                FROM
+                    {$wpdb->posts} p
+                        INNER JOIN {$wpdb->postmeta} pm
+                            ON p.ID = pm.post_id
+                WHERE
+                    post_type = '{$cpt}'
+                    -- EXTRA_WHERE --
+                GROUP BY
+                    ID
+        END_SQL;
     }
 
 
@@ -326,24 +326,20 @@ SQL;
 
         // Если передан ID как int, запрашиваем по ID
         if ( is_numeric( $id ) ) {
-            $query = $wpdb->query(
-                $wpdb->prepare( 
+            $query = $wpdb->prepare( 
                     str_replace( '-- EXTRA_WHERE --', 'AND ID = %d', static::get_sql() ),
                     $id 
-                )
-            );
+                );
         }
         else {
             // Если передан слаг, то запрашиваем по слагу
-            $query = $wpdb->query(
-                $wpdb->prepare( 
+            $query = $wpdb->prepare( 
                     str_replace( '-- EXTRA_WHERE --', 'AND post_name = %s', static::get_sql() ),
                     $id 
-                )
             );
         }
     
-        $post = $wpdb->get_row( $sql, ARRAY_A );
+        $post = $wpdb->get_row( $query, ARRAY_A );
         if ( ! $post ) return null;
 
         // Создание сущности
@@ -355,7 +351,7 @@ SQL;
      * @static
      * @param array    $args     Параметры запроса
      */
-    public static function readList( $args ) {
+    public static function readList( $args=array() ) {
         global $wpdb;
         $where = '';
         $params = array();
@@ -371,7 +367,7 @@ SQL;
                 $where .= " AND {$field} = %s";
             }
         }
-        $posts = $wpdb->query( 
+        $posts = $wpdb->get_results( 
             $wpdb->prepare( str_replace( '-- EXTRA_WHERE --', $where, static::get_sql() ), $params ), 
             ARRAY_A 
         );
@@ -518,7 +514,7 @@ SQL;
      * @param Entity    $entity     Объект сущности
      * @return bool
      */
-    static public function update( $entity )
+    static public function updateObject( $entity )
     {
         // Класс сущности
         $class = static::get_class_name();
@@ -543,7 +539,7 @@ SQL;
      * @param Entity    $entity     Объект сущности
      * @return bool
      */
-    static public function delete( $entity )
+    static public function deleteObject( $entity )
     {
         // Имя хука
         $hook = static::get_class_name() . '_delete';
@@ -558,5 +554,5 @@ SQL;
         } 
         // Возвращаем результат 
         return $result;
-    } 
+    }
 }

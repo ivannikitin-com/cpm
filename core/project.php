@@ -57,9 +57,8 @@ class Project extends Entity
       return array_merge( parent::get_meta_fields(), array(
          'coordinator'   => '_cpm_coordinator',    // Координатор проекта
          'is_archive'    => '_project_archive',    // Архивный проект
-         'is_active'     => '_project_active',     // Активный проект
-         'meta_settings' => '_settings'            // Настройка проекта (для обратной совместимости)
-      ))
+         'is_active'     => '_project_active'      // Активный проект
+      ));
    }
    
    /* -------------------- Запрос данных ------------------- */
@@ -70,37 +69,36 @@ class Project extends Entity
    protected static function get_sql()
    {
       global $wpdb;
-      $cpt = self::CPT;
-      return <<<SQL 
-SELECT
-   ID,
-	post_author,
-	post_date,
-	post_content,
-	post_title,
-	post_name,
-	post_parent,
-	menu_order,
-	MAX(CASE WHEN pm.meta_key = 'team' THEN pm.meta_value ELSE NULL END) AS team,
-	MAX(CASE WHEN pm.meta_key = '_project_archive' THEN pm.meta_value ELSE NULL END) AS _project_archive,
-	MAX(CASE WHEN pm.meta_key = '_project_active' THEN pm.meta_value ELSE NULL END) AS _project_active,
-	MAX(CASE WHEN pm.meta_key = '_settings' THEN pm.meta_value ELSE NULL END) AS _settings,
-	MAX(CASE WHEN pm.meta_key = '_cpm_coordinator' THEN pm.meta_value ELSE NULL END) AS _cpm_coordinator
-FROM
-    {$wpdb->posts} p
-        INNER JOIN {$wpdb->postsmeta} pm
-            ON p.ID = pm.post_id
-WHERE
-    post_type = '{$cpt}'
-GROUP BY
-    ID
-HAVING
-	TRUE
-   -- EXTRA_WHERE --
-ORDER BY
-	menu_order DESC,
-	post_title ASC    
-SQL;
+      $cpt = self::$CPT;
+      return <<< END_SQL
+         SELECT
+            ID,
+            post_author,
+            post_date,
+            post_content,
+            post_title,
+            post_name,
+            post_parent,
+            menu_order,
+            MAX(CASE WHEN pm.meta_key = 'team' THEN pm.meta_value ELSE NULL END) AS _team,
+            MAX(CASE WHEN pm.meta_key = '_project_archive' THEN pm.meta_value ELSE NULL END) AS _project_archive,
+            MAX(CASE WHEN pm.meta_key = '_project_active' THEN pm.meta_value ELSE NULL END) AS _project_active,
+            MAX(CASE WHEN pm.meta_key = '_cpm_coordinator' THEN pm.meta_value ELSE NULL END) AS _cpm_coordinator
+         FROM
+            {$wpdb->posts} p
+               INNER JOIN {$wpdb->postmeta} pm
+                     ON p.ID = pm.post_id
+         WHERE
+            post_type = '{$cpt}'
+         GROUP BY
+            ID
+         HAVING
+            TRUE
+            -- EXTRA_WHERE --
+         ORDER BY
+            menu_order DESC,
+            post_title ASC    
+      END_SQL;
    }
 
    /**
@@ -108,18 +106,12 @@ SQL;
     * @static
     * @param array    $args     Параметры запроса
     */
-   public static function readList( $args ) {
+   public static function readList( $args=array() ) {
       return parent::readList( array_merge( array( 
                '_project_archive' => 'no', 
                '_project_active'  => 'yes', 
             ) , $args ) );
    }
-
-   /**
-    * Старые настройки проекта
-    * @var array
-    */
-   public $settings = null;
 
    /**
     * Конструктор
@@ -129,16 +121,14 @@ SQL;
       // Родительский конструктор
       parent::__construct( $args );
 
-      // Расшифровываем старые настройки проекта
-      if ( isset( $this->meta_settings ) ) {
-         $this->settings = unserialize( $this->meta_settings );
+      // Инициализация команды проекта для обратной совместимости
+      if ( $this->team->is_empty() ) {
+         // Возвращает список участников проекта, записанных в старом стиле
+         foreach ( $this->get_old_style_members( $this->ID ) as $user ) {
+            // Добавление участника в команду
+            $this->team->add( new Member( $user[ 'user_id' ], $user[ 'user_role' ] ) );
+         }
       }
-      else {
-         $this->settings = array();
-      }
-
-      // Формируем команду по старым настройкам проекта
-      // TODO: Сделать формирование команды по старым настройкам проекта
    }
 
    /**
@@ -153,5 +143,46 @@ SQL;
       // Обновление проекта
       return parent::update();
    }
+
+   /* ------------ Обратная совместимость с CPM 1.x ------------------- */
+
+    /**
+     * Метод возвращает участников проекта, записанных в старом стиле
+     * В CPM < 2.0.0 участники проекта хранятся в отдельной таблице `wp_cpm_user_role`
+     * Решено только считывать их из этой таблицы, но при обновлении таблицу не перезаписывать,
+     * а хранить участников проекта, как участников всех остальных сущностей -- в мета-данных. 
+     * @param int $project_id ID проекта
+     * @return array
+     */
+    private function get_old_style_members( $project_id ) {
+      global $wpdb;
+
+      // Проверяем наличие массива ролей старого стиля
+      $cpm_user_roles = wp_cache_get( 'cpm_user_roles', 'cpm_project' );
+      if ( empty( $cpm_user_roles ) ) {
+          // Массив проект => array( user_id, user_role )
+          $cpm_user_roles = array();
+
+          // Запрос в БД
+          $rows = $wpdb->get_results( "
+              SELECT project_id, user_id, `role`
+              FROM {$wpdb->prefix}cpm_user_role 
+              ORDER BY id ASC
+          ", ARRAY_A );
+
+          // Формируем массив результатов
+          foreach ( $rows as $row ) {
+              $cpm_user_roles[ $row['project_id'] ][] = array(
+                  'user_id' => $row['user_id'],
+                  'user_role' => $row['role']
+              );;
+          }
+
+          // Сохраняем в кэш
+          wp_cache_set( 'cpm_user_roles', $cpm_user_roles, 'cpm_project' );
+      }
+
+      return isset( $cpm_user_roles[ $project_id ] ) ? $cpm_user_roles[ $project_id ] : array();
+  }
 
 }

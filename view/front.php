@@ -31,10 +31,10 @@ class Front
      */
     public static function cpm_shortcode( $atts = array() )
     {
-        $output = '<div class="cpm_shortcode">'
+        $output = '<div class="cpm_shortcode">';
         
         // Инициализируем фронт
-        $front = Front::getInstance();
+        $front = self::getInstance();
         $output .= $front->render();
 
         $output .= '</div>';
@@ -70,7 +70,7 @@ class Front
     {
         $output = '<pre>';
 
-        $projects = \CPM\Project::readList();
+        $projects = \CPM\Core\Project::readList();
         $count = 0;
 
         foreach ($projects as $project) {
