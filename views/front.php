@@ -4,7 +4,7 @@
  * Полностью отвечает за отображение CPM
  */
 
-namespace CPM\View;
+namespace CPM\Views;
 
 class Front
 {
@@ -56,30 +56,19 @@ class Front
     }
 
     /**
-     * Конструктор
+     * Текущее представление
+     * @var CPM\Views\BaseView
      */
-    private function __construct()
-    {
-        
-    }
+    private $view = null;
+
 
     /**
      * Отрисовка CPM
      */
     public function render()
     {
-        $output = '<pre>';
+        $obj = CPM\Core\Manager::getInstance();
 
-        $projects = \CPM\Core\Project::readList();
-        $count = 0;
-
-        foreach ($projects as $project) {
-            $count++;
-            if ($count > 5) break;
-            $output .= var_export($project, true) . PHP_EOL . PHP_EOL;
-        }
-
-        $output .= '</pre>';
-        return $output;
+        return '!!!'; // var_export($obj, true);
     }
 }
