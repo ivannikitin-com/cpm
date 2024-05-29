@@ -70,7 +70,7 @@ class Controller extends \WP_REST_Controller
 	function get_items_permissions_check( $request )
 	{
 		if ( ! current_user_can( 'read' ) )
-			return new WP_Error( 
+			return new \WP_Error( 
 				'rest_forbidden', 
 				__( 'У вас нет прав для просмотра этого ресурса', CPM ), 
 				array( 

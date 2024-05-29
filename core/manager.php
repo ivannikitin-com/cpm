@@ -39,7 +39,7 @@ class Manager
         $this->load();
 
         // Ранняя инициализация классов модуля CPM
-        $this->late_init();
+        $this->early_init();
     }
 
     /**
@@ -87,17 +87,16 @@ class Manager
      * Ранняя инициализация классов модуля CPM
      * Экземпляры классов модуля CPM здесь НЕ СОЗДАЮТСЯ
      */
-    protected function late_init()
+    protected function early_init()
     {
-
         foreach ( $this->get_classes() as $class ) {
-            $debug_log_string = static::class . ' loading class ' . $class;
+            $debug_log_string = 'Core Manager early_init: ' . static::class . ' loading class ' . $class;
             // Если у класса есть статичный метод init, то вызываем его
             if ( method_exists( $class, 'init' ) ) {
                 $debug_log_string .= ' and calling init()';
                 $class::init();
             }
-            WP_DEBUG && error_log( $debug_log_string );
+            \CPM\Plugin::get_instance()->log( $debug_log_string, 'info' );
         }
     }
 }

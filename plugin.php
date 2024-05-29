@@ -95,4 +95,27 @@ class Plugin
             $this->extensions->get_classes() 
         );
     }
+
+    /**
+     * Метод выводит в лог сообщения с разным уровнем важности
+     * @param string $message Сообщение
+     * @param string $level Уровень важности
+     * @return void
+     */
+    public function log( $message, $level = 'info' )
+    {
+        // Выводим только в режиме отладки
+        if ( ! defined('WP_DEBUG') || ! WP_DEBUG ) {
+            return;
+        }
+
+        // Вывод в лог может быть переопределен хуком
+        $message = apply_filters( 'cpm_log', $message, $level );
+        if ( ! $message ) {
+            return;
+        }
+
+        // Вывод в лог
+        error_log( 'CPM ' . $level . ': ' . $message );
+    }
 }   
