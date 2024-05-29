@@ -43,4 +43,4 @@ define ( 'CPM', 'CPM' );
 require_once __DIR__ . '/plugin.php';
 
 // Запуск CPM
-\CPM\Plugin::getInstance();
+\CPM\Plugin::get_instance();

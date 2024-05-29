@@ -21,5 +21,27 @@ class Manager extends \CPM\Core\Manager
 
         // Базовый конструктор
         parent::__construct();
+
+         // Инициализация REST API
+         add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+    }
+
+    /**
+     * Массив контроллеров
+     */
+    public $controllers = [];
+
+    /**
+     * Регистрация маршрутов
+     */
+    public function register_routes()
+    {
+        // Зарегистрируем контроллеры для классов с установленным статическим свойством $rest_api
+        foreach ( \CPM\Plugin::get_instance()->get_classes() as $class ) {
+            if ( isset( $class::$rest_api ) && $class::$rest_api ) {
+                $this->controllers[ $class ] = new Controller( $class );
+                $this->controllers[ $class ]->register_routes();
+            }
+        }
     }
 }

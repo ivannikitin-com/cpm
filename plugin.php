@@ -17,7 +17,7 @@ class Plugin
      */
     private static $instance = null;
 
-    public static function getInstance()
+    public static function get_instance()
     {
         if (self::$instance === null) {
             self::$instance = new self();
@@ -81,5 +81,18 @@ class Plugin
         
         // Расширения
         $this->extensions = new \CPM\Extensions\Manager();
+    }
+
+    /**
+     * Полный список всех классов CPM
+     */
+    public function get_classes() 
+    {
+        return array_merge( 
+            $this->core->get_classes(), 
+            $this->rest->get_classes(), 
+            $this->views->get_classes(), 
+            $this->extensions->get_classes() 
+        );
     }
 }   

@@ -38,18 +38,19 @@ class Manager extends \CPM\Core\Manager
         foreach ($extensions as $extension) {
             if ( is_dir( $extension ) ) {
                 // Название расширения
-                $extension = basename( $extension );
+                $name = basename( $extension );
 
                 // Файл расширения
-                $file = $extension . '/' . $extension . '.php'; 
-                $this->files[] = $file;
-
-                // Имя класса -- это имя расширения с большой буквы
-                $class = __NAMESPACE__ . '\\' . ucfirst($extension);
-                $this->files[$file] = $class;
+                $file = $extension . '/' . $name . '.php';
 
                 // Загрузка файла расширения
-                require_once $file;
+                require_once $file;                
+
+                // Имя класса -- это имя расширения с большой буквы в пространстве имён с названием расширения
+                // Например: CPM\Extensions\Myextension\Myextension
+                // Имена должны быть односложными
+                $class = __NAMESPACE__ . '\\' . ucfirst($name) . '\\' . ucfirst($name);
+                $this->files[ $file ] = $class;
             }
         }
     }

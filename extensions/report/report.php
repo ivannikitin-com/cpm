@@ -2,10 +2,10 @@
 /**
  * Класс собой расширение для отчёта по сотрудникам
  */
-namespace CPM\Extension\EmployeeReport;
+namespace CPM\Extensions\Report;
 require_once __DIR__ . '/../base.php';
 
-class EmployeeReport extends \CPM\Extensions\Base
+class Report extends \CPM\Extensions\Base
 {
     /**
      * Имя расширения

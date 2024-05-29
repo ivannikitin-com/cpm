@@ -38,7 +38,7 @@ class BaseView
      */
     public function render()
     {
-        $output = var_export( \CPM\Core\Manager::get_instance(), true );
-        return $output;
+        //$output = var_export( \CPM\Core\Manager::get_instance(), true );
+        return '';///$output;
     }
 }

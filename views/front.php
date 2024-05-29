@@ -69,6 +69,6 @@ class Front
     {
         $obj = CPM\Core\Manager::getInstance();
 
-        return '!!!'; // var_export($obj, true);
+        return '!!! front::render'; // var_export($obj, true);
     }
 }

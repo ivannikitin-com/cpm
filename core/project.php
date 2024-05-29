@@ -18,6 +18,46 @@ class Project extends Entity
     */
    static public $CPT = 'cpm_project';
 
+   /* -------------------- REST API ------------------- */
+
+   /**
+    * Свойства REST API
+    */
+   public static $rest_api = true;        // Этот объект доступен в REST API
+   public static $rest_base = 'project';  // База сущности в URI
+
+   /**
+    * Путь до API
+    * @return string
+    */
+   public static function get_api_path()
+   {
+      return '/projects';
+   }
+
+   /**
+    * Метод возвращает схему проекта для REST API
+    * @static
+    * @return array
+    */ 
+   static public function get_rest_schema()
+   {
+      $schema = parent::get_rest_schema();
+      $schema[ 'properties' ][ 'coordinator' ] = array(
+         'description' => __('Координатор проекта', CPM),
+         'type'        => 'int'         
+      );
+      $schema[ 'properties' ][ 'is_archive' ] = array(
+         'description' => __('Архивный проект', CPM),
+         'type'        => 'string'         
+      ); 
+      $schema[ 'properties' ][ 'is_active' ] = array(
+      'description' => __('Активный проект', CPM),
+      'type'        => 'string'         
+   );
+   return $schema;       
+   }
+
    /* -------------------- Инициализация ------------------- */
    public static function init()
    {
@@ -184,5 +224,4 @@ class Project extends Entity
 
       return isset( $cpm_user_roles[ $project_id ] ) ? $cpm_user_roles[ $project_id ] : array();
   }
-
 }

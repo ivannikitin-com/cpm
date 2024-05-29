@@ -71,7 +71,7 @@ class Entity
 
     /**
      * Дата создания сущности в формате MySQL YYYY-MM-DD HH:MM:SS
-     * @var sting
+     * @var string
      */
     public $created = 0; 
 
@@ -556,10 +556,81 @@ class Entity
         return $result;
     }
 
-    /* -------------------- Инициализация ------------------- */
-    public static function init()
+   /* -------------------- REST API ------------------- */
+
+   /**
+    * Свойства REST API
+    */
+    public static $rest_api = true;         // Этот объект доступен в REST API
+    public static $rest_base = 'object';    // База сущности в URI
+
+    /**
+     * Метод возвращает схему сущности для REST API
+     * @static
+     * @return array
+     */ 
+    static public function get_rest_schema()
     {
-        // Ранней инициализации у сущности нет.
-        // Она реализована потомками.
-    }    
+		return array(
+			// показывает какую версию схемы мы используем - это draft 4
+			'$schema'    => 'http://json-schema.org/draft-04/schema#',
+			// определяет ресурс который описывает схема
+			'title'      => static::$rest_base,
+			'type'       => 'object',
+			// в JSON схеме нужно указывать свойства объекта в атрибуте 'properties'.
+			'properties' => array(
+				'id' => array(
+					'description' => __('Уникальный идентификатор объекта', CPM),
+					'type'        => 'integer',
+					'context'     => array( 'view', 'edit', 'embed' ),
+					'readonly'    => true,
+				),
+				'title' => array(
+					'description' => __('Название объекта', CPM),
+					'type'        => 'string',
+				),
+				'content' => array(
+					'description' => __('Содержимое объекта', CPM),
+					'type'        => 'string',
+                ),
+				'slug' => array(
+					'description' => __('Содержимое объекта', CPM),
+					'type'        => 'string',
+                ),
+				'author' => array(
+					'description' => __('ID автора объекта', CPM),
+					'type'        => 'int',
+                ),
+				'parent' => array(
+					'description' => __('ID автора объекта', CPM),
+					'type'        => 'int',
+                ),
+				'created' => array(
+					'description' => __('Дата создания объекта YYYY-MM-DD HH:MM:SS', CPM),
+					'type'        => 'string',
+                ),                
+				'order' => array(
+					'description' => __('Порядковый номер в списке', CPM),
+					'type'        => 'int',
+                ),
+                'team' => array(
+                    'description' => __('Участники', CPM),
+                    'type'        => 'array',
+                    'items'       => array(
+                        'type' => 'object',
+                        'properties' => array(
+                            'id' => array(
+                                'description' => __('ID участника', CPM),
+                                'type'        => 'int',
+                            ),
+                            'role' => array(
+                                'description' => __('Роль участника', CPM),
+                                'type'        => 'string',
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        );
+    }
 }

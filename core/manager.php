@@ -40,8 +40,6 @@ class Manager
 
         // Ранняя инициализация классов модуля CPM
         $this->late_init();
-
-        var_dump($this->files);
     }
 
     /**
