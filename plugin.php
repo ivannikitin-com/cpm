@@ -109,6 +109,14 @@ class Plugin
             return;
         }
 
+        // Уровни отладки
+        $debug_levels = ( defined('WP_DEBUG_LOG_LEVELS') && WP_DEBUG_LOG_LEVELS ) ? 
+            explode( ',', WP_DEBUG_LOG_LEVELS ) :
+            array( 'debug', 'query', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency' );
+        if ( ! in_array( $level, $debug_levels ) ) {
+            return;
+        }
+
         // Вывод в лог может быть переопределен хуком
         $message = apply_filters( 'cpm_log', $message, $level );
         if ( ! $message ) {

@@ -435,10 +435,17 @@ class Entity
         // Поиск сущности в кэше
         $class = static::get_class_name();
         $entity_name = $class . '_' . $id;
+
+        $debug_log_string = "CPM: Entity cache:"  . $entity_name;
         $cache = wp_cache_get( $entity_name, $class );
-        if ( $cache ) return $cache;
-    
+        if ( $cache ) {
+            $debug_log_string .= ' hit!';
+            \CPM\Plugin::get_instance()->log( $debug_log_string, 'debug' );
+            return $cache;
+        }
+
         // Запрашиваем сущность из ее класса
+        $debug_log_string .= ' miss!';
         $entity = static::read( $id );
         // Если удалось прочитать, сохраняем в кэш
         if ( $entity ) {
@@ -460,14 +467,19 @@ class Entity
         $class = static::get_class_name();
         $entities_array = $class . '_list';
         $list_id = md5( serialize( $args ) );
+        $debug_log_string = "CPM: Entity list cache:"  . $entities_array;
 
         // Проверка наличия списка в кэше
         $entities_array = wp_cache_get( $entity_list, $class );
         if ( $entities_array && isset( $entities_array[ $list_id ] ) ) {
+            $debug_log_string .= ' hit!';
+            \CPM\Plugin::get_instance()->log( $debug_log_string, 'debug' );
             return $entities[ $list_id ];
         }
         
         // Списка в кэше нет. Запрашиваем его из БД
+        $debug_log_string .= ' miss!';
+        \CPM\Plugin::get_instance()->log( $debug_log_string, 'debug' );
         $entities = $class::getList( $args );
         // Если удалось прочитать, сохраняем в кэш
         if ( count( $entities ) > 0 ) {
@@ -485,9 +497,15 @@ class Entity
     { 
         $class = static::get_class_name();
         $entity_name = $class . '_' . $id;
+        if ( $id ) {
+            // Сущности без ID не обрабатываем
+            wp_cache_delete( $entity_name, $class );
+            \CPM\Plugin::get_instance()->log( 'CPM: Entity cache deleted: ' . $entity_name, 'debug' );
+        }
+
         $entities_array = $class . '_list';
-        if ( $id ) wp_cache_delete( $entity_name, $class ); // Сущности без ID не обрабатываем
         wp_cache_delete( $entities_array, $class );
+        \CPM\Plugin::get_instance()->log( 'CPM: Entity list cache deleted: ' . $entities_array, 'debug' );
     }
 
     /**
@@ -499,9 +517,11 @@ class Entity
         $class = static::get_class_name();
         if ( wp_cache_supports('flush_group') ) {
             wp_cache_flush_group( $class );
+            \CPM\Plugin::get_instance()->log( 'CPM: Entity cache group flushed: ' . $class, 'debug' );
         }
         else {
             wp_cache_flush();
+            \CPM\Plugin::get_instance()->log( 'CPM: Entity cache flushed', 'debug' );
         }
     }
 

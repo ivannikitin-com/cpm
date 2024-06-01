@@ -96,7 +96,7 @@ class Manager
                 $debug_log_string .= ' and calling init()';
                 $class::init();
             }
-            \CPM\Plugin::get_instance()->log( $debug_log_string, 'info' );
+            \CPM\Plugin::get_instance()->log( $debug_log_string, 'debug' );
         }
     }
 }
