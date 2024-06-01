@@ -187,7 +187,7 @@ class Controller extends \WP_REST_Controller
 	 */
 	function get_item_schema()
 	{
-		return $this->entity_class::get_schema();
+		return $this->entity_class::get_rest_schema();
 	}
 
 	## Устанавливает HTTP статус код для авторизации.
