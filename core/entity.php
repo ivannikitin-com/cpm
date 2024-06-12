@@ -155,7 +155,7 @@ class Entity
         }
     }
 
-
+    /* ----------------------- Мета-поля сущности -------------------- */
     /**
      * Массив мета-полей
      * Свойство открыто как public, потому что е нему обращаются статические методы
@@ -223,6 +223,7 @@ class Entity
         }
     }
 
+    /* ----------------------- Сервисные методы ----------------------- */
     /**
      * Фильтрация слага
      * Необходимо чтобы не было конфликтов в URL, например
@@ -351,10 +352,13 @@ class Entity
      * @static
      * @param array    $args     Параметры запроса
      */
-    public static function readList( $args=array() ) {
+    public static function read_list( $args=array() ) {
         global $wpdb;
+
+        \CPM\Plugin::get_instance()->log( self::class . '::read_list() args: ' . var_export( $args, true ), 'debug' );
         $where = '';
         $params = array();
+
         foreach ($args as $field => $value) {
             $params[] = $value;
             if ( is_int( $value ) ) {
@@ -367,10 +371,16 @@ class Entity
                 $where .= " AND {$field} = %s";
             }
         }
-        $posts = $wpdb->get_results( 
-            $wpdb->prepare( str_replace( '-- EXTRA_WHERE --', $where, static::get_sql() ), $params ), 
-            ARRAY_A 
+
+        // Запрос
+        $sql = $wpdb->prepare( 
+            str_replace( '-- EXTRA_WHERE --', $where, static::get_sql() ),
+            $params
         );
+        \CPM\Plugin::get_instance()->log( 'read_list SQL: ' . PHP_EOL. $sql, 'SQL' );
+
+        // Выполнение запроса
+        $posts = $wpdb->get_results( $sql, ARRAY_A );
         
         // Создание массива сущностей
         $entities = array();
@@ -461,7 +471,7 @@ class Entity
      * @static
      * @param mixed         $args   параметры запроса
      */
-    public static function getList( $args = array() ) {
+    public static function get_list( $args = array() ) {
         
         // Поиск сущностей в кэше
         $class = static::get_class_name();
@@ -470,7 +480,7 @@ class Entity
         $debug_log_string = "CPM: Entity list cache:"  . $entities_array;
 
         // Проверка наличия списка в кэше
-        $entities_array = wp_cache_get( $entity_list, $class );
+        $entities_array = wp_cache_get( $entities_array, $class );
         if ( $entities_array && isset( $entities_array[ $list_id ] ) ) {
             $debug_log_string .= ' hit!';
             \CPM\Plugin::get_instance()->log( $debug_log_string, 'debug' );
@@ -478,9 +488,9 @@ class Entity
         }
         
         // Списка в кэше нет. Запрашиваем его из БД
-        $debug_log_string .= ' miss!';
+        $debug_log_string .= ' miss! Calling ' . static::class . '::read_list()...';
         \CPM\Plugin::get_instance()->log( $debug_log_string, 'debug' );
-        $entities = $class::getList( $args );
+        $entities = static::read_list( $args );
         // Если удалось прочитать, сохраняем в кэш
         if ( count( $entities ) > 0 ) {
             wp_cache_add( $entities_array, array( $list_id => $entities ), $class );
@@ -576,6 +586,35 @@ class Entity
         return $result;
     }
 
+    /* ----------------------- Права доступа ------------------------ */
+    /**
+     * Проверка прав доступа двухэтапная:
+     *   1. Проверка на доступ к операциям API осуществляется на 
+     *      основе ролей пользователей (реализовано в REST Controller)
+     * 
+     *   2. Проверка на доступ к объектам сущностей осуществляется
+     *      на основе ролей CPM
+     */
+
+    /* ------------------- Права доступа к API  -------------------- */
+    /**
+     * Статический метод возвращает массив допустимых CRUD операций в API
+     * для ролей WordPress.
+     * Проверка на доступ к операциям осуществляется в классе Controller
+     * @return array      
+     */
+    public static function get_wp_role_api_permissions()
+    {
+        return apply_filters( 'cpm_api_role_permissions', array(
+            'administrator' => array( 'create', 'read', 'update', 'delete' ),  // Администратор
+            'employee'      => array( 'create', 'read', 'update', 'delete' ),  // Сотрудник
+            'lumper'        => array( 'create', 'read', 'update', 'delete' ),  // Подрядчик
+            'agent'         => array( 'create', 'read', 'update', 'delete' ),   // Представитель
+            'customer'      => array( 'create', 'read', 'update', 'delete' )   // Заказчик
+        ), static::class );
+    }
+
+
    /* -------------------- REST API ------------------- */
 
    /**
@@ -583,6 +622,7 @@ class Entity
     */
     public static $rest_api = true;         // Этот объект доступен в REST API
     public static $rest_base = 'object';    // База сущности в URI
+
 
     /**
      * Метод возвращает схему сущности для REST API
@@ -651,6 +691,28 @@ class Entity
                     ),
                 ),
             ),
+        );
+    }
+
+    /**
+     * Статический метод возвращает объект сущности для REST API
+     * в соответствии с полями схемы
+     * @static
+     * @param Entity $entity Объект сущности
+     * @return array
+     */
+    static public function get_rest_item( $item )
+    {
+        return array(
+            'id'        => $item->ID,
+            'title'     => $item->title,
+            'content'   => $item->content,
+            'slug'      => $item->slug,
+            'author'    => $item->author,
+            'parent'    => $item->parent,
+            'created'   => $item->created,
+            'order'     => $item->order,
+            'team'      => $item->team         
         );
     }
 }

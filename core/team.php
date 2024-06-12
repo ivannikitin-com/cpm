@@ -36,7 +36,8 @@ class Team
      * Удаляет участника
      * @param Member $member
      */
-    public function remove( $member ) {
+    public function remove( $member ) 
+    {
         $key = array_search($member, $this->members);
         if ($key !== false) {
             unset($this->members[$key]);
@@ -47,7 +48,24 @@ class Team
      * Проверяет, пустая ли команда
      * @return bool
      */
-    public function is_empty() {
+    public function is_empty() 
+    {
         return empty($this->members);
+    }
+
+    /**
+     * Возвращает роль указанного участника по ID
+     * или false, если участника нет
+     * @param int $member_id
+     * @return string|bool
+     */
+    public function get_role( $member_id ) 
+    {
+        foreach ($this->members as $member) {
+            if ( $member->id == $member_id ) {
+                return $member->role;
+            }
+        }
+        return false;
     }
 }

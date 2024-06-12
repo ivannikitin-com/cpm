@@ -52,8 +52,8 @@ class Project extends Entity
          'type'        => 'string'         
       ); 
       $schema[ 'properties' ][ 'is_active' ] = array(
-      'description' => __('Активный проект', CPM),
-      'type'        => 'string'         
+         'description' => __('Активный проект', CPM),
+         'type'        => 'string'         
    );
    return $schema;       
    }
@@ -146,8 +146,8 @@ class Project extends Entity
     * @static
     * @param array    $args     Параметры запроса
     */
-   public static function readList( $args=array() ) {
-      return parent::readList( array_merge( array( 
+   public static function read_list( $args=array() ) {
+      return parent::read_list( array_merge( array( 
                '_project_archive' => 'no', 
                '_project_active'  => 'yes', 
             ) , $args ) );
