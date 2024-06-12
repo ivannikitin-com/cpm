@@ -62,7 +62,7 @@ class Team
     public function get_role( $member_id ) 
     {
         foreach ($this->members as $member) {
-            if ( $member->id == $member_id ) {
+            if ( $member->ID == $member_id ) {
                 return $member->role;
             }
         }

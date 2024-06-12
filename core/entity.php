@@ -614,8 +614,221 @@ class Entity
         ), static::class );
     }
 
+    /* -------------- Права доступа к объектам сущности  ------------ */
+   /**
+    * Статичный метод возвращает роли участников в проекте и списки операций, 
+    * которые они могут выполнять над различными объектами проекта
+    */
+    public static function get_capabilities() 
+    {
+        return apply_filters( 'cpm_user_capabilities', array(
+            'owner' => array(
+            // Проект
+            'cpm_core_project' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true,
+                'archive'   => true,
+                'unarchive' => true
+            ),
+            // Список задач
+            'cpm_core_task_list' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true,
+                'archive'   => true,
+                'unarchive' => true
+            ),
+            // Задача
+            'cpm_core_task' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true
+            ),
+            // Сообщение и обсуждение
+            'cpm_core_message' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true
+            ),
+            // Файл проекта
+            'cpm_core_project_file' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true
+            )                                   
+        ),
+        // Сотрудник компании
+        'manager' => array(
+            // Проект
+            'cpm_core_project' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => false,
+                'create'    => true,
+                'archive'   => true,
+                'unarchive' => true
+            ),
+            // Список задач
+            'cpm_core_task_list' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true,
+                'archive'   => true,
+                'unarchive' => true
+            ),
+            // Задача
+            'cpm_core_task' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true
+            ),
+            // Сообщение и обсуждение
+            'cpm_core_message' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true
+            ),
+            // Файл проекта
+            'cpm_core_project_file' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true
+            )                                   
+        ),
+        // Подрядчик
+        'co_worker' => array(
+            // Проект
+            'cpm_core_project' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => false,
+                'create'    => true,
+                'archive'   => true,
+                'unarchive' => true
+            ),
+            // Список задач
+            'cpm_core_task_list' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true,
+                'archive'   => true,
+                'unarchive' => true
+            ),
+            // Задача
+            'cpm_core_task' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true
+            ),
+            // Сообщение и обсуждение
+            'cpm_core_message' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true
+            ),
+            // Файл проекта
+            'cpm_core_project_file' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true
+            )                                   
+        ),
+        // Заказчик
+        'client' => array(
+            // Проект
+            'cpm_core_project' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => false,
+                'create'    => true,
+                'archive'   => true,
+                'unarchive' => true
+            ),
+            // Список задач
+            'cpm_core_task_list' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true,
+                'archive'   => true,
+                'unarchive' => true
+            ),
+            // Задача
+            'cpm_core_task' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true
+            ),
+            // Сообщение и обсуждение
+            'cpm_core_message' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true
+            ),
+            // Файл проекта
+            'cpm_core_project_file' => array(
+                'read'      => true, 
+                'update'    => true,
+                'delete'    => true,
+                'create'    => true
+            )                                   
+        )));
+    }
 
-   /* -------------------- REST API ------------------- */
+    /**
+     * Метод возвращает true если пользователю разрешена эта операция
+     * @param string    $operation    Операция с объектом
+     * @param string    $entity_class Класс сущности
+     * @param int       $user_id      ID пользователя
+     * @return bool
+     */
+    public function user_can( $operation, $entity_class='', $user_id = 0 )
+    {
+        // Класс сущности
+        $entity_class = $entity_class ? $entity_class : static::get_class_name();
+
+        // ID пользователя и его роль
+        $user_id = $user_id ? $user_id : get_current_user_id();
+        $role = $this->team->get_role( $user_id );
+        if ( ! $role ) return false;    // Пользователь не состоит в команде
+
+        // Права доступа
+        $capabilities = static::get_capabilities();
+        if ( ! isset( $capabilities[ $role ] ) ) {
+            \CPM\Plugin::get_instance()->log( self::class . '::user_can() Не определены права доступа для роли ' . $role, 'warning' );
+            return false;
+        }
+
+        if (! isset( $capabilities[ $role ][ $entity_class] ) ) {
+            \CPM\Plugin::get_instance()->log( self::class . '::user_can() Не определены права доступа для сущности ' . $entity_class . ' роли ' . $role, 'warning' );
+            return false;
+        }
+
+        if ( ! isset( $capabilities[ $role ][ $entity_class ][ $operation ] ) ) {
+            \CPM\Plugin::get_instance()->log( self::class . '::user_can()  Не определены права доступа для операции ' . $operation . ' роли ' . $role . ' сущности ' . $entity_class, 'warning' );
+            return false;
+        }
+        return $capabilities[ $role ][ $entity_class ][ $operation ];
+    }
+
+
+    /* -------------------------- REST API -------------------------- */
 
    /**
     * Свойства REST API

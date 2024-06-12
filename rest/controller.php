@@ -102,10 +102,15 @@ class Controller extends \WP_REST_Controller
 		// Возвращаем коллекцию ресурсов
 		$data = array();
 		foreach ( $items as $item ) {
+			// Проверяем права доступа к ресурсу
+			if ( ! $item->user_can( 'read' ) ) {
+				continue;
+			}
+			
 			$data[] = $this->prepare_item_for_response( $item, $request );
 		}
 
-		\CPM\Plugin::get_instance()->log( self::class . ' get_items() result: ' . var_export( $data, true ), 'debug' );
+		\CPM\Plugin::get_instance()->log( self::class . ' get_items() result count: ' . count( $data ), 'debug' );
 		return $data;
 	}
 

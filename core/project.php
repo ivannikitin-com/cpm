@@ -13,8 +13,7 @@
 class Project extends Entity
 {
    /**
-    * Тип сущности
-    * Должно быть переопределено в наследнике
+    * Тип CPT
     */
    static public $CPT = 'cpm_project';
 
@@ -54,8 +53,8 @@ class Project extends Entity
       $schema[ 'properties' ][ 'is_active' ] = array(
          'description' => __('Активный проект', CPM),
          'type'        => 'string'         
-   );
-   return $schema;       
+      );
+      return $schema;       
    }
 
    /* -------------------- Инициализация ------------------- */
@@ -100,6 +99,22 @@ class Project extends Entity
          'is_active'     => '_project_active'      // Активный проект
       ));
    }
+
+    /**
+     * Статический метод возвращает объект сущности для REST API
+     * в соответствии с полями схемы
+     * @static
+     * @param Entity $entity Объект сущности
+     * @return array
+     */
+    static public function get_rest_item( $item )
+    {
+        return array_merge( parent::get_rest_item( $item ), array( 
+            'coordinator' => $item->coordinator,
+            'is_archive'  => $item->is_archive,
+            'is_active'   => $item->is_active 
+        ) );
+    }   
    
    /* -------------------- Запрос данных ------------------- */
    /**
@@ -185,43 +200,43 @@ class Project extends Entity
    }
 
    /* ------------ Обратная совместимость с CPM 1.x ------------------- */
-
-    /**
-     * Метод возвращает участников проекта, записанных в старом стиле
-     * В CPM < 2.0.0 участники проекта хранятся в отдельной таблице `wp_cpm_user_role`
-     * Решено только считывать их из этой таблицы, но при обновлении таблицу не перезаписывать,
-     * а хранить участников проекта, как участников всех остальных сущностей -- в мета-данных. 
-     * @param int $project_id ID проекта
-     * @return array
-     */
-    private function get_old_style_members( $project_id ) {
+   /**
+    * Метод возвращает участников проекта, записанных в старом стиле
+    * В CPM < 2.0.0 участники проекта хранятся в отдельной таблице `wp_cpm_user_role`
+    * Решено только считывать их из этой таблицы, но при обновлении таблицу не перезаписывать,
+    * а хранить участников проекта, как участников всех остальных сущностей -- в мета-данных. 
+    * @param int $project_id ID проекта
+    * @return array
+    */
+   private function get_old_style_members( $project_id ) 
+   {
       global $wpdb;
 
       // Проверяем наличие массива ролей старого стиля
       $cpm_user_roles = wp_cache_get( 'cpm_user_roles', 'cpm_project' );
       if ( empty( $cpm_user_roles ) ) {
-          // Массив проект => array( user_id, user_role )
-          $cpm_user_roles = array();
+            // Массив проект => array( user_id, user_role )
+            $cpm_user_roles = array();
 
-          // Запрос в БД
-          $rows = $wpdb->get_results( "
-              SELECT project_id, user_id, `role`
-              FROM {$wpdb->prefix}cpm_user_role 
-              ORDER BY id ASC
-          ", ARRAY_A );
+            // Запрос в БД
+            $rows = $wpdb->get_results( "
+               SELECT project_id, user_id, `role`
+               FROM {$wpdb->prefix}cpm_user_role 
+               ORDER BY id ASC
+            ", ARRAY_A );
 
-          // Формируем массив результатов
-          foreach ( $rows as $row ) {
-              $cpm_user_roles[ $row['project_id'] ][] = array(
+            // Формируем массив результатов
+            foreach ( $rows as $row ) {
+               $cpm_user_roles[ $row['project_id'] ][] = array(
                   'user_id' => $row['user_id'],
                   'user_role' => $row['role']
-              );;
-          }
+               );;
+            }
 
-          // Сохраняем в кэш
-          wp_cache_set( 'cpm_user_roles', $cpm_user_roles, 'cpm_project' );
+            // Сохраняем в кэш
+            wp_cache_set( 'cpm_user_roles', $cpm_user_roles, 'cpm_project' );
       }
 
       return isset( $cpm_user_roles[ $project_id ] ) ? $cpm_user_roles[ $project_id ] : array();
-  }
+   }
 }
