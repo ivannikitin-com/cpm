@@ -118,23 +118,22 @@ class Project extends Entity
    
    /* -------------------- Запрос данных ------------------- */
    /**
-    * SQL-запрос
+    * SQL-запрос  
     * @return string
     */
    protected static function get_sql()
    {
       global $wpdb;
       $cpt = self::$CPT;
-      return <<< END_SQL
-         SELECT
+      return "SELECT
             ID,
-            post_author,
-            post_date,
-            post_content,
-            post_title,
-            post_name,
-            post_parent,
-            menu_order,
+            MAX(post_author) AS post_author,
+            MAX(post_date) AS post_date,
+            MAX(post_content) AS post_content,
+            MAX(post_title) AS post_title,
+            MAX(post_name) AS post_name,
+            MAX(post_parent) AS post_parent,
+            MAX(menu_order) AS menu_order,
             MAX(CASE WHEN pm.meta_key = 'team' THEN pm.meta_value ELSE NULL END) AS _team,
             MAX(CASE WHEN pm.meta_key = '_project_archive' THEN pm.meta_value ELSE NULL END) AS _project_archive,
             MAX(CASE WHEN pm.meta_key = '_project_active' THEN pm.meta_value ELSE NULL END) AS _project_active,
@@ -150,11 +149,42 @@ class Project extends Entity
          HAVING
             TRUE
             -- EXTRA_WHERE --
-         ORDER BY
-            menu_order DESC,
-            post_title ASC    
-      END_SQL;
+         -- ORDER --
+         -- LIMIT --
+      ";
    }
+
+   /**
+    * Метод подготавливает параметры SQL запроса по массиву параметров
+    * @static
+    * @param mixed    $args     Массив параметров запроса (GET-параметры и др.)
+    * @return array             Метод возвращает массив с подготовленными параметрами
+    *                           array( 'WHERE' => array(...), 'LIMIT' => '...' ) 
+    */
+    protected static function get_sql_args( $args = array() )
+    {
+       global $wpdb;
+ 
+       $sql_args = parent::get_sql_args( $args );   
+ 
+       // Координатор проекта
+       if ( isset( $args[ 'coordinator' ] ) ) {
+          $sql_args['WHERE'][] = $wpdb->prepare( '_cpm_coordinator = %s',  $args[ 'coordinator' ] );
+       }
+ 
+       // Архивный проект
+       if ( isset( $args[ 'is_archive' ] ) ) {
+          $sql_args['WHERE'][] = $wpdb->prepare( '_project_archive = %s',  $args[ 'is_archive' ] );
+       }
+ 
+       // Активный проект
+       if ( isset( $args[ 'is_active' ] ) ) {
+          $sql_args['WHERE'][] = $wpdb->prepare( '_project_active = %s',  $args[ 'is_active' ] );
+       }
+ 
+       return $sql_args;
+    }
+
 
    /**
     * По умолчанию возвращаем только активные проекты
@@ -163,8 +193,9 @@ class Project extends Entity
     */
    public static function read_list( $args=array() ) {
       return parent::read_list( array_merge( array( 
-               '_project_archive' => 'no', 
-               '_project_active'  => 'yes', 
+               'is_archive' => 'no', 
+               'is_active'  => 'yes',
+               'orderby'    => 'menu_order DESC, post_title ASC'
             ) , $args ) );
    }
 

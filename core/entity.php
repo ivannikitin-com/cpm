@@ -280,7 +280,6 @@ class Entity
     }
 
     /* --------------------- Работа с БД ------------------ */
- 
     /**
      * Метод возвращает SQL запрос чтения сущности без WHERE
      * @static
@@ -290,16 +289,16 @@ class Entity
     {
         global $wpdb;
         $cpt = static::CPT;
-        return <<<END_SQL
-            SELECT
+
+        $sql = "SELECT
                     ID,
-                    post_author,
-                    post_date,
-                    post_content,
-                    post_title,
-                    post_name,
-                    post_parent,
-                    menu_order,
+                    MAX(post_author) AS post_author,
+                    MAX(post_date) AS post_date,
+                    MAX(post_content) AS post_content,
+                    MAX(post_title) AS post_title,
+                    MAX(post_name) AS post_name,
+                    MAX(post_parent) AS post_parent,
+                    MAX(menu_order) AS menu_order,
                     MAX(CASE WHEN pm.meta_key = 'team' THEN pm.meta_value ELSE NULL END) AS _team
                 FROM
                     {$wpdb->posts} p
@@ -307,12 +306,99 @@ class Entity
                             ON p.ID = pm.post_id
                 WHERE
                     post_type = '{$cpt}'
-                    -- EXTRA_WHERE --
                 GROUP BY
                     ID
-        END_SQL;
+                HAVING
+                    -- EXTRA_WHERE --
+                -- ORDER --
+                -- LIMIT --
+        ";
     }
 
+    /**
+     * Метод подготавливает параметры SQL запроса по массиву параметров
+     * @static
+     * @param mixed    $args     Массив параметров запроса (GET-параметры и др.)
+     * @return array             Метод возвращает массив с подготовленными параметрами
+     *                           array( 'WHERE' => array(...), 'LIMIT' => '...' ) 
+     */
+    protected static function get_sql_args( $args = array() )
+    {
+        global $wpdb;
+
+        // Возвращаемые параметры запроса
+        $sql_args = array(
+            'WHERE' => array(),
+            'ORDER' => null,
+            'LIMIT' => null
+        );
+
+        // Чтение и поиск известных параметров
+        foreach ( $args as $key => $value ) {
+            switch ( $key ) {
+                case 'id':
+                    $sql_args['WHERE'][] = $wpdb->prepare( 'ID = %d',  $value );
+                    break;
+
+                case 'author':
+                    $sql_args['WHERE'][] = $wpdb->prepare( 'post_author = %s',  $value );
+                    break;
+
+                case 'date':
+                    $sql_args['WHERE'][] = $wpdb->prepare( 'post_date = %s',  $value );
+                    break;
+
+                case 'content':
+                    $sql_args['WHERE'][] = $wpdb->prepare( 'post_content LIKE %s', '%'.$value.'%' );
+                    break;
+
+                case 'title':
+                    $sql_args['WHERE'][] = $wpdb->prepare( 'post_title LIKE %s', '%'.$value.'%' );
+                    break;
+
+                case 'slug':
+                    $sql_args['WHERE'][] = $wpdb->prepare( 'post_name = %s',  $value );
+                    break;
+
+                case 'parent':
+                    $sql_args['WHERE'][] = $wpdb->prepare( 'post_name = %d',  $value );
+                    break;                    
+
+                case 'orderby':
+                    $order_by = $wpdb->prepare( 'ORDER BY %s',  $value );
+                    // Примитивная очистка от инъекции
+                    $order_by = str_replace(array('\'', ';', '-', '--', 'UNION'), '', $order_by);
+                    $sql_args['ORDER'] = $order_by;
+                    break;
+
+                case 'limit':
+                    $sql_args['LIMIT'] = $wpdb->prepare( 'LIMIT %d',  $value );
+                    break;
+                }
+            }
+        return $sql_args;
+    }
+
+    /**
+     * Подготовка SQL запроса
+     * @static
+     * @param string   $sql      SQL запрос
+     * @param mixed    $sql_args Массив параметров запроса
+     * @return string
+     */
+    protected static function prepare_sql( $sql, $sql_args )
+    {
+        // Подстановка дополнительных параметров в запрос
+        if ( isset( $sql_args['WHERE'] ) && count( $sql_args['WHERE'] ) > 0 ) $sql = str_replace( 
+            '-- EXTRA_WHERE --', 
+            ' AND ' . implode( ' AND ', $sql_args['WHERE'] ), 
+            $sql 
+        );
+        if ( isset( $sql_args['ORDER'] ) ) $sql = str_replace( '-- ORDER --', $sql_args['ORDER'], $sql );
+        if ( isset( $sql_args['LIMIT'] ) ) $sql = str_replace( '-- LIMIT --', $sql_args['LIMIT'], $sql );
+
+        return $sql;
+    }
 
     /**
      * Метод считывает объект из БД по ID или по слагу
@@ -325,22 +411,12 @@ class Entity
     {
         global $wpdb;
 
-        // Если передан ID как int, запрашиваем по ID
-        if ( is_numeric( $id ) ) {
-            $query = $wpdb->prepare( 
-                    str_replace( '-- EXTRA_WHERE --', 'AND ID = %d', static::get_sql() ),
-                    $id 
-                );
-        }
-        else {
-            // Если передан слаг, то запрашиваем по слагу
-            $query = $wpdb->prepare( 
-                    str_replace( '-- EXTRA_WHERE --', 'AND post_name = %s', static::get_sql() ),
-                    $id 
-            );
-        }
-    
-        $post = $wpdb->get_row( $query, ARRAY_A );
+        $args = ( is_numeric( $id ) ) ? array( 'id' => $id ) : array( 'slug' => $id );
+        $sql = static::prepare_sql( static::get_sql(), static::get_sql_args( $args ) );
+        \CPM\Plugin::get_instance()->log( 'read SQL: ' . PHP_EOL. $sql, 'SQL' );
+
+        // Выполнение запроса
+        $post = $wpdb->get_row( $sql, ARRAY_A );
         if ( ! $post ) return null;
 
         // Создание сущности
@@ -355,28 +431,8 @@ class Entity
     public static function read_list( $args=array() ) {
         global $wpdb;
 
-        \CPM\Plugin::get_instance()->log( self::class . '::read_list() args: ' . var_export( $args, true ), 'debug' );
-        $where = '';
-        $params = array();
-
-        foreach ($args as $field => $value) {
-            $params[] = $value;
-            if ( is_int( $value ) ) {
-                $where .= " AND {$field} = %d";
-            }
-            elseif ( is_numeric( $value ) ) {
-                $where .= " AND {$field} = %f";
-            }
-            else {
-                $where .= " AND {$field} = %s";
-            }
-        }
-
-        // Запрос
-        $sql = $wpdb->prepare( 
-            str_replace( '-- EXTRA_WHERE --', $where, static::get_sql() ),
-            $params
-        );
+        // Параметры запроса
+        $sql = static::prepare_sql( static::get_sql(), static::get_sql_args( $args ) );;
         \CPM\Plugin::get_instance()->log( 'read_list SQL: ' . PHP_EOL. $sql, 'SQL' );
 
         // Выполнение запроса
@@ -459,7 +515,7 @@ class Entity
         $entity = static::read( $id );
         // Если удалось прочитать, сохраняем в кэш
         if ( $entity ) {
-            wp_cache_add( $entity_name, $entity, $class );
+            wp_cache_set( $entity_name, $entity, $class );
         }
         // Возвращаем сущность
         return $entity;
@@ -475,25 +531,29 @@ class Entity
         
         // Поиск сущностей в кэше
         $class = static::get_class_name();
-        $entities_array = $class . '_list';
+        $cache_key = $class . '_list';
         $list_id = md5( serialize( $args ) );
-        $debug_log_string = "CPM: Entity list cache:"  . $entities_array;
+        $debug_log_string = "CPM: Entity list cache:"  . $cache_key;
 
         // Проверка наличия списка в кэше
-        $entities_array = wp_cache_get( $entities_array, $class );
+        $entities_array = wp_cache_get( $cache_key, $class );
+
+        // Проверка наличия списка в кэше
         if ( $entities_array && isset( $entities_array[ $list_id ] ) ) {
             $debug_log_string .= ' hit!';
             \CPM\Plugin::get_instance()->log( $debug_log_string, 'debug' );
-            return $entities[ $list_id ];
+            return $entities_array[ $list_id ];
         }
         
         // Списка в кэше нет. Запрашиваем его из БД
         $debug_log_string .= ' miss! Calling ' . static::class . '::read_list()...';
         \CPM\Plugin::get_instance()->log( $debug_log_string, 'debug' );
         $entities = static::read_list( $args );
+
         // Если удалось прочитать, сохраняем в кэш
         if ( count( $entities ) > 0 ) {
-            wp_cache_add( $entities_array, array( $list_id => $entities ), $class );
+            $entities_array[$list_id] = $entities;
+            wp_cache_set( $cache_key, $entities_array, $class );
         }
         return $entities;
     }

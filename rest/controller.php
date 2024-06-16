@@ -93,8 +93,7 @@ class Controller extends \WP_REST_Controller
 	 */
 	public function get_items( $request )
 	{
-		// TODO: реализовать передачу параметров в запрос сущности!
-		$items = $this->entity_class::get_list();
+		$items = $this->entity_class::get_list( $request->get_params() );
 		if ( empty( $items ) ) {
 			return array();
 		}
