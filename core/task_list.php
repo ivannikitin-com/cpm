@@ -31,20 +31,4 @@ class Task_list extends Project_item
     {
        return '/task_list';
     }
- 
-    /**
-     * Метод возвращает схему проекта для REST API
-     * @static
-     * @return array
-     */ 
-    static public function get_rest_schema()
-    {
-       $schema = parent::get_rest_schema();
-       $schema[ 'properties' ][ 'coordinator' ] = array(
-          'description' => __('Координатор проекта', CPM),
-          'type'        => 'int'         
-       );
-       return $schema;       
-    }
-
 }

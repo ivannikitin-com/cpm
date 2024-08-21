@@ -22,4 +22,17 @@ class Manager extends \CPM\Core\Manager
         // Базовый конструктор
         parent::__construct();
     }
+
+    /**
+     * Проверка файла модуля
+     * Возвращает TRUE, если файл нужно загрузить через require
+     */
+    protected function is_module_file( $file_name ) {
+        // Если в имени файла есть .view.php, то это интерфейс. Не загружаем его
+        if ( strpos( $file_name, '.view.php' ) !== false ) {
+            return false;
+        }
+        // Отдаем проверку родителю
+        return parent::is_module_file( $file_name );
+    }
 }

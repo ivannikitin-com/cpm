@@ -35,7 +35,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Глобальные определения
  */
-define ( 'CPM', 'CPM' );
+define( 'CPM', 'CPM' );
+define( 'CPM_PATH', plugin_dir_path( __FILE__ ) );
+define( 'CPM_URL',  plugin_dir_url( __FILE__ ) );
+define( 'CPM_ADMIN_SLUG',  'cpm' );
 
 /**
  * Файлы плагина

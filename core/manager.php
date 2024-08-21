@@ -59,6 +59,18 @@ class Manager
     }
 
     /**
+     * Проверка файла модуля
+     * Возвращает TRUE, если файл нужно загрузить через require
+     */
+    protected function is_module_file( $file_name ) {
+        // Если это файл менеджера, то пропускаем
+        if ( 'manager.php' == basename( $file_name ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Загрузка файлов модуля CPM
      * Мы не используем (пока) автозагрузку, поэтому делается вручную
      * Метод помимо загрузки заполняет $this->files
@@ -68,8 +80,8 @@ class Manager
         $files = glob( $this->path . '*.php', GLOB_NOSORT);
               
         foreach ($files as $file) {
-            // Если это файл менеджера, то пропускаем
-            if ( 'manager.php' == basename( $file ) ) {
+            // Проверка файла модуля
+            if ( ! $this->is_module_file( $file ) ) {
                 continue;
             }
 
