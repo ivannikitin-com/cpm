@@ -67,6 +67,41 @@ class Project_item extends Entity
         ) );
     }
 
+   /* -------------------- Запрос данных ------------------- */
+   /**
+    * SQL-запрос  
+    * @return string
+    */
+    protected static function get_sql()
+    {
+       global $wpdb;
+       $cpt = static::$CPT;
+       return "SELECT
+             ID,
+             MAX(post_author) AS post_author,
+             MAX(post_date) AS post_date,
+             MAX(post_content) AS post_content,
+             MAX(post_title) AS post_title,
+             MAX(post_name) AS post_name,
+             MAX(post_parent) AS post_parent,
+             MAX(menu_order) AS menu_order,
+             MAX(CASE WHEN pm.meta_key = 'team' THEN pm.meta_value ELSE NULL END) AS _team
+          FROM
+             {$wpdb->posts} p
+                INNER JOIN {$wpdb->postmeta} pm
+                      ON p.ID = pm.post_id
+          WHERE
+             post_type = '{$cpt}'
+          GROUP BY
+             ID
+          HAVING
+             TRUE
+             -- EXTRA_WHERE --
+          -- ORDER --
+          -- LIMIT --
+       ";
+    }
+
 
     /* -------------- Права доступа к объектам сущности  ------------ */
 
