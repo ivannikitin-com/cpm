@@ -10,15 +10,17 @@
  */
 namespace CPM;
 
-class Plugin
-{
+class Plugin {
     /**
      * Единственный экземпляр данного класса
      */
     private static $instance = null;
 
-    public static function get_instance()
-    {
+    /**
+     * Возвращает единственный экземпляр данного класса
+     * @return Plugin
+     */
+    public static function get_instance() {
         if (self::$instance === null) {
             self::$instance = new self();
         }
@@ -33,19 +35,19 @@ class Plugin
     
     /**
      * Модуль REST API
-     * @var \CPM\Core\Manager
+     * @var \CPM\REST\Manager
      */
     public $rest;
     
     /**
      * Модуль интерфейса
-     * @var \CPM\Core\Manager
+     * @var \CPM\Views\Manager
      */
     public $views;
     
     /**
      * Модуль расширений
-     * @var \CPM\Core\Manager
+     * @var \CPM\Extensions\Manager
      */
     public $extensions;
 
@@ -53,48 +55,28 @@ class Plugin
     /**
      * Конструктор
      */
-    private function __construct()
-    {
-        // Файлы модулей
-        require_once __DIR__ . '/core/manager.php';
-        require_once __DIR__ . '/rest/manager.php';
-        require_once __DIR__ . '/views/manager.php';
-        require_once __DIR__ . '/extensions/manager.php';
+    private function __construct() {
+        // Загрузка базовых классов для модулей
+        require_once( __DIR__ . '/core/manager_base.php' );
 
-        // Хук ранней инициализации модулей
+        // Менеджер ядра
+        require_once( __DIR__ . '/core/manager.php' );
+        $this->core = new \CPM\Core\Manager();
+
+        // Хук ранней инициализации всех модулей
         add_action( 'init', array($this, 'init') );
     }
 
     /**
-     * Инициализируем подсистемы CPM
+     * Инициализируем модули CPM по хуку init
      */
     public function init()
     {
-        // Ядро
-        $this->core = new \CPM\Core\Manager();
+        // Инициализация ядра
+        $this->core->init();
 
-        // REST
-        $this->rest = new \CPM\REST\Manager();
-        
-        // Интерфейс
-        $this->views = new \CPM\Views\Manager();
-        
-        // Расширения
-        $this->extensions = new \CPM\Extensions\Manager();
     }
 
-    /**
-     * Полный список всех классов CPM
-     */
-    public function get_classes() 
-    {
-        return array_merge( 
-            $this->core->get_classes(), 
-            $this->rest->get_classes(), 
-            $this->views->get_classes(), 
-            $this->extensions->get_classes() 
-        );
-    }
 
     /**
      * Метод выводит в лог сообщения с разным уровнем важности
@@ -102,8 +84,7 @@ class Plugin
      * @param string $level Уровень важности
      * @return void
      */
-    public function log( $message, $level = 'info' )
-    {
+    public function log( $message, $level = 'info' ) {
         // Выводим только в режиме отладки
         if ( ! defined('WP_DEBUG') || ! WP_DEBUG ) {
             return;

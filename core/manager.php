@@ -1,114 +1,49 @@
 <?php
 /**
- * Класс менеджера модуля CPM
- * 
- * Менеджер ядра обеспечивает загрузку и инициализацию классов CPM.
- * От этого класса наследуются менеджеры других модулей CPM.
- * 
- * @package CPM
- * @author Ivan Nikitin
- * @version 3.0
+ * Класс менеджера ядра CPM
+ * Реализует загрузку и инициализацию всех классов ядра CPM
+ *
  */
 namespace CPM\Core;
 
-class Manager
-{
+class Manager extends ManagerBase {
     /**
-     * Рабочая папка модуля CPM
+     * Классы ядра и файлы с кодом
+     * @static array $classes
      */
-    protected $path = __DIR__ . '/';
+    private static $classes = array(
+        'Item'          => __DIR__ . '/item.php',
+        'Member'        => __DIR__ . '/member.php',
+        'Entity'        => __DIR__ . '/entity.php',
+        'EntityList'    => __DIR__ . '/entity_list.php',
+        'EntityAccess'  => __DIR__ . '/entity_access.php'
+    );
+
 
     /**
-     * Пространство имен модуля CPM
+     * Конструктор
+     * Загружает все классы ядра
+     * Мы не используем автоматическую загрузку по ряду причин
      */
-    protected $namespace = __NAMESPACE__ . '\\';
-
-    /**
-     * Файлы и классы модуля CPM
-     * array( файл => класс)
-     * @var array
-     */
-    protected $files = array();
-
-    /**
-     * Конструктор менеджера
-     */
-    public function __construct() 
+    public function __construct()
     {
-        // Загрузка файлов модуля CPM
-        $this->load();
-
-        // Ранняя инициализация классов модуля CPM
-        $this->early_init();
-    }
-
-    /**
-     * Метод возвращает все загруженные файлы модуля CPM
-     */
-    public function get_files()
-    {
-        return array_keys( $this->files );
-    }
-
-    /**
-     * Метод возвращает все имена классов модуля CPM
-     */
-    public function get_classes()
-    {
-        return array_values( $this->files );
-    }
-
-    /**
-     * Проверка файла модуля
-     * Возвращает TRUE, если файл нужно загрузить через require
-     */
-    protected function is_module_file( $file_name ) {
-        // Если это файл менеджера, то пропускаем
-        if ( 'manager.php' == basename( $file_name ) ) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Загрузка файлов модуля CPM
-     * Мы не используем (пока) автозагрузку, поэтому делается вручную
-     * Метод помимо загрузки заполняет $this->files
-     */
-    protected function load()
-    {
-        $files = glob( $this->path . '*.php', GLOB_NOSORT);
-              
-        foreach ($files as $file) {
-            // Проверка файла модуля
-            if ( ! $this->is_module_file( $file ) ) {
-                continue;
-            }
-
-            // Файл
+        // Загрузка файлов, не указанных в списке классов
+        require_once( __DIR__ . '/exceptions.php' );
+        
+        // Загрузка классов ядра
+        foreach ( self::$classes as $class => $file ) {
             require_once $file;
-            
-            // Имя класса -- это имя файла без пути и с большой буквы
-            $class = basename($file, '.php');
-            $class = $this->namespace . ucfirst($class);
-            $this->files[$file] = $class;
         }
     }
 
     /**
-     * Ранняя инициализация классов модуля CPM
-     * Экземпляры классов модуля CPM здесь НЕ СОЗДАЮТСЯ
+     * Метод инициализации классов ядра
      */
-    protected function early_init()
-    {
-        foreach ( $this->get_classes() as $class ) {
-            $debug_log_string = 'Core Manager early_init: ' . static::class . ' loading class ' . $class;
-            // Если у класса есть статичный метод init, то вызываем его
-            if ( method_exists( $class, 'init' ) ) {
-                $debug_log_string .= ' and calling init()';
-                $class::init();
-            }
-            \CPM\Plugin::get_instance()->log( $debug_log_string, 'debug' );
-        }
+    public function init() {
+        // Инициализируем все классы по списку
+        foreach ( self::$classes as $class => $file ) {
+            $class = __NAMESPACE__ . '\\' . $class;
+            $class::init();
+        }        
     }
 }
