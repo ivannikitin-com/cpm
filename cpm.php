@@ -41,9 +41,7 @@ define( 'CPM_URL',  plugin_dir_url( __FILE__ ) );
 define( 'CPM_ADMIN_SLUG',  'cpm' );
 
 /**
- * Файлы плагина
- */
-require_once __DIR__ . '/plugin.php';
-
-// Запуск CPM
+ * Запуск CPM
+ */ 
+require_once CPM_PATH . '/classes/plugin.php';
 \CPM\Plugin::get_instance();

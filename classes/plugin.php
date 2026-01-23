@@ -56,11 +56,9 @@ class Plugin {
      * Конструктор
      */
     private function __construct() {
-        // Загрузка базовых классов для модулей
-        require_once( __DIR__ . '/core/manager_base.php' );
-
         // Менеджер ядра
-        require_once( __DIR__ . '/core/manager.php' );
+        require_once( CPM_PATH . '/classes/manager_base.php' );
+        require_once( CPM_PATH . '/classes/core/manager.php' );
         $this->core = new \CPM\Core\Manager();
 
         // Хук ранней инициализации всех модулей
@@ -70,13 +68,11 @@ class Plugin {
     /**
      * Инициализируем модули CPM по хуку init
      */
-    public function init()
-    {
+    public function init(){
         // Инициализация ядра
         $this->core->init();
 
     }
-
 
     /**
      * Метод выводит в лог сообщения с разным уровнем важности

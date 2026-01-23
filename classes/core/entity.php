@@ -26,31 +26,31 @@ class Entity
      * @var int
      * Идентификатор объекта
      */
-    protected $id;
+    public $id;
 
     /**
      * @var string
      * Название объекта
      */
-    protected $title;
+    public $title;
 
     /**
      * @var string
      * Контент объекта
      */
-    protected $content;
+    public $content;
 
     /**
      * @var string
      * Автор объекта
      */
-    protected $author_id;
+    public $author_id;
 
     /**
      * @var string
      * Дата создания объекта
      */
-    protected $created_at;
+    public $created_at;
 
     /**
      * Родительская сущность
@@ -63,6 +63,43 @@ class Entity
      * @var string
      */
     public $slug = '';
+
+
+    /**
+     * Возвращает массив параметров со значениями по умолчанию
+     * Для инициализации сущности и всех последующих объектов данных
+     * используется массив с параметрами. Названия параметров максимально
+     * совпадают с названиями свойств объектов WP и полей в БД.
+     * Но следует всегда придерживаться названий в возвращаемом здесь массиве. 
+     */
+    public static function get_default_params(){
+        return [
+            'id' => null,
+            'title' => null,
+            'content' => null,
+            'author_id' => null,
+            'created_at' => null,
+            'parent' => null,
+            'slug' => null
+        ];
+    }
+
+    /**
+     * Конструктор сущности
+     * Инициализирует свойства объекта
+     * @param mixed params массив параметров
+     * @return void
+     */
+    public function __construct( $params = [] ) {
+        $params = array_merge( static::get_default_params(), $params );
+        $this->id = $params['id'];
+        $this->title = $params['title'];
+        $this->content = $params['content'];
+        $this->author_id = $params['author_id'];
+        $this->created_at = $params['created_at'];
+        $this->parent = $params['parent'];
+        $this->slug = $params['slug'];
+    }
 
 
     /* ------------------------- Мета свойства -------------------------
@@ -171,7 +208,7 @@ class Entity
      * @param string $slug        слаг сущности
      * @param array  $meta        мета-свойства
      */
-    public function __construct( $id = null, $title = null, $content = null, $author_id = null, $created_at = null, $parent = null, $slug = null, $meta = [] ) {
+    public function __construct_1( $id = null, $title = null, $content = null, $author_id = null, $created_at = null, $parent = null, $slug = null, $meta = [] ) {
         // Сохраняем параметры в свойства
         $this->id = $id;
         $this->title = $title;
