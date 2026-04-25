@@ -1,7 +1,137 @@
-*.log
-*.sql
-*.code-workspace
+# PHP dependencies
+/vendor/
+composer.phar
+composer.lock  # Раскомментируйте, если нужно игнорировать lock-файл
+
+# PHPUnit
+.phpunit.result.cache
+.phpunit.cache/
+.coverage
+.clover
+.coveralls.yml
+
+# IDE - VSCode
 .vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+*.code-workspace
 
+# IDE - Cursor
+.cursor/
+!.cursor/settings.json
+*.cursor-workspace
 
+# IDE - Другие (общие)
+.idea/
+*.sublime-*
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
 
+# Логи и кэш
+*.log
+*.cache
+*.tmp
+temp/
+tmp/
+logs/
+cache/
+runtime/
+
+# Конфиги с секретами
+.env
+.env.*
+!.env.example
+!.env.testing
+!.env.dusk
+
+# Файлы с конфиденциальной информацией
+.htpasswd
+.htaccess
+*.pem
+*.key
+*.crt
+*.p12
+.secrets/
+
+# Файлы сборки и пакетов
+*.phar
+*.zip
+*.tar.gz
+*.sql
+*.sql.gz
+dump.rdb
+
+# Node.js (если используются frontend инструменты)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# PHP CS Fixer, PHPStan, Psalm
+.php_cs.cache
+.php-cs-fixer.cache
+.phpstan.cache
+psalm.xml
+psalm-report.json
+
+# Dusk
+tests/Browser/screenshots/
+tests/Browser/console/
+.dusk/
+
+# Composer
+composer.lock  # Раскомментируйте, если нужно игнорировать lock-файл
+composer.phar
+user.ini
+.auth.json
+
+# Файлы отладки
+.xdebug.log
+xdebug.log
+debug.log
+error_log
+php_error.log
+
+# Профилирование
+cachegrind.out*
+*.prof
+
+# Docker
+.docker/
+docker-compose.override.yml
+!docker-compose.yml
+.containerd/
+
+# Makefile артефакты
+*.make
+.make/
+
+# Bash history
+.bash_history
+.zsh_history
+
+# Тестовые файлы
+test_*.php
+*_test.php
+!*Test.php
+coverage/
+test-reports/
+
+# Временные файлы редакторов
+*.bak
+*.orig
+*.rej
+*.swo
+*.swp
+*~
+.DS_Store
+._*
+
+# Отчеты
+*.html.twig
+report.html
+report.xml
