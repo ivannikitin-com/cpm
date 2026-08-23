@@ -1,0 +1,9 @@
+.git
+www
+log
+source
+docs
+sql
+tests
+vendor
+*.md

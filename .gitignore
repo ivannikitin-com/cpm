@@ -106,6 +106,17 @@ docker-compose.override.yml
 !docker-compose.yml
 .containerd/
 
+# Локальная установка WordPress на стенде
+# В www/ отслеживается только шаблон wp-config.php
+www/*
+!www/wp-config.php
+
+# Логи стенда (nginx, PHP, wp-content/debug.log)
+log/*
+!log/**/
+!log/**/.gitkeep
+!log/wp-content/debug.log
+
 # Makefile артефакты
 *.make
 .make/
