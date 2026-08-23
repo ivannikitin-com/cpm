@@ -25,15 +25,17 @@ if ( ! defined( 'CPM_BACKWARD_COMPATIBILITY' ) ) {
 	define( 'CPM_BACKWARD_COMPATIBILITY', true );
 }
 
-// Загрузка классов ядра. Список пополняется по мере реализации.
-// Пути соответствуют docs/core/README.md.
+// Загрузка классов плагина. Список пополняется по мере реализации.
+// Порядок повторяет загрузку в source/cpm.php и конструкторах менеджеров.
 $cpm_classes = array(
-	// 'classes/plugin.php',
-	// 'classes/base_manager.php',
-	// 'classes/core/core_manager.php',
-	// 'classes/core/entity.php',
-	// 'classes/core/project.php',
-	// ...
+	'source/classes/plugin.php',
+	'source/classes/base_manager.php',
+	'source/classes/settings.php',
+	'source/classes/core/acl.php',
+	'source/classes/core/core_manager.php',
+	'source/classes/rest_api/rest_api_manager.php',
+	'source/classes/ui/ui_manager.php',
+	'source/extensions/extensions_manager.php',
 );
 
 foreach ( $cpm_classes as $relative ) {

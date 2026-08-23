@@ -25,7 +25,7 @@ require_once $wp_tests_dir . '/includes/functions.php';
 tests_add_filter(
 	'muplugins_loaded',
 	function () {
-		$main_file = dirname( __DIR__, 2 ) . '/cpm.php';
+		$main_file = dirname( __DIR__, 2 ) . '/source/cpm.php';
 		if ( file_exists( $main_file ) ) {
 			require_once $main_file;
 		}
