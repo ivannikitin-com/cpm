@@ -57,6 +57,7 @@ services:
       - wp_data:/var/www/html:rw
       - ./www:/var/www/wp-config-host:ro
       - ./source:/var/www/html/wp-content/plugins/cpm:rw
+      - .:/opt/cpm:rw
       - ./log/php84:/var/log/php:rw
     env_file:
       - .env
@@ -97,6 +98,7 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 5s

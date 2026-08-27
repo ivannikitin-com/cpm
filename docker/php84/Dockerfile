@@ -23,4 +23,6 @@ RUN apt-get update \
         exif \
     && rm -rf /var/lib/apt/lists/*
 
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
 COPY conf/php84.ini /usr/local/etc/php/conf.d/cpm.ini

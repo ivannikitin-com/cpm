@@ -63,6 +63,7 @@ backup/
 *.tar.gz
 *.sql
 *.sql.gz
+!sql/**/*.sql
 dump.rdb
 
 # Node.js (если используются frontend инструменты)

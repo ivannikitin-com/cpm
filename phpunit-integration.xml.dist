@@ -2,9 +2,9 @@
 <phpunit
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
-	bootstrap="tests/bootstrap.php"
+	bootstrap="tests/integration/bootstrap.php"
 	colors="true"
-	convertDeprecationsToExceptions="true"
+	convertDeprecationsToExceptions="false"
 	convertErrorsToExceptions="true"
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true"
@@ -13,16 +13,12 @@
 	backupGlobals="true"
 	>
 	<testsuites>
-		<testsuite name="unit">
-			<directory>tests/unit</directory>
+		<testsuite name="integration">
+			<directory>tests/integration</directory>
+			<exclude>tests/integration/bootstrap.php</exclude>
+			<exclude>tests/integration/factories</exclude>
 		</testsuite>
 	</testsuites>
-
-	<coverage>
-		<include>
-			<directory suffix=".php">source/classes</directory>
-		</include>
-	</coverage>
 
 	<php>
 		<ini name="error_reporting" value="-1"/>

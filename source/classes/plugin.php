@@ -99,10 +99,11 @@ class Plugin {
 	 */
 	public function init() {
 		$this->core       = new \CPM\v3\Core\Core_Manager();
-		$this->rest_api   = new REST_API_Manager();
-		$this->ui         = new UI_Manager();
-		$this->extensions = new Extensions_Manager();
+		$this->rest_api   = new REST\REST_API_Manager();
+		$this->ui         = new UI\UI_Manager();
+		$this->extensions = new Extensions\Extensions_Manager();
 		$this->settings   = new Settings();
+		\CPM\v3\Core\Activity::register_hooks();
 	}
 
 	/**
