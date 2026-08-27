@@ -55,6 +55,7 @@ runtime/
 *.crt
 *.p12
 .secrets/
+backup/
 
 # Файлы сборки и пакетов
 *.phar
@@ -106,16 +107,14 @@ docker-compose.override.yml
 !docker-compose.yml
 .containerd/
 
-# Локальная установка WordPress на стенде
-# В www/ отслеживается только шаблон wp-config.php
+# В www/ отслеживается только шаблон wp-config.php (ядро WP — в Docker volume)
 www/*
 !www/wp-config.php
 
-# Логи стенда (nginx, PHP, wp-content/debug.log)
+# Логи стенда (nginx, PHP)
 log/*
 !log/**/
 !log/**/.gitkeep
-!log/wp-content/debug.log
 
 # Makefile артефакты
 *.make

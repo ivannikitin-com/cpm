@@ -9,12 +9,17 @@ services:
       - "8081:8081" # PHP 8.4 (новая CPM v3)
     volumes:
       - wp_data:/var/www/html:rw
+      - ./www:/var/www/wp-config-host:ro
       - ./source:/var/www/html/wp-content/plugins/cpm:ro
       - ./conf/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./log/nginx:/var/log/nginx:rw
     depends_on:
-      - php74
-      - php84
+      wp-init:
+        condition: service_completed_successfully
+      php74:
+        condition: service_started
+      php84:
+        condition: service_started
 
   php74:
     build:
@@ -24,15 +29,23 @@ services:
     working_dir: /var/www/html
     volumes:
       - wp_data:/var/www/html:rw
-      - ./www/wp-config.php:/var/www/html/wp-config.php:rw
+      - ./www:/var/www/wp-config-host:ro
       - ./source:/var/www/html/wp-content/plugins/cpm:rw
       - ./log/php74:/var/log/php:rw
-      - ./log/wp-content/debug.log:/var/www/html/wp-content/debug.log:rw
+    env_file:
+      - .env
     environment:
       DB_HOST: mysql
-      DB_NAME: wordpress
-      DB_USER: wordpress
-      DB_PASSWORD: wordpress
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      WP_HOME: ${WP_HOME:-http://localhost:8081}
+      WP_SITEURL: ${WP_SITEURL:-http://localhost:8081}
+    depends_on:
+      wp-init:
+        condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
 
   php84:
     build:
@@ -42,31 +55,50 @@ services:
     working_dir: /var/www/html
     volumes:
       - wp_data:/var/www/html:rw
-      - ./www/wp-config.php:/var/www/html/wp-config.php:rw
+      - ./www:/var/www/wp-config-host:ro
       - ./source:/var/www/html/wp-content/plugins/cpm:rw
       - ./log/php84:/var/log/php:rw
-      - ./log/wp-content/debug.log:/var/www/html/wp-content/debug.log:rw
+    env_file:
+      - .env
     environment:
       DB_HOST: mysql
-      DB_NAME: wordpress
-      DB_USER: wordpress
-      DB_PASSWORD: wordpress
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      WP_HOME: ${WP_HOME:-http://localhost:8081}
+      WP_SITEURL: ${WP_SITEURL:-http://localhost:8081}
+    depends_on:
+      wp-init:
+        condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
+
+  # Одноразово: ядро WP в volume wp_data + symlink на www/wp-config.php
+  wp-init:
+    build:
+      context: .
+      dockerfile: docker/php84/Dockerfile
+    container_name: cpm-wp-init
+    working_dir: /var/www/html
+    volumes:
+      - wp_data:/var/www/html:rw
+      - ./www:/var/www/wp-config-host:ro
+      - ./docker/init-wordpress.sh:/usr/local/bin/init-wordpress.sh:ro
+    entrypoint: ["/bin/sh", "/usr/local/bin/init-wordpress.sh"]
+    restart: "no"
 
   mysql:
     image: mysql:8.0
     container_name: cpm-mysql
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
+    env_file:
+      - .env
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 5s
       timeout: 3s
       retries: 20

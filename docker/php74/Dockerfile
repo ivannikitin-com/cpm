@@ -11,6 +11,7 @@ RUN apt-get update \
         libxml2-dev \
         unzip \
         git \
+        curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(nproc)" \
         gd \

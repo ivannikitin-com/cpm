@@ -7,30 +7,30 @@
  * Дополните соли и при необходимости правки.
  */
 
-// ===== MySQL (сервис `mysql` из docker-compose) =====
-define( 'DB_NAME', 'wordpress' );
-define( 'DB_USER', 'wordpress' );
-define( 'DB_PASSWORD', 'wordpress' );
-define( 'DB_HOST', 'mysql' );
+// ===== MySQL (из env контейнера PHP: DB_* ← docker-compose / .env) =====
+define( 'DB_NAME', getenv( 'DB_NAME' ) ?: 'CPM' );
+define( 'DB_USER', getenv( 'DB_USER' ) ?: 'cpm' );
+define( 'DB_PASSWORD', getenv( 'DB_PASSWORD' ) ?: '' );
+define( 'DB_HOST', getenv( 'DB_HOST' ) ?: 'mysql' );
 define( 'DB_CHARSET', 'utf8mb4' );
 define( 'DB_COLLATE', '' );
+$table_prefix = 'wp_';
 
 // ===== Секретные ключи =====
 // Замените пустые строки: https://api.wordpress.org/secret-key/1.1/salt/
-define( 'AUTH_KEY',         'put_your_unique_phrase_here' );
-define( 'SECURE_AUTH_KEY',  'put_your_unique_phrase_here' );
-define( 'LOGGED_IN_KEY',    'put_your_unique_phrase_here' );
-define( 'NONCE_KEY',        'put_your_unique_phrase_here' );
-define( 'AUTH_SALT',        'put_your_unique_phrase_here' );
-define( 'SECURE_AUTH_SALT', 'put_your_unique_phrase_here' );
-define( 'LOGGED_IN_SALT',   'put_your_unique_phrase_here' );
-define( 'NONCE_SALT',       'put_your_unique_phrase_here' );
-
-$table_prefix = 'wp_';
+define('AUTH_KEY',         'zY2Y81Q>-tUXO-|=jhThUH3RT)a{F+f4xn{0vRGxH|=#r}a3HUld8mPGUag-ZlE^');
+define('SECURE_AUTH_KEY',  'tUtkk5#?0vajm/%8.E_UyL]l4Wira*IN-+CGYx}l]=rpGYxYw}+nLT+%sM_7GfG.');
+define('LOGGED_IN_KEY',    '{nxfTj0~tfJ:{Y4T2n%5:G+o0^}%Y1&u;a^nYqfAC e)0x)gfx83o&tL3psvAD?}');
+define('NONCE_KEY',        ']Z1xEo-G^B3/wtM1^$9H6Lgot*DY0KAwo3.:huZqsq?]+e~A<D@b[>f7c+dLkMG5');
+define('AUTH_SALT',        'k1EtDvd*  6v+|+vncN%9lvM}|lm^kg]Gj~y|G(;^Jq;&``GoT-QtT6,|Gg>?s3a');
+define('SECURE_AUTH_SALT', 'X_w3CYR->h2EhR+yME(?3|UF?NaS-->^g-L9`Ls59+=8u?]!}#_Brm!@i+pRq?EF');
+define('LOGGED_IN_SALT',   'wto/tG@&| -77]B]TQs1= rH/;E&y9n& G=R8Ql 6j7`|pw(3VP&bJg-D {>+HtT');
+define('NONCE_SALT',       '9GQMxoa$V_Fc/0?>~ot5?#|=bo4gbR5F_zXz+{$;uyWr(/6s6R<4ix(a=e8<u)]s');
 
 // ===== Отладка =====
 define( 'WP_DEBUG', true );
-define( 'WP_DEBUG_LOG', true );  // пишет в wp-content/debug.log (смонтирован в log/wp-content/debug.log)
+// Пишет в /var/log/php/wp-debug.log → на хосте log/php74|php84/wp-debug.log
+define( 'WP_DEBUG_LOG', '/var/log/php/wp-debug.log' );
 define( 'WP_DEBUG_DISPLAY', false );
 define( 'SCRIPT_DEBUG', true );
 
@@ -42,9 +42,9 @@ define( 'SCRIPT_DEBUG', true );
 define( 'WP_AUTO_UPDATE_CORE', false );
 define( 'DISALLOW_FILE_EDIT', false );
 
-// ===== Настройки URL (заполните при необходимости) =====
-// define( 'WP_HOME', 'http://localhost:8081' );
-// define( 'WP_SITEURL', 'http://localhost:8081' );
+// ===== URL (основной стенд v3 — порт 8081; переопределение через env) =====
+define( 'WP_HOME', getenv( 'WP_HOME' ) ?: 'http://localhost:8081' );
+define( 'WP_SITEURL', getenv( 'WP_SITEURL' ) ?: 'http://localhost:8081' );
 
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );

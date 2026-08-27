@@ -7,8 +7,10 @@ RUN apt-get update \
         libpng-dev \
         libzip-dev \
         libicu-dev \
+        libonig-dev \
         unzip \
         git \
+        curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(nproc)" \
         gd \
