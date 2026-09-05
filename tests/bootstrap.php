@@ -32,6 +32,38 @@ if ( ! defined( 'ARRAY_A' ) ) {
 	define( 'ARRAY_A', 'ARRAY_A' );
 }
 
+// Минимальный стаб WP_Error для юнит-тестов (без ядра WordPress).
+if ( ! class_exists( 'WP_Error' ) ) {
+	class WP_Error {
+		private $errors = array();
+
+		public function __construct( $code = '', $message = '' ) {
+			if ( '' !== $code ) {
+				$this->errors[ $code ][] = $message;
+			}
+		}
+
+		public function get_error_code() {
+			if ( ! $this->errors ) {
+				return '';
+			}
+			return key( $this->errors );
+		}
+
+		public function get_error_message() {
+			$code = $this->get_error_code();
+			if ( '' === $code || empty( $this->errors[ $code ] ) ) {
+				return '';
+			}
+			return $this->errors[ $code ][0];
+		}
+
+		public function add( $code, $message ) {
+			$this->errors[ $code ][] = $message;
+		}
+	}
+}
+
 // Загрузка классов плагина. Список пополняется по мере реализации.
 // Порядок повторяет загрузку в source/cpm.php и конструкторах менеджеров.
 $cpm_classes = array(

@@ -84,6 +84,51 @@ class Activity_Test extends Cpm_TestCase {
 		$this->assertConditionsMet();
 	}
 
+	/**
+	 * @dataProvider provider_events
+	 * @param string $event Имя обработчика: on_create / on_update / on_delete.
+	 */
+	public function test_logs_create_update_delete_of_project_entity( $event ) {
+		$project = new Project( array( 'id' => 10 ) );
+		$task    = new Task( array( 'id' => 20, 'title' => 'Задача', 'project_id' => 10 ) );
+
+		$core = $this->createMock( Core_Manager::class );
+		$core->method( 'load_list' )->willReturn( array( $project ) );
+		$this->set_core_manager( $core );
+
+		\WP_Mock::userFunction( 'wp_cache_get' )->andReturn( false );
+		\WP_Mock::userFunction( 'wp_cache_set' );
+		\WP_Mock::userFunction( 'wp_get_current_user' )->andReturn(
+			(object) array( 'display_name' => 'Иван' )
+		);
+		\WP_Mock::userFunction( 'get_current_user_id' )->andReturn( 12 );
+		\WP_Mock::userFunction( 'wp_insert_comment' )->once()->with(
+			\Mockery::on(
+				function ( $data ) {
+					return Activity::COMMENT_TYPE === $data['comment_type']
+						&& 10 === $data['comment_post_ID'];
+				}
+			)
+		)->andReturn( 100 );
+
+		Activity::$event( $task );
+		$this->assertConditionsMet();
+	}
+
+	public function provider_events() {
+		return array(
+			'create' => array( 'on_create' ),
+			'update' => array( 'on_update' ),
+			'delete' => array( 'on_delete' ),
+		);
+	}
+
+	public function test_skips_entity_without_project() {
+		\WP_Mock::userFunction( 'wp_insert_comment' )->never();
+		Activity::on_create( new Task( array( 'id' => 20, 'title' => 'Вне проекта' ) ) );
+		$this->assertConditionsMet();
+	}
+
 	public function test_get_activity_filters_comment_type() {
 		$legacy = (object) array(
 			'comment_ID'      => 8,
@@ -135,5 +180,51 @@ class Activity_Test extends Cpm_TestCase {
 		$activity = new Activity( array( 'id' => 8 ) );
 		$this->invoke_protected( $activity, 'delete_entity' );
 		$this->assertConditionsMet();
+	}
+
+	public function test_query_rows_applies_pagination_and_sort() {
+		$entry = (object) array(
+			'comment_ID'      => 8,
+			'comment_content' => 'Создано',
+			'user_id'         => 12,
+			'comment_date'    => '2024-01-01 00:00:00',
+			'comment_post_ID' => 10,
+		);
+		\WP_Mock::userFunction( 'get_comments' )->once()->with(
+			\Mockery::on(
+				function ( $query ) {
+					return Activity::COMMENT_TYPE === $query['type']
+						&& 10 === $query['post_id']
+						&& 5 === $query['number']
+						&& 10 === $query['offset']
+						&& 'comment_ID' === $query['orderby']
+						&& 'asc' === $query['order'];
+				}
+			)
+		)->andReturn( array( $entry ) );
+
+		$rows = Activity::query_rows(
+			array(
+				'project_id' => 10,
+				'per_page'   => 5,
+				'page'       => 3,
+				'orderby'    => 'id',
+				'order'      => 'asc',
+			)
+		);
+		$this->assertCount( 1, $rows );
+		$this->assertSame( 8, $rows[0]['id'] );
+	}
+
+	public function test_query_count_returns_total() {
+		\WP_Mock::userFunction( 'get_comments' )->once()->with(
+			\Mockery::on(
+				function ( $query ) {
+					return true === $query['count'] && Activity::COMMENT_TYPE === $query['type'] && 10 === $query['post_id'];
+				}
+			)
+		)->andReturn( 42 );
+
+		$this->assertSame( 42, Activity::query_count( array( 'project_id' => 10 ) ) );
 	}
 }

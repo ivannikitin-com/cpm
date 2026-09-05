@@ -21,6 +21,177 @@ class Attachment_Test extends Cpm_TestCase {
 		$this->assertSame( 'attachment', $file->get_type() );
 	}
 
+	public function test_allowed_mime_types_have_pdf_and_images() {
+		$mimes = Attachment::get_allowed_mime_types();
+		$this->assertArrayHasKey( 'pdf', $mimes );
+		$this->assertSame( 'application/pdf', $mimes['pdf'] );
+		$this->assertArrayHasKey( 'png', $mimes );
+	}
+
+	public function test_validate_upload_rejects_missing_file() {
+		$result = Attachment::validate_upload( array() );
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertSame( 'cpm_upload_no_file', $result->get_error_code() );
+	}
+
+	public function test_validate_upload_rejects_upload_error() {
+		$file   = array(
+			'name'     => 'spec.pdf',
+			'tmp_name' => '/tmp/php123',
+			'error'    => UPLOAD_ERR_PARTIAL,
+			'size'     => 100,
+		);
+		$result = Attachment::validate_upload( $file );
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertSame( 'cpm_upload_failed', $result->get_error_code() );
+	}
+
+	public function test_validate_upload_rejects_oversized_file() {
+		\WP_Mock::userFunction( 'wp_max_upload_size' )->andReturn( 1000 );
+
+		$file = array(
+			'name'     => 'spec.pdf',
+			'tmp_name' => '/tmp/php123',
+			'error'    => 0,
+			'size'     => 2000,
+		);
+		$result = Attachment::validate_upload( $file );
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertSame( 'cpm_upload_too_large', $result->get_error_code() );
+	}
+
+	public function test_validate_upload_rejects_bad_type() {
+		\WP_Mock::userFunction( 'wp_max_upload_size' )->andReturn( 1000 );
+		\WP_Mock::userFunction( 'wp_check_filetype' )->andReturn( array( 'ext' => false, 'type' => false ) );
+
+		$file = array(
+			'name'     => 'evil.exe',
+			'tmp_name' => '/tmp/php123',
+			'error'    => 0,
+			'size'     => 100,
+		);
+		$result = Attachment::validate_upload( $file );
+		$this->assertInstanceOf( \WP_Error::class, $result );
+		$this->assertSame( 'cpm_upload_bad_type', $result->get_error_code() );
+	}
+
+	public function test_validate_upload_accepts_valid_file() {
+		\WP_Mock::userFunction( 'wp_max_upload_size' )->andReturn( 1000 );
+		\WP_Mock::userFunction( 'wp_check_filetype' )->andReturn(
+			array(
+				'ext'  => 'pdf',
+				'type' => 'application/pdf',
+			)
+		);
+
+		$file = array(
+			'name'     => 'spec.pdf',
+			'tmp_name' => '/tmp/php123',
+			'error'    => 0,
+			'size'     => 100,
+			'type'     => 'application/pdf',
+		);
+		$this->assertTrue( Attachment::validate_upload( $file ) );
+	}
+
+	public function test_create_from_upload_returns_error_on_invalid() {
+		\WP_Mock::userFunction( 'is_wp_error' )->andReturnUsing(
+			function ( $thing ) {
+				return $thing instanceof \WP_Error;
+			}
+		);
+		$result = Attachment::create_from_upload( array() );
+		$this->assertInstanceOf( \WP_Error::class, $result );
+	}
+
+	public function test_create_from_upload_moves_file_and_creates_attachment() {
+		\WP_Mock::userFunction( 'wp_max_upload_size' )->andReturn( 1000 );
+		\WP_Mock::userFunction( 'wp_check_filetype' )->andReturn(
+			array(
+				'ext'  => 'pdf',
+				'type' => 'application/pdf',
+			)
+		);
+		\WP_Mock::userFunction( 'remove_filter' )->andReturn( true );
+		\WP_Mock::userFunction( 'wp_handle_upload' )->once()->andReturn(
+			array(
+				'file' => '/srv/uploads/cpm/spec.pdf',
+				'url'  => 'http://cpm.test/wp-content/uploads/cpm/spec.pdf',
+				'type' => 'application/pdf',
+			)
+		);
+		\WP_Mock::userFunction( 'is_wp_error' )->andReturnUsing(
+			function ( $thing ) {
+				return $thing instanceof \WP_Error;
+			}
+		);
+		\WP_Mock::userFunction( 'sanitize_file_name' )->andReturnUsing(
+			function ( $name ) {
+				return $name;
+			}
+		);
+		\WP_Mock::userFunction( 'wp_insert_attachment' )->once()->andReturn( 42 );
+		\WP_Mock::userFunction( 'wp_generate_attachment_metadata' )->andReturn( array() );
+		\WP_Mock::userFunction( 'wp_update_attachment_metadata' )->once()->with( 42, array() );
+		\WP_Mock::userFunction( 'update_post_meta' )->andReturn( true );
+		\WP_Mock::userFunction( 'get_comment' )->andReturn( null );
+
+		$file = array(
+			'name'     => 'spec.pdf',
+			'tmp_name' => '/tmp/php123',
+			'error'    => 0,
+			'size'     => 100,
+			'type'     => 'application/pdf',
+		);
+		$id   = Attachment::create_from_upload( $file, 15, 20 );
+		$this->assertSame( 42, $id );
+	}
+
+	public function test_create_from_upload_binds_file_to_comment() {
+		\WP_Mock::userFunction( 'wp_max_upload_size' )->andReturn( 1000 );
+		\WP_Mock::userFunction( 'wp_check_filetype' )->andReturn(
+			array(
+				'ext'  => 'pdf',
+				'type' => 'application/pdf',
+			)
+		);
+		\WP_Mock::userFunction( 'remove_filter' )->andReturn( true );
+		\WP_Mock::userFunction( 'wp_handle_upload' )->andReturn(
+			array(
+				'file' => '/srv/uploads/cpm/spec.pdf',
+				'url'  => 'http://cpm.test/wp-content/uploads/cpm/spec.pdf',
+				'type' => 'application/pdf',
+			)
+		);
+		\WP_Mock::userFunction( 'is_wp_error' )->andReturnUsing(
+			function ( $thing ) {
+				return $thing instanceof \WP_Error;
+			}
+		);
+		\WP_Mock::userFunction( 'sanitize_file_name' )->andReturnUsing(
+			function ( $name ) {
+				return $name;
+			}
+		);
+		\WP_Mock::userFunction( 'wp_insert_attachment' )->andReturn( 42 );
+		\WP_Mock::userFunction( 'wp_generate_attachment_metadata' )->andReturn( array() );
+		\WP_Mock::userFunction( 'wp_update_attachment_metadata' );
+		\WP_Mock::userFunction( 'update_post_meta' );
+		\WP_Mock::userFunction( 'get_comment' )->once()->with( 77 )->andReturn( (object) array( 'comment_ID' => 77 ) );
+		\WP_Mock::userFunction( 'get_comment_meta' )->with( 77, '_files', true )->andReturn( array( 5 ) );
+		\WP_Mock::userFunction( 'update_comment_meta' )->once()->with( 77, '_files', array( 5, 42 ) );
+
+		$file = array(
+			'name'     => 'spec.pdf',
+			'tmp_name' => '/tmp/php123',
+			'error'    => 0,
+			'size'     => 100,
+			'type'     => 'application/pdf',
+		);
+		$id   = Attachment::create_from_upload( $file, 15, 77 );
+		$this->assertSame( 42, $id );
+	}
+
 	public function test_get_project_uses_project_meta() {
 		$project = new Project( array( 'id' => 15 ) );
 		$core    = $this->createMock( Core_Manager::class );

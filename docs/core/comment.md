@@ -32,17 +32,22 @@
 
 ## Свойства
 
-- `content` — текст комментария (см. `контент-сущностей.md`).
-- `author` — автор комментария.
-- `created_at` — дата создания.
-- `parent` — сущность, к которой относится комментарий.
+| Свойство | Тип | Соответствие полю `comments` |
+| -------- | --- | ----------------------------- |
+| `content` | string | `comment_content` — текст комментария (см. `контент-сущностей.md`) |
+| `author` | int | `user_id` — автор комментария |
+| `created_at` | string | `comment_date` — дата создания |
+| `parent` | int | `comment_post_ID` — сущность, к которой относится комментарий |
+| `files` | int[] | `commentmeta._files` — сериализованный массив ID вложений (см. `attachment.md`) |
 
-## Связанные данные
+## Чтение через ядро (решение)
 
-- Вложения комментария: файлы привязаны к комментарию через `commentmeta._files` (сериализованный массив ID вложений). См. `attachment.md`.
+Чтение комментариев выполняется через `Core_Manager::load_list( 'comment', $args )`, который делегирует в `Comment::query_rows()` (штатный `WP_Comment_Query` / `get_comments()`, тип `comment`, статус `approve`):
+
+- Фильтры: `parent` (комментарии сущности), `id` (один комментарий).
+- Пагинация/сортировка: `per_page`/`page`/`offset`, `orderby`/`order` — транслируются в аргументы `WP_Comment_Query`. Свойство `orderby` маппится в поле WP (`id → comment_ID`, `created_at → comment_date`, `author → user_id`, `parent → comment_post_ID`, `content → comment_content`); по умолчанию `comment_date_gmt ASC`.
+- Общее число комментариев — `Comment::query_count()` (`count => true`) через `Core_Manager::count_list( 'comment', $args )`.
 
 ## Открытые вопросы
 
-- [ ] Точный набор свойств и их соответствие полям таблицы `comments` WordPress.
-- [ ] Как формируется `get_project()` для комментария (через родителя).
-- [ ] Обратная совместимость: как читались комментарии в старой версии CPM.
+- [ ] Обратная совместимость: как читались комментарии в старой версии CPM (соответствие `comment_type`/`comment_approved` у старых записей).

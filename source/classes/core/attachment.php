@@ -220,4 +220,173 @@ HAVING
 	protected function delete_entity() {
 		wp_delete_attachment( $this->id, true );
 	}
+
+	/**
+	 * Приватная подпапка загрузок CPM относительно uploads.
+	 *
+	 * @var string
+	 */
+	const UPLOAD_SUBDIR = 'cpm';
+
+	/**
+	 * Максимальный размер загружаемого файла (байты), по умолчанию лимит WordPress.
+	 *
+	 * @return int
+	 */
+	public static function get_max_upload_size() {
+		$default = function_exists( 'wp_max_upload_size' ) ? (int) wp_max_upload_size() : 0;
+		return (int) apply_filters( 'cpm_max_upload_size', $default );
+	}
+
+	/**
+	 * Разрешённые MIME-типы загрузки (whitelist), настраивается фильтром.
+	 *
+	 * @return string[]
+	 */
+	public static function get_allowed_mime_types() {
+		$defaults = array(
+			'jpg|jpeg|jpe' => 'image/jpeg',
+			'gif'          => 'image/gif',
+			'png'          => 'image/png',
+			'webp'         => 'image/webp',
+			'pdf'          => 'application/pdf',
+			'doc'          => 'application/msword',
+			'docx'         => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'xls'          => 'application/vnd.ms-excel',
+			'xlsx'         => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+			'ppt'          => 'application/vnd.ms-powerpoint',
+			'pptx'         => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+			'txt'          => 'text/plain',
+			'csv'          => 'text/csv',
+			'zip'          => 'application/zip',
+			'tar'          => 'application/x-tar',
+			'gz'           => 'application/gzip',
+			'7z'           => 'application/x-7z-compressed',
+		);
+		return (array) apply_filters( 'cpm_allowed_mime_types', $defaults );
+	}
+
+	/**
+	 * Проверяет файл из массива $_FILES: передан, без ошибки, в лимите и по whitelist.
+	 *
+	 * Валидация чистая: не пишет файл и не создаёт запись. Возвращает WP_Error
+	 * с кодом 400-семантики, либо true.
+	 *
+	 * @param array $file Элемент $_FILES: name, type, tmp_name, error, size.
+	 * @return true|\WP_Error
+	 */
+	public static function validate_upload( $file ) {
+		if ( ! is_array( $file ) || empty( $file['tmp_name'] ) ) {
+			return new \WP_Error( 'cpm_upload_no_file', 'Файл не передан.' );
+		}
+		if ( ! empty( $file['error'] ) ) {
+			return new \WP_Error( 'cpm_upload_failed', 'Файл повреждён или не загружен.' );
+		}
+		if ( isset( $file['size'] ) && (int) $file['size'] > self::get_max_upload_size() ) {
+			return new \WP_Error( 'cpm_upload_too_large', 'Файл превышает допустимый размер.' );
+		}
+
+		$name  = isset( $file['name'] ) ? $file['name'] : '';
+		$mimes = self::get_allowed_mime_types();
+		$type  = wp_check_filetype( $name, $mimes );
+		if ( empty( $type['type'] ) ) {
+			return new \WP_Error( 'cpm_upload_bad_type', 'Тип файла не поддерживается.' );
+		}
+		return true;
+	}
+
+	/**
+	 * Сохраняет загруженный файл в приватную подпапку uploads/cpm и создаёт запись вложения.
+	 *
+	 * Механизм ядра: вызывается контроллером REST после получения multipart-файла.
+	 * Права на создание вложения проверяет вызывающий слой (через декораторы/ACL).
+	 *
+	 * @param array $file       Элемент $_FILES.
+	 * @param int   $project_id ID проекта (мета _project).
+	 * @param int   $parent     ID сущности, к которой прикрепляется файл.
+	 * @return int|\WP_Error ID вложения или ошибка.
+	 */
+	public static function create_from_upload( $file, $project_id = 0, $parent = 0 ) {
+		$valid = self::validate_upload( $file );
+		if ( is_wp_error( $valid ) ) {
+			return $valid;
+		}
+
+		$mimes = self::get_allowed_mime_types();
+		$type  = wp_check_filetype( isset( $file['name'] ) ? $file['name'] : '', $mimes );
+		$mime  = ! empty( $type['type'] ) ? $type['type'] : ( isset( $file['type'] ) ? $file['type'] : '' );
+
+		// Перенаправляем загрузку в приватную подпапку uploads/cpm.
+		$filter = function ( $uploads ) {
+			$subdir = '/' . self::UPLOAD_SUBDIR;
+			$uploads['subdir'] = $subdir;
+			$uploads['path']   = $uploads['basedir'] . $subdir;
+			$uploads['url']    = $uploads['baseurl'] . $subdir;
+			return $uploads;
+		};
+		add_filter( 'upload_dir', $filter );
+		$overrides = array(
+			'test_form' => false,
+			'mimes'     => $mimes,
+		);
+		$moved     = wp_handle_upload( $file, $overrides );
+		remove_filter( 'upload_dir', $filter );
+		if ( isset( $moved['error'] ) || is_wp_error( $moved ) ) {
+			$message = is_wp_error( $moved ) ? $moved->get_error_message() : $moved['error'];
+			return new \WP_Error( 'cpm_upload_save_failed', $message );
+		}
+
+		$name = isset( $file['name'] ) ? sanitize_file_name( $file['name'] ) : '';
+		$name = pathinfo( $name, PATHINFO_FILENAME );
+		$name = $name ? $name : 'attachment';
+
+		$attachment_id = wp_insert_attachment(
+			array(
+				'post_mime_type' => $mime,
+				'post_title'     => $name,
+				'post_content'   => '',
+				'post_status'    => 'inherit',
+				'post_parent'    => (int) $parent,
+			),
+			$moved['file'],
+			(int) $parent
+		);
+		if ( ! $attachment_id || is_wp_error( $attachment_id ) ) {
+			return new \WP_Error( 'cpm_upload_save_failed', 'Не удалось сохранить вложение.' );
+		}
+
+		$metadata = wp_generate_attachment_metadata( $attachment_id, $moved['file'] );
+		wp_update_attachment_metadata( $attachment_id, $metadata );
+		update_post_meta( $attachment_id, '_project', (int) $project_id );
+		update_post_meta( $attachment_id, '_parent', (int) $parent );
+
+		self::bind_to_comment( (int) $attachment_id, (int) $parent );
+
+		return (int) $attachment_id;
+	}
+
+	/**
+	 * Привязка вложения к комментарию через commentmeta._files, если родитель — комментарий.
+	 *
+	 * @param int $attachment_id ID вложения.
+	 * @param int $parent        ID сущности-родителя (может быть комментарием).
+	 */
+	private static function bind_to_comment( $attachment_id, $parent ) {
+		if ( ! $parent ) {
+			return;
+		}
+		if ( ! function_exists( 'get_comment' ) ) {
+			return;
+		}
+		$comment = get_comment( $parent );
+		if ( ! $comment ) {
+			return;
+		}
+
+		$files   = get_comment_meta( $parent, '_files', true );
+		$files   = is_array( $files ) ? $files : array();
+		$files[] = $attachment_id;
+		$files   = array_values( array_unique( array_map( 'intval', $files ) ) );
+		update_comment_meta( $parent, '_files', $files );
+	}
 }

@@ -103,6 +103,28 @@ class Core_Manager extends Base_Manager {
 	);
 
 	/**
+	 * Колонки сортировки списков по типам сущностей (белый список).
+	 *
+	 * Ключ — тип из get_type(). Значения — алиасы колонок, которые присутствуют
+	 * в выборке соответствующего SQL-шаблона. Используется в apply_order() для
+	 * защиты от SQL-инъекций через параметр orderby.
+	 *
+	 * @var string[][]
+	 */
+	private static $orderable = array(
+		'project'    => array( 'id', 'parent', 'author', 'title', 'created_at', 'slug', 'menu_order', 'coordinator', 'active' ),
+		'task_list'  => array( 'id', 'parent', 'author', 'title', 'created_at', 'slug', 'menu_order', 'project_id', 'milestone' ),
+		'task'       => array(
+			'id', 'parent', 'author', 'title', 'created_at', 'slug', 'menu_order', 'project_id',
+			'task_list_id', 'start', 'due', 'completed', 'completed_on', 'completed_by', 'task_privacy',
+		),
+		'message'    => array( 'id', 'parent', 'author', 'title', 'created_at', 'slug', 'menu_order', 'project_id', 'milestone', 'message_privacy' ),
+		'milestone'  => array( 'id', 'parent', 'author', 'title', 'created_at', 'slug', 'menu_order', 'project_id', 'due', 'completed' ),
+		'note'       => array( 'id', 'parent', 'author', 'title', 'created_at', 'slug', 'menu_order', 'project_id', 'doc_type' ),
+		'attachment' => array( 'id', 'parent', 'author', 'title', 'created_at', 'slug', 'menu_order', 'project_id', 'mime_type' ),
+	);
+
+	/**
 	 * Экземпляр менеджера ядра (синглтон).
 	 *
 	 * @var Core_Manager
@@ -158,6 +180,7 @@ class Core_Manager extends Base_Manager {
 		} else {
 			global $wpdb;
 			$sql  = $this->build_sql( $class, $args );
+			$sql  = $this->apply_list_pagination( $type, $sql, $args );
 			$rows = $wpdb->get_results( $sql, ARRAY_A );
 		}
 		if ( empty( $rows ) ) {
@@ -173,6 +196,33 @@ class Core_Manager extends Base_Manager {
 			}
 		}
 		return $list;
+	}
+
+	/**
+	 * Общее число сущностей, соответствующих фильтрам (без пагинации).
+	 *
+	 * Нужно для заголовков пагинации REST (X-WP-Total / X-WP-TotalPages).
+	 *
+	 * @param string $type Тип сущности.
+	 * @param array  $args Фильтры (page/per_page/orderby/order игнорируются).
+	 * @return int
+	 */
+	public function count_list( $type, $args = array() ) {
+		$class = $this->get_entity_class( $type );
+		if ( ! $class ) {
+			return 0;
+		}
+
+		if ( method_exists( $class, 'query_count' ) ) {
+			return (int) call_user_func( array( $class, 'query_count' ), $args );
+		}
+
+		global $wpdb;
+		$sql = $this->build_sql( $class, $args );
+		$sql = 'SELECT COUNT(*) AS cpm_count FROM ( ' . $sql . ' ) AS cpm_rows';
+
+		$total = $wpdb->get_var( $sql );
+		return $total ? (int) $total : 0;
 	}
 
 	/**
@@ -351,6 +401,54 @@ class Core_Manager extends Base_Manager {
 			);
 		}
 
+		return $sql;
+	}
+
+	/**
+	 * Применяет к SQL-запросу списка пагинацию и сортировку из $args.
+	 *
+	 * Распознаваемые ключи: page, per_page, offset, orderby, order.
+	 * Колонка orderby — только из белого списка self::$orderable для типа.
+	 *
+	 * @param string $type Тип сущности.
+	 * @param string $sql  Готовый SQL без LIMIT/OFFSET.
+	 * @param array  $args Аргументы запроса.
+	 * @return string
+	 */
+	private function apply_list_pagination( $type, $sql, $args ) {
+		$has_page   = array_key_exists( 'per_page', $args ) || array_key_exists( 'page', $args ) || array_key_exists( 'offset', $args );
+		$has_order  = ! empty( $args['orderby'] );
+		if ( ! $has_page && ! $has_order ) {
+			return $sql;
+		}
+
+		$orderby = isset( $args['orderby'] ) ? (string) $args['orderby'] : '';
+		$order   = isset( $args['order'] ) ? strtolower( (string) $args['order'] ) : 'asc';
+		$order   = in_array( $order, array( 'asc', 'desc' ), true ) ? $order : 'asc';
+
+		$order_sql = '';
+		if ( $has_order ) {
+			$allowed = isset( self::$orderable[ $type ] ) ? self::$orderable[ $type ] : array();
+			if ( in_array( $orderby, $allowed, true ) ) {
+				$order_sql = ' ORDER BY `' . $orderby . '` ' . strtoupper( $order );
+			}
+		}
+
+		if ( ! $has_page ) {
+			return $order_sql ? 'SELECT * FROM ( ' . $sql . ' ) AS cpm_rows' . $order_sql : $sql;
+		}
+
+		$per_page = isset( $args['per_page'] ) ? max( 1, (int) $args['per_page'] ) : 0;
+		$offset   = isset( $args['offset'] ) ? max( 0, (int) $args['offset'] ) : 0;
+		if ( $per_page && ! isset( $args['offset'] ) && isset( $args['page'] ) ) {
+			$page   = max( 1, (int) $args['page'] );
+			$offset = ( $page - 1 ) * $per_page;
+		}
+
+		$sql = 'SELECT * FROM ( ' . $sql . ' ) AS cpm_rows' . $order_sql;
+		if ( $per_page ) {
+			$sql .= ' LIMIT ' . (int) $per_page . ' OFFSET ' . (int) $offset;
+		}
 		return $sql;
 	}
 

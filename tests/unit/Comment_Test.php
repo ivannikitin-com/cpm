@@ -203,4 +203,49 @@ class Comment_Test extends Cpm_TestCase {
 		$comment = new Comment( array( 'files' => array() ) );
 		$this->assertSame( array(), $comment->files );
 	}
+
+	public function test_query_rows_applies_pagination_and_sort() {
+		$wp_comment = (object) array(
+			'comment_ID'      => 5,
+			'comment_content' => 'Hi',
+			'user_id'         => 12,
+			'comment_date'    => '2024-01-01 00:00:00',
+			'comment_post_ID' => 20,
+		);
+		\WP_Mock::userFunction( 'get_comments' )->once()->with(
+			\Mockery::on(
+				function ( $query ) {
+					return 20 === $query['post_id']
+						&& 5 === $query['number']
+						&& 10 === $query['offset']
+						&& 'comment_ID' === $query['orderby']
+						&& 'desc' === $query['order'];
+				}
+			)
+		)->andReturn( array( $wp_comment ) );
+		\WP_Mock::userFunction( 'get_comment_meta' )->andReturn( array() );
+
+		$rows = Comment::query_rows(
+			array(
+				'parent'   => 20,
+				'per_page' => 5,
+				'page'     => 3,
+				'orderby'  => 'id',
+				'order'    => 'desc',
+			)
+		);
+		$this->assertCount( 1, $rows );
+	}
+
+	public function test_query_count_returns_total() {
+		\WP_Mock::userFunction( 'get_comments' )->once()->with(
+			\Mockery::on(
+				function ( $query ) {
+					return true === $query['count'] && 20 === $query['post_id'];
+				}
+			)
+		)->andReturn( 7 );
+
+		$this->assertSame( 7, Comment::query_count( array( 'parent' => 20 ) ) );
+	}
 }

@@ -305,6 +305,122 @@ class Core_Manager_Test extends Cpm_TestCase {
 		);
 	}
 
+	public function test_load_list_applies_limit_and_offset_from_per_page_and_page() {
+		$this->mock_current_user( 1, true );
+		$wpdb = $this->mock_wpdb();
+		$wpdb->shouldReceive( 'get_results' )->once()->with(
+			\Mockery::on(
+				function ( $sql ) {
+					$this->assertMatchesRegularExpression( '/LIMIT \d+ OFFSET \d+/i', $sql );
+					return true;
+				}
+			),
+			ARRAY_A
+		)->andReturn( array() );
+
+		$core = $this->make_core();
+		$core->load_list(
+			'project',
+			array(
+				'page'    => 2,
+				'per_page' => 10,
+			)
+		);
+	}
+
+	public function test_load_list_applies_explicit_offset() {
+		$this->mock_current_user( 1, true );
+		$wpdb = $this->mock_wpdb();
+		$wpdb->shouldReceive( 'get_results' )->once()->with(
+			\Mockery::on(
+				function ( $sql ) {
+					$this->assertMatchesRegularExpression( '/LIMIT \d+ OFFSET 25/i', $sql );
+					return true;
+				}
+			),
+			ARRAY_A
+		)->andReturn( array() );
+
+		$core = $this->make_core();
+		$core->load_list( 'project', array( 'per_page' => 10, 'offset' => 25 ) );
+	}
+
+	public function test_load_list_applies_whitelisted_orderby_and_order() {
+		$this->mock_current_user( 1, true );
+		$wpdb = $this->mock_wpdb();
+		$wpdb->shouldReceive( 'get_results' )->once()->with(
+			\Mockery::on(
+				function ( $sql ) {
+					$this->assertMatchesRegularExpression( '/ORDER BY .*id.* ASC/i', $sql );
+					return true;
+				}
+			),
+			ARRAY_A
+		)->andReturn( array() );
+
+		$core = $this->make_core();
+		$core->load_list( 'project', array( 'orderby' => 'id', 'order' => 'asc' ) );
+	}
+
+	public function test_load_list_ignores_unknown_orderby() {
+		$this->mock_current_user( 1, true );
+		$wpdb = $this->mock_wpdb();
+		$wpdb->shouldReceive( 'get_results' )->once()->with(
+			\Mockery::on(
+				function ( $sql ) {
+					$this->assertStringNotContainsString( 'col; DROP', $sql );
+					return true;
+				}
+			),
+			ARRAY_A
+		)->andReturn( array() );
+
+		$core = $this->make_core();
+		$core->load_list( 'project', array( 'orderby' => 'col; DROP TABLE x', 'order' => 'desc' ) );
+	}
+
+	public function test_load_list_passes_pagination_to_query_rows() {
+		$this->mock_current_user( 1, true );
+		\WP_Mock::userFunction( 'get_comments' )->once()->andReturn(
+			array(
+				(object) array(
+					'comment_ID'      => 5,
+					'comment_content' => 'Hi',
+					'user_id'         => 1,
+					'comment_date'    => '2024-01-01 00:00:00',
+					'comment_post_ID' => 20,
+				),
+			)
+		);
+		\WP_Mock::userFunction( 'get_comment_meta' )->andReturn( array() );
+
+		$core = $this->make_core();
+		$list = $core->load_list(
+			'comment',
+			array(
+				'parent'  => 20,
+				'page'    => 1,
+				'per_page' => 5,
+			)
+		);
+		$this->assertCount( 1, $list );
+	}
+
+	public function test_count_list_returns_total_for_sql_type() {
+		$this->mock_current_user( 1, true );
+		$wpdb = $this->mock_wpdb();
+		$wpdb->shouldReceive( 'get_results' )->never();
+		$wpdb->shouldReceive( 'get_var' )->once()->andReturn( '7' );
+
+		$core = $this->make_core();
+		$this->assertSame( 7, $core->count_list( 'project', array( 'parent' => 3 ) ) );
+	}
+
+	public function test_count_list_returns_zero_for_unknown_type() {
+		$core = $this->make_core();
+		$this->assertSame( 0, $core->count_list( 'unknown' ) );
+	}
+
 	/**
 	 * @return Core_Manager
 	 */

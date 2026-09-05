@@ -44,10 +44,47 @@ class Comment extends Entity {
 	/**
 	 * Выборка строк через API комментариев WordPress (не SQL CPT).
 	 *
-	 * @param array $args Фильтры load_list: id, parent.
+	 * Поддерживает пагинацию и сортировку: per_page/page/offset/orderby/order.
+	 *
+	 * @param array $args Фильтры load_list: id, parent, per_page, page, offset, orderby, order.
 	 * @return array[]
 	 */
 	public static function query_rows( $args = array() ) {
+		$query = self::comment_query_args( $args );
+		$query = self::apply_query_pagination( $query, $args );
+
+		$comments = get_comments( $query );
+		if ( empty( $comments ) ) {
+			return array();
+		}
+
+		$rows = array();
+		foreach ( $comments as $comment ) {
+			$rows[] = self::comment_to_args( $comment );
+		}
+		return $rows;
+	}
+
+	/**
+	 * Число комментариев по фильтрам (без пагинации). Для Core_Manager::count_list().
+	 *
+	 * @param array $args Фильтры load_list: id, parent.
+	 * @return int
+	 */
+	public static function query_count( $args = array() ) {
+		$query = self::comment_query_args( $args );
+		$query['count'] = true;
+		$total = get_comments( $query );
+		return is_numeric( $total ) ? (int) $total : 0;
+	}
+
+	/**
+	 * Базовые аргументы WP_Comment_Query для обычных комментариев.
+	 *
+	 * @param array $args Фильтры load_list.
+	 * @return array
+	 */
+	private static function comment_query_args( $args = array() ) {
 		$query = array(
 			'type'    => 'comment',
 			'status'  => 'approve',
@@ -60,17 +97,55 @@ class Comment extends Entity {
 		if ( isset( $args['id'] ) ) {
 			$query['comment__in'] = array( (int) $args['id'] );
 		}
+		return $query;
+	}
 
-		$comments = get_comments( $query );
-		if ( empty( $comments ) ) {
-			return array();
+	/**
+	 * Сопоставление свойств Comment с полями WP_Comment_Query для сортировки.
+	 *
+	 * @var string[]
+	 */
+	private static $order_map = array(
+		'id'         => 'comment_ID',
+		'parent'     => 'comment_post_ID',
+		'author'     => 'user_id',
+		'created_at' => 'comment_date',
+		'content'    => 'comment_content',
+	);
+
+	/**
+	 * Накладывает пагинацию/сортировку на аргументы WP_Comment_Query.
+	 *
+	 * @param array $query Аргументы WP_Comment_Query.
+	 * @param array $args  Ключи load_list: per_page, page, offset, orderby, order.
+	 * @return array
+	 */
+	private static function apply_query_pagination( $query, $args ) {
+		if ( isset( $args['orderby'] ) && isset( self::$order_map[ $args['orderby'] ] ) ) {
+			$query['orderby'] = self::$order_map[ $args['orderby'] ];
+		}
+		if ( isset( $args['order'] ) ) {
+			$order = strtolower( (string) $args['order'] );
+			if ( in_array( $order, array( 'asc', 'desc' ), true ) ) {
+				$query['order'] = $order;
+			}
 		}
 
-		$rows = array();
-		foreach ( $comments as $comment ) {
-			$rows[] = self::comment_to_args( $comment );
+		$per_page = isset( $args['per_page'] ) ? max( 1, (int) $args['per_page'] ) : 0;
+		if ( ! $per_page ) {
+			return $query;
 		}
-		return $rows;
+
+		$query['number'] = $per_page;
+		$offset          = isset( $args['offset'] ) ? max( 0, (int) $args['offset'] ) : 0;
+		if ( ! isset( $args['offset'] ) && isset( $args['page'] ) ) {
+			$page   = max( 1, (int) $args['page'] );
+			$offset = ( $page - 1 ) * $per_page;
+		}
+		if ( $offset ) {
+			$query['offset'] = $offset;
+		}
+		return $query;
 	}
 
 	/**
