@@ -12,7 +12,7 @@ use CPM\v3\Base_Manager;
 /**
  * Менеджер модуля REST API.
  *
- * Спецификация: docs/06-модуль-rest-api.md
+ * Спецификация: docs/rest-api/README.md, docs/rest-api/архитектура.md
  */
 class REST_API_Manager extends Base_Manager {
 
@@ -21,5 +21,20 @@ class REST_API_Manager extends Base_Manager {
 	 */
 	public function __construct() {
 		parent::__construct();
+		$this->register();
+	}
+
+	/**
+	 * Регистрирует обработчик маршрутов на rest_api_init.
+	 */
+	public function register() {
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+	}
+
+	/**
+	 * Регистрирует маршруты модуля.
+	 */
+	public function register_routes() {
+		// Контроллеры подключаются и регистрируются здесь (см. docs/rest-api/архитектура.md).
 	}
 }
