@@ -10,7 +10,7 @@
 	convertWarningsToExceptions="true"
 	failOnRisky="true"
 	failOnWarning="true"
-	backupGlobals="true"
+	backupGlobals="false"
 	>
 	<testsuites>
 		<testsuite name="integration">

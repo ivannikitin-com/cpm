@@ -52,12 +52,20 @@ docs/rest-api/
 
 | Класс | Файл | Назначение | Спецификация |
 | ----- | ---- | ---------- | ------------ |
-| `REST_API_Manager` | `rest_api/rest_api_manager.php` | Менеджер модуля: регистрация маршрутов, загрузка контроллеров | `архитектура.md` |
-| `Base_Controller` (abstract, extends `WP_REST_Controller`) | `rest_api/class-base-controller.php` | Общая логика контроллера: доступ к ядру, подготовка ответа, обработка ошибок | `архитектура.md` |
-| `Entity_Controller` (abstract, extends `Base_Controller`) | `rest_api/class-entity-controller.php` | Базовый CRUD-контроллер одной сущности: register_routes(), list/create/get/update/delete | `архитектура.md`, `маршруты.md` |
-| Контроллеры сущностей (`Project_Controller`, `Task_Controller`, …) | `rest_api/` | Конкретные контроллеры: схема полей, аргументы, экшены, особые маршруты (вложения — файл) | `маршруты.md`, `схемы.md` |
+| `REST_API_Manager` | `rest_api/rest_api_manager.php` | Менеджер модуля: реестр контроллеров, require по `rest_api_init`, защита от повторной регистрации | `архитектура.md` |
+| `Base_Controller` (abstract, extends `WP_REST_Controller`) | `rest_api/class-base-controller.php` | Общее: namespace `cpm/v1`, permission_check, загрузка сущности, маппинг исключений ядра в `WP_Error` | `архитектура.md`, `права-и-ошибки.md` |
+| `Entity_Controller` (abstract, extends `Base_Controller`) | `rest_api/class-entity-controller.php` | Типовой CRUD: register_routes(), list/create/get/update/delete, сериализация по схеме полей, пагинация (`X-WP-Total*`), валидация тела (400 для неизвестных/read-only) | `архитектура.md`, `маршруты.md` |
+| `Project_Controller` | `rest_api/class-project-controller.php` | CRUD проекта + экшены archive/unarchive/coordinator/team/thumbnail | `маршруты.md`, `схемы.md` |
+| `Task_List_Controller` | `rest_api/class-task-list-controller.php` | Список задач | `маршруты.md`, `схемы.md` |
+| `Task_Controller` | `rest_api/class-task-controller.php` | Задача | `маршруты.md`, `схемы.md` |
+| `Message_Controller` | `rest_api/class-message-controller.php` | Обсуждение | `маршруты.md`, `схемы.md` |
+| `Milestone_Controller` | `rest_api/class-milestone-controller.php` | Веха | `маршруты.md`, `схемы.md` |
+| `Note_Controller` | `rest_api/class-note-controller.php` | Заметка (cpm_docs) | `маршруты.md`, `схемы.md` |
+| `Comment_Controller` | `rest_api/class-comment-controller.php` | Комментарий | `маршруты.md`, `схемы.md` |
+| `Attachment_Controller` | `rest_api/class-attachment-controller.php` | Вложение: multipart-создание (`create_item`), JSON (GET), бинарный `/file` | `маршруты.md`, `загрузка-файлов.md` |
+| `Activity_Controller` | `rest_api/class-activity-controller.php` | Журнал действий (только чтение, `supports_write()=false`) | `маршруты.md`, `схемы.md` |
 
-Конкретный перечень файлов и имён уточняется при реализации (см. `открытые-вопросы.md`).
+Все контроллеры сущностей подключены в `REST_API_Manager::$controllers`.
 
 ## Зависимости от ядра (порядок работ)
 
@@ -68,7 +76,7 @@ docs/rest-api/
 3. **Комментарии** — чтение через ядро дополнено пагинацией/сортировкой и `query_count()` (`docs/core/comment.md`).
 4. **Activity** — набор хуков зафиксирован (лог всех мутаций сущностей проекта, кроме activity и без проекта); чтение дополнено пагинацией/сортировкой и `query_count()` (`docs/core/activity.md`).
 
-REST-модуль (регистрация маршрутов, сериализация, маппинг ошибок, экшены, валидация, аутентификация) может реализовываться и покрываться тестами, как только появится первый реализованный контроллер.
+REST-модуль реализуется на этом фундаменте; интеграционные тесты (`tests/integration/*_REST_Test.php`) выполняются на стенде против тестовой БД `cpm_test`.
 
 ## Как работать с этими документами
 
