@@ -28,6 +28,15 @@ if ( ! defined( 'CPM_BACKWARD_COMPATIBILITY' ) ) {
 require_once __DIR__ . '/classes/plugin.php';
 require_once __DIR__ . '/classes/base_manager.php';
 require_once __DIR__ . '/classes/settings.php';
+
+// Core_Manager при загрузке класса инициализирует статические таблицы прав,
+// ссылаясь на константы ACL (см. source/classes/core/core_manager.php).
+// Поэтому ACL (и базовые исключения) должны быть загружены до core_manager.php.
+require_once __DIR__ . '/classes/core/cpm_exception.php';
+require_once __DIR__ . '/classes/core/bad_user_exception.php';
+require_once __DIR__ . '/classes/core/access_denied_exception.php';
+require_once __DIR__ . '/classes/core/entity_save_exception.php';
+require_once __DIR__ . '/classes/core/acl.php';
 require_once __DIR__ . '/classes/core/core_manager.php';
 require_once __DIR__ . '/classes/rest_api/rest_api_manager.php';
 require_once __DIR__ . '/classes/ui/ui_manager.php';

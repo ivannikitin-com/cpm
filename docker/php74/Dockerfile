@@ -1,7 +1,13 @@
 FROM php:7.4-fpm
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
+# Debian bullseye (основа php:7.4): поддержка завершена (LTS до 31.08.2026),
+# пакеты переехали в archive.debian.org. Используем только архив main/updates:
+# финальное состояние bullseye включает security-исправления, отдельный
+# bullseye-security на archive отсутствует, а deb.debian.org отдаёт несогласованный индекс.
+RUN printf 'deb http://archive.debian.org/debian bullseye main\ndeb http://archive.debian.org/debian bullseye-updates main\n' > /etc/apt/sources.list
+
+RUN apt-get -o Acquire::Check-Valid-Until=false update \
+    && apt-get -o Acquire::Check-Valid-Until=false install -y --no-install-recommends \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libpng-dev \

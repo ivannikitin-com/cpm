@@ -18,6 +18,22 @@ if ( ! $wp_tests_dir ) {
 	exit( 1 );
 }
 
+// Каркас wp-phpunit берёт конфиг из env WP_PHPUNIT__TESTS_CONFIG
+// (см. vendor/wp-phpunit/wp-phpunit/wp-tests-config.php).
+$tests_config = getenv( 'WP_PHPUNIT__TESTS_CONFIG' );
+if ( ! $tests_config ) {
+	$tests_config = __DIR__ . '/../wp-tests-config.php';
+	if ( file_exists( $tests_config ) ) {
+		putenv( 'WP_PHPUNIT__TESTS_CONFIG=' . $tests_config );
+	} else {
+		fwrite(
+			STDERR,
+			"Не найден wp-tests-config.php. Задайте WP_PHPUNIT__TESTS_CONFIG или создайте tests/wp-tests-config.php\n"
+		);
+		exit( 1 );
+	}
+}
+
 // Загрузка функций и bootstrap тест-каркаса WordPress.
 require_once $wp_tests_dir . '/includes/functions.php';
 

@@ -146,3 +146,5 @@ test-reports/
 *.html.twig
 report.html
 report.xml
+# Локальный конфиг интеграционных тестов (creds стенда, не коммитится)
+tests/wp-tests-config.php
