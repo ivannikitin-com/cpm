@@ -2,7 +2,7 @@
 /**
  * Интеграционные тесты REST: вложения.
  *
- * Проверяет маршруты cpm/v1/attachment: JSON-метаданные, файл-маршрут (ветки
+ * Проверяет маршруты cpm/v3/attachment: JSON-метаданные, файл-маршрут (ветки
  * ошибок — 404/403), поля ответа. Успешный /file вызывает exit (бинарная
  * отдача), поэтому в PHPUnit не выполняется — он покрыт юнитами ядра
  * (Attachment::validate_upload/create_from_upload) и проверяется на стенде вручную.
@@ -89,7 +89,7 @@ class Attachment_REST_Test extends WP_UnitTestCase {
 	private function create_project_with_attachment() {
 		$response = $this->do_request(
 			'POST',
-			'/cpm/v1/project',
+			'/cpm/v3/project',
 			array(
 				'title'       => 'Attachment Project',
 				'coordinator' => $this->admin_id,
@@ -110,16 +110,16 @@ class Attachment_REST_Test extends WP_UnitTestCase {
 
 	public function test_routes_are_registered() {
 		$routes = rest_get_server()->get_routes();
-		$this->assertArrayHasKey( '/cpm/v1/attachment', $routes );
-		$this->assertArrayHasKey( '/cpm/v1/attachment/(?P<id>\d+)', $routes );
-		$this->assertArrayHasKey( '/cpm/v1/attachment/(?P<id>\d+)/file', $routes );
+		$this->assertArrayHasKey( '/cpm/v3/attachment', $routes );
+		$this->assertArrayHasKey( '/cpm/v3/attachment/(?P<id>\d+)', $routes );
+		$this->assertArrayHasKey( '/cpm/v3/attachment/(?P<id>\d+)/file', $routes );
 	}
 
 	public function test_get_item_returns_json_metadata() {
 		$fixture = $this->create_project_with_attachment();
 		$id      = $fixture['attachment_id'];
 
-		$response = $this->do_request( 'GET', '/cpm/v1/attachment/' . $id );
+		$response = $this->do_request( 'GET', '/cpm/v3/attachment/' . $id );
 		$this->assertSame( 200, $response->get_status() );
 
 		$data = $response->get_data();
@@ -127,11 +127,11 @@ class Attachment_REST_Test extends WP_UnitTestCase {
 		$this->assertSame( $fixture['project_id'], (int) $data['project_id'] );
 		$this->assertArrayHasKey( 'mime_type', $data );
 		$this->assertArrayHasKey( 'file_url', $data );
-		$this->assertStringContainsString( '/cpm/v1/attachment/' . $id . '/file', $data['file_url'] );
+		$this->assertStringContainsString( '/cpm/v3/attachment/' . $id . '/file', $data['file_url'] );
 	}
 
 	public function test_get_item_returns_404_for_unknown() {
-		$response = $this->do_request( 'GET', '/cpm/v1/attachment/999999' );
+		$response = $this->do_request( 'GET', '/cpm/v3/attachment/999999' );
 		$this->assertSame( 404, $response->get_status() );
 	}
 
@@ -140,12 +140,12 @@ class Attachment_REST_Test extends WP_UnitTestCase {
 		$id = $this->factory()->attachment->create_upload_object( $this->tmp_file );
 		$this->assertNotWPError( $id );
 
-		$response = $this->do_request( 'GET', '/cpm/v1/attachment/' . (int) $id );
+		$response = $this->do_request( 'GET', '/cpm/v3/attachment/' . (int) $id );
 		$this->assertSame( 404, $response->get_status() );
 	}
 
 	public function test_file_route_returns_404_for_unknown() {
-		$response = $this->do_request( 'GET', '/cpm/v1/attachment/999999/file' );
+		$response = $this->do_request( 'GET', '/cpm/v3/attachment/999999/file' );
 		$this->assertSame( 404, $response->get_status() );
 	}
 
@@ -158,7 +158,7 @@ class Attachment_REST_Test extends WP_UnitTestCase {
 			unlink( $file );
 		}
 
-		$response = $this->do_request( 'GET', '/cpm/v1/attachment/' . $fixture['attachment_id'] . '/file' );
+		$response = $this->do_request( 'GET', '/cpm/v3/attachment/' . $fixture['attachment_id'] . '/file' );
 		$this->assertSame( 404, $response->get_status() );
 		$this->assertSame( 'cpm_file_missing', $response->get_data()['code'] );
 	}

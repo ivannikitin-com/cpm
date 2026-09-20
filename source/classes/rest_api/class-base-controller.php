@@ -26,7 +26,7 @@ abstract class Base_Controller extends \WP_REST_Controller {
 	 *
 	 * @var string
 	 */
-	protected $namespace = 'cpm/v1';
+	protected $namespace = 'cpm/v3';
 
 	/**
 	 * Возвращает менеджер ядра.

@@ -204,7 +204,7 @@ class Attachment_Controller extends Entity_Controller {
 		$data = parent::serialize_item( $item );
 
 		$id             = (int) $item->id;
-		$data['file_url'] = rest_url( 'cpm/v1/attachment/' . $id . '/file' );
+		$data['file_url'] = rest_url( 'cpm/v3/attachment/' . $id . '/file' );
 
 		return $data;
 	}

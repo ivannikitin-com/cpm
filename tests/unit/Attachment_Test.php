@@ -249,10 +249,10 @@ class Attachment_Test extends Cpm_TestCase {
 			)
 		);
 
-		$this->assertSame( 'http://cpm.test/wp-json/cpm/v1/attachment/5', $image->get_url() );
-		$this->assertSame( 'http://cpm.test/wp-json/cpm/v1/attachment/5?size=medium', $image->get_url( 'medium' ) );
-		$this->assertSame( 'http://cpm.test/wp-json/cpm/v1/attachment/5?size=thumbnail', $image->get_thumbnail_url() );
-		$this->assertSame( 'http://cpm.test/wp-json/cpm/v1/attachment/5?download=1', $image->get_download_url() );
+		$this->assertSame( 'http://cpm.test/wp-json/cpm/v3/attachment/5', $image->get_url() );
+		$this->assertSame( 'http://cpm.test/wp-json/cpm/v3/attachment/5?size=medium', $image->get_url( 'medium' ) );
+		$this->assertSame( 'http://cpm.test/wp-json/cpm/v3/attachment/5?size=thumbnail', $image->get_thumbnail_url() );
+		$this->assertSame( 'http://cpm.test/wp-json/cpm/v3/attachment/5?download=1', $image->get_download_url() );
 		$this->assertTrue( $image->is_image );
 
 		$pdf = new Attachment( array( 'id' => 6, 'mime_type' => 'application/pdf' ) );

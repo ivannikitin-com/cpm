@@ -2,7 +2,7 @@
 /**
  * Интеграционные тесты REST: проект.
  *
- * Проверяет маршруты cpm/v1/project: список, одну сущность, создание,
+ * Проверяет маршруты cpm/v3/project: список, одну сущность, создание,
  * обновление, удаление, экшены (archive/unarchive/coordinator/team/thumbnail).
  *
  * Матрица docs/rest-api/тесты.md: регистрация маршрутов, сериализация,
@@ -77,7 +77,7 @@ class Project_REST_Test extends WP_UnitTestCase {
 	 * Выполняет REST-запрос от текущего пользователя.
 	 *
 	 * @param string $method HTTP-метод.
-	 * @param string $route  Маршрут (например, /cpm/v1/project).
+	 * @param string $route  Маршрут (например, /cpm/v3/project).
 	 * @param array  $params Параметры.
 	 * @return \WP_REST_Response
 	 */
@@ -102,7 +102,7 @@ class Project_REST_Test extends WP_UnitTestCase {
 			'menu_order'  => 1,
 			'coordinator' => $this->admin_id,
 		);
-		$response = $this->do_request( 'POST', '/cpm/v1/project', array_merge( $defaults, $params ) );
+		$response = $this->do_request( 'POST', '/cpm/v3/project', array_merge( $defaults, $params ) );
 		$this->assertSame( 201, $response->get_status(), 'Создание проекта должно вернуть 201' );
 		$data = $response->get_data();
 		$this->assertIsArray( $data );
@@ -112,11 +112,11 @@ class Project_REST_Test extends WP_UnitTestCase {
 	public function test_routes_are_registered() {
 		$routes = rest_get_server()->get_routes();
 		foreach ( array( 'project', 'task_list', 'task', 'message', 'milestone', 'note', 'comment', 'activity' ) as $type ) {
-			$this->assertArrayHasKey( '/cpm/v1/' . $type, $routes, 'Нет маршрута списка: ' . $type );
-			$this->assertArrayHasKey( '/cpm/v1/' . $type . '/(?P<id>\d+)', $routes, 'Нет маршрута сущности: ' . $type );
+			$this->assertArrayHasKey( '/cpm/v3/' . $type, $routes, 'Нет маршрута списка: ' . $type );
+			$this->assertArrayHasKey( '/cpm/v3/' . $type . '/(?P<id>\d+)', $routes, 'Нет маршрута сущности: ' . $type );
 		}
-		$this->assertArrayHasKey( '/cpm/v1/project/(?P<id>\d+)/archive', $routes );
-		$this->assertArrayHasKey( '/cpm/v1/project/(?P<id>\d+)/team', $routes );
+		$this->assertArrayHasKey( '/cpm/v3/project/(?P<id>\d+)/archive', $routes );
+		$this->assertArrayHasKey( '/cpm/v3/project/(?P<id>\d+)/team', $routes );
 	}
 
 	public function test_create_project_returns_entity() {
@@ -131,14 +131,14 @@ class Project_REST_Test extends WP_UnitTestCase {
 	}
 
 	public function test_create_requires_title() {
-		$response = $this->do_request( 'POST', '/cpm/v1/project', array( 'content' => 'no title' ) );
+		$response = $this->do_request( 'POST', '/cpm/v3/project', array( 'content' => 'no title' ) );
 		$this->assertSame( 400, $response->get_status() );
 	}
 
 	public function test_create_rejects_unknown_field() {
 		$response = $this->do_request(
 			'POST',
-			'/cpm/v1/project',
+			'/cpm/v3/project',
 			array(
 				'title' => 'X',
 				'foo'   => 'bar',
@@ -151,7 +151,7 @@ class Project_REST_Test extends WP_UnitTestCase {
 		// active меняется только экшеном archive/unarchive, не через общий create.
 		$response = $this->do_request(
 			'POST',
-			'/cpm/v1/project',
+			'/cpm/v3/project',
 			array(
 				'title'  => 'X',
 				'active' => 'no',
@@ -162,13 +162,13 @@ class Project_REST_Test extends WP_UnitTestCase {
 
 	public function test_get_item_returns_project() {
 		$created  = $this->create_project();
-		$response = $this->do_request( 'GET', '/cpm/v1/project/' . (int) $created['id'] );
+		$response = $this->do_request( 'GET', '/cpm/v3/project/' . (int) $created['id'] );
 		$this->assertSame( 200, $response->get_status() );
 		$this->assertSame( (int) $created['id'], (int) $response->get_data()['id'] );
 	}
 
 	public function test_get_item_returns_404_for_missing() {
-		$response = $this->do_request( 'GET', '/cpm/v1/project/999999' );
+		$response = $this->do_request( 'GET', '/cpm/v3/project/999999' );
 		$this->assertSame( 404, $response->get_status() );
 		$this->assertSame( 'cpm_not_found', $response->get_data()['code'] );
 	}
@@ -177,7 +177,7 @@ class Project_REST_Test extends WP_UnitTestCase {
 		$this->create_project( array( 'title' => 'One' ) );
 		$this->create_project( array( 'title' => 'Two' ) );
 
-		$request = new \WP_REST_Request( 'GET', '/cpm/v1/project' );
+		$request = new \WP_REST_Request( 'GET', '/cpm/v3/project' );
 		$request->set_query_params( array( 'per_page' => 1 ) );
 		$response = rest_get_server()->dispatch( $request );
 
@@ -192,7 +192,7 @@ class Project_REST_Test extends WP_UnitTestCase {
 		$created  = $this->create_project( array( 'title' => 'Before' ) );
 		$response = $this->do_request(
 			'POST',
-			'/cpm/v1/project/' . (int) $created['id'],
+			'/cpm/v3/project/' . (int) $created['id'],
 			array( 'title' => 'After' )
 		);
 		$this->assertSame( 200, $response->get_status() );
@@ -201,7 +201,7 @@ class Project_REST_Test extends WP_UnitTestCase {
 
 	public function test_archive_action() {
 		$created  = $this->create_project();
-		$response = $this->do_request( 'POST', '/cpm/v1/project/' . (int) $created['id'] . '/archive' );
+		$response = $this->do_request( 'POST', '/cpm/v3/project/' . (int) $created['id'] . '/archive' );
 		$this->assertSame( 200, $response->get_status() );
 		$this->assertSame( 'no', $response->get_data()['active'] );
 	}
@@ -209,8 +209,8 @@ class Project_REST_Test extends WP_UnitTestCase {
 	public function test_unarchive_action() {
 		$created  = $this->create_project();
 		$id       = (int) $created['id'];
-		$this->do_request( 'POST', '/cpm/v1/project/' . $id . '/archive' );
-		$response = $this->do_request( 'POST', '/cpm/v1/project/' . $id . '/unarchive' );
+		$this->do_request( 'POST', '/cpm/v3/project/' . $id . '/archive' );
+		$response = $this->do_request( 'POST', '/cpm/v3/project/' . $id . '/unarchive' );
 		$this->assertSame( 200, $response->get_status() );
 		$this->assertSame( 'yes', $response->get_data()['active'] );
 	}
@@ -220,7 +220,7 @@ class Project_REST_Test extends WP_UnitTestCase {
 		$other    = $this->factory()->user->create();
 		$response = $this->do_request(
 			'POST',
-			'/cpm/v1/project/' . (int) $created['id'] . '/coordinator',
+			'/cpm/v3/project/' . (int) $created['id'] . '/coordinator',
 			array( 'user_id' => $other )
 		);
 		$this->assertSame( 200, $response->get_status() );
@@ -232,7 +232,7 @@ class Project_REST_Test extends WP_UnitTestCase {
 		$member   = $this->factory()->user->create();
 		$response = $this->do_request(
 			'POST',
-			'/cpm/v1/project/' . (int) $created['id'] . '/team',
+			'/cpm/v3/project/' . (int) $created['id'] . '/team',
 			array(
 				'members' => array(
 					$this->admin_id => 'manager',
@@ -251,7 +251,7 @@ class Project_REST_Test extends WP_UnitTestCase {
 		$member  = $this->factory()->user->create();
 		$response = $this->do_request(
 			'POST',
-			'/cpm/v1/project/' . (int) $created['id'] . '/team',
+			'/cpm/v3/project/' . (int) $created['id'] . '/team',
 			array(
 				'members' => array(
 					$member => 'superuser',
@@ -263,13 +263,13 @@ class Project_REST_Test extends WP_UnitTestCase {
 
 	public function test_delete_project_as_administrator() {
 		$created = $this->create_project();
-		$response = $this->do_request( 'DELETE', '/cpm/v1/project/' . (int) $created['id'] );
+		$response = $this->do_request( 'DELETE', '/cpm/v3/project/' . (int) $created['id'] );
 		$this->assertSame( 204, $response->get_status() );
 	}
 
 	public function test_unauthenticated_is_denied() {
 		wp_set_current_user( 0 );
-		$response = $this->do_request( 'GET', '/cpm/v1/project' );
+		$response = $this->do_request( 'GET', '/cpm/v3/project' );
 		$this->assertSame( 401, $response->get_status() );
 	}
 }

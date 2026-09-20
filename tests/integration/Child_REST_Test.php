@@ -71,7 +71,7 @@ class Child_REST_Test extends WP_UnitTestCase {
 	private function create_project() {
 		$response = $this->do_request(
 			'POST',
-			'/cpm/v1/project',
+			'/cpm/v3/project',
 			array(
 				'title'       => 'Child REST Project',
 				'coordinator' => $this->admin_id,
@@ -87,7 +87,7 @@ class Child_REST_Test extends WP_UnitTestCase {
 
 		$create = $this->do_request(
 			'POST',
-			'/cpm/v1/task_list',
+			'/cpm/v3/task_list',
 			array(
 				'title'      => 'List A',
 				'parent'     => $pid,
@@ -100,27 +100,27 @@ class Child_REST_Test extends WP_UnitTestCase {
 		$this->assertSame( 'List A', $list['title'] );
 		$this->assertSame( $pid, (int) $list['project_id'] );
 
-		$get = $this->do_request( 'GET', '/cpm/v1/task_list/' . (int) $list['id'] );
+		$get = $this->do_request( 'GET', '/cpm/v3/task_list/' . (int) $list['id'] );
 		$this->assertSame( 200, $get->get_status() );
 		$this->assertSame( 'List A', $get->get_data()['title'] );
 
 		$update = $this->do_request(
 			'POST',
-			'/cpm/v1/task_list/' . (int) $list['id'],
+			'/cpm/v3/task_list/' . (int) $list['id'],
 			array( 'title' => 'List B' )
 		);
 		$this->assertSame( 200, $update->get_status() );
 		$this->assertSame( 'List B', $update->get_data()['title'] );
 
-		$delete = $this->do_request( 'DELETE', '/cpm/v1/task_list/' . (int) $list['id'] );
+		$delete = $this->do_request( 'DELETE', '/cpm/v3/task_list/' . (int) $list['id'] );
 		$this->assertSame( 204, $delete->get_status() );
 
-		$gone = $this->do_request( 'GET', '/cpm/v1/task_list/' . (int) $list['id'] );
+		$gone = $this->do_request( 'GET', '/cpm/v3/task_list/' . (int) $list['id'] );
 		$this->assertSame( 404, $gone->get_status() );
 	}
 
 	public function test_task_create_requires_parent_or_project() {
-		$response = $this->do_request( 'POST', '/cpm/v1/task', array( 'title' => 'No parent' ) );
+		$response = $this->do_request( 'POST', '/cpm/v3/task', array( 'title' => 'No parent' ) );
 		$this->assertSame( 400, $response->get_status() );
 	}
 
@@ -130,7 +130,7 @@ class Child_REST_Test extends WP_UnitTestCase {
 
 		$list_resp = $this->do_request(
 			'POST',
-			'/cpm/v1/task_list',
+			'/cpm/v3/task_list',
 			array(
 				'title'      => 'Sprint',
 				'parent'     => $pid,
@@ -142,7 +142,7 @@ class Child_REST_Test extends WP_UnitTestCase {
 
 		$create = $this->do_request(
 			'POST',
-			'/cpm/v1/task',
+			'/cpm/v3/task',
 			array(
 				'title'      => 'Task 1',
 				'parent'     => $lid,
@@ -157,7 +157,7 @@ class Child_REST_Test extends WP_UnitTestCase {
 		$this->assertSame( '2024-01-31 00:00:00', $task['due'] );
 
 		// Список задач проекта.
-		$request = new \WP_REST_Request( 'GET', '/cpm/v1/task' );
+		$request = new \WP_REST_Request( 'GET', '/cpm/v3/task' );
 		$request->set_query_params( array( 'project_id' => $pid ) );
 		$list_resp = rest_get_server()->dispatch( $request );
 		$this->assertSame( 200, $list_resp->get_status() );
@@ -166,7 +166,7 @@ class Child_REST_Test extends WP_UnitTestCase {
 
 	public function test_activity_routes_are_read_only() {
 		// Создание/изменение/удаление activity не зарегистрированы: POST → 404.
-		$response = $this->do_request( 'POST', '/cpm/v1/activity', array( 'content' => 'x' ) );
+		$response = $this->do_request( 'POST', '/cpm/v3/activity', array( 'content' => 'x' ) );
 		$this->assertSame( 404, $response->get_status() );
 	}
 }

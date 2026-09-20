@@ -151,7 +151,7 @@ HAVING
 	 * @return string
 	 */
 	public function get_url( $size = null ) {
-		$url = rest_url( 'cpm/v1/attachment/' . (int) $this->id );
+		$url = rest_url( 'cpm/v3/attachment/' . (int) $this->id );
 		if ( $size ) {
 			$url = add_query_arg( 'size', $size, $url );
 		}

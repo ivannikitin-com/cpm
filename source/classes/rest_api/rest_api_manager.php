@@ -21,7 +21,7 @@ class REST_API_Manager extends Base_Manager {
 	 *
 	 * @var string
 	 */
-	const NAMESPACE = 'cpm/v1';
+	const NAMESPACE = 'cpm/v3';
 
 	/**
 	 * Контроллеры сущностей: тип ядра → имя класса (без namespace).
